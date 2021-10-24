@@ -3,7 +3,8 @@ import {Image,
     Text,
     StyleSheet,
     View,
-    StatusBar
+    StatusBar,
+    SafeAreaView
 }
 from 'react-native';
 import { Icon } from 'react-native-elements';
@@ -12,17 +13,15 @@ import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-ges
 import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
-import ProgramItem2 from '../components/ProgramItem2';
 
 function FavoriteScreen()
 {
     const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1','2','3'])
     return (
-    <View style={{ flex: 1}}>
-        <StatusBar barStyle='light-content' backgroundColor={'black'} translucent style = {{margin: 5}}></StatusBar>
+    <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
                 <View style = {styles.header}>
-                    <Text style = {styles.title}>Nội dung yêu thích</Text>
+                    <Text style = {styles.headerText}>Nội dung yêu thích</Text>
                 </View>
                 <ScrollView style={styles.content}>
                         <View>
@@ -32,7 +31,7 @@ function FavoriteScreen()
                             <Text style = {styles.title}>Lộ trình tập</Text>
                             <TouchableWithoutFeedback
                             onPress={()=>{}}>
-                                <Text style = {styles.title}>Xem tất cả</Text>
+                                <Text style = {styles.navText}>Xem tất cả</Text>
                             </TouchableWithoutFeedback>
                         </View>
                         <FlatList
@@ -43,15 +42,57 @@ function FavoriteScreen()
                         data={suggestedWorkouts}
                         renderItem={(item)=>(
                         <View style={{width:SCREEN_WIDTH}}>
-                            <ProgramItem2 image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                                        />
+                        </View>
+                        )}
+                        />
+
+
+                        <View style = {styles.categoryTitle}>
+                            <Text style = {styles.title}>Lộ trình tập</Text>
+                            <TouchableWithoutFeedback
+                            onPress={()=>{}}>
+                                <Text style = {styles.navText}>Xem tất cả</Text>
+                            </TouchableWithoutFeedback>
+                        </View>
+                        <FlatList
+                        pagingEnabled
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.horizontalList}
+                        data={suggestedWorkouts}
+                        renderItem={(item)=>(
+                        <View style={{width:SCREEN_WIDTH}}>
+                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                                       />
+                        </View>
+                        )}
+                        />
+                        <View style = {styles.categoryTitle}>
+                            <Text style = {styles.title}>Lộ trình tập</Text>
+                            <TouchableWithoutFeedback
+                            onPress={()=>{}}>
+                                <Text style = {styles.navText}>Xem tất cả</Text>
+                            </TouchableWithoutFeedback>
+                        </View>
+                        <FlatList
+                        pagingEnabled
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.horizontalList}
+                        data={suggestedWorkouts}
+                        renderItem={(item)=>(
+                        <View style={{width:SCREEN_WIDTH}}>
+                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                                isLiked = {true}/>
                         </View>
                         )}
                         />
                 </ScrollView>
         </View>
         
-    </View>
+    </SafeAreaView>
     
     )
     
@@ -65,12 +106,23 @@ const styles = StyleSheet.create({
     header: {
         padding: 10, 
         marginTop: 30,
-        height: 50,
         textAlign: 'left',
-        backgroundColor: "rgba(0,0,0,0.95)",
+        alignItems:'center',
+        justifyContent: 'center'
+    },
+    headerText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: COLOR.WHITE
     },
     title: {
         fontSize: 23,
+        color: COLOR.WHITE
+    },
+    navText: {
+        fontSize: 18,
+        fontWeight: '400',
+        textTransform: 'uppercase',
         color: "#FFF"
     },
     content:{
@@ -81,8 +133,6 @@ const styles = StyleSheet.create({
         color: "rgba( 255, 255, 255, 0.85) ",
         paddingHorizontal: 10,
         marginTop: 10,
-    },
-    horizontalList:{
     },
     categoryTitle:{
         paddingHorizontal: 10,
