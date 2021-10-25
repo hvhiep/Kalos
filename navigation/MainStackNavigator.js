@@ -9,6 +9,7 @@ import WorkoutInfoScreen from '../screens/WorkoutScreens/WorkoutInfoScreen';
 import WorkoutDetailScreen from '../screens/WorkoutScreens/WorkoutDetailScreen';
 import CategoryScreen from '../screens/Category/CategoryScreen';
 import ExcerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
+import LikedExercisesScreen from '../screens/LikedCategoryScreen/LikedExercisesScreen';
 
 const MainStack = createStackNavigator();
 
@@ -34,6 +35,9 @@ function MainStackNavigator () {
           options={{ headerTintColor:'#fff' }}
           />
           <MainStack.Screen name="ExcerciseInfo" component={ExcerciseInfoScreen} 
+          options={{ headerTintColor:'#fff' }}
+          />
+          <MainStack.Screen name="LikedExercise" component={LikedExercisesScreen} 
           options={{ headerTintColor:'#fff' }}
           />
         </MainStack.Navigator>

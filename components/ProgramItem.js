@@ -20,7 +20,7 @@ function ProgramItem(props) {
                 imageStyle={styles.backgroundImage}
                 source={props.image}>
                     <LinearGradient style = {styles.linearGradient}
-                    colors = {[COLOR.TRANSPARENT, COLOR.BLACK]}
+                    colors = {["#00000033","#00000080", "#000000B3"]}
                     // start={{x: 1, y:0.2}}
                     // end={{x: 0.3, y:0.9}}
                     >
@@ -33,12 +33,13 @@ function ProgramItem(props) {
                                 <Icon name='heart'
                                 type='font-awesome-5'
                                 solid={props.isLiked?props.isLiked:false}
-                                color = {props.isLiked?"#FF0000":"#000"}></Icon>
+                                color = {props.isLiked?"#FF0000":"#FFF"}
+                                size = {25}></Icon>
                             </View>
                         </View>
                         <View style={styles.titleSession}>
-                            <Text style = {styles.typeText}>CZcss</Text>
-                            <Text style = {styles.titleText}>XyZ</Text>
+                            <Text style = {styles.timeText}>8 tuần</Text>
+                            <Text style = {styles.titleText}>Lộ trình tập cho người mới bắt đầu</Text>
                         </View>
                     </LinearGradient>
                 </BackgroundImage>
@@ -64,11 +65,10 @@ const styles = StyleSheet.create({
     linearGradient:{
         width: "100%",
         borderRadius: 5,
-        paddingHorizontal: 15,
-        paddingVertical: 15
+        paddingHorizontal: 18,
+        paddingVertical: 18
     },
     tagSession:{
-        height: 25,
         flex: 1/3, 
         width: "100%",
         flexDirection: "row",
@@ -76,8 +76,9 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     levelTag:{
-        backgroundColor: "#262626FF", 
-        padding: 13,
+        backgroundColor: "#000", 
+        paddingHorizontal: 13,
+        paddingVertical: 5,
         borderRadius: 5,
         justifyContent:'center',
         alignItems: 'center',
@@ -91,15 +92,16 @@ const styles = StyleSheet.create({
         flex: 2/3,
         alignItems: 'flex-start',
         justifyContent: 'flex-end',
-        marginBottom: 5,
     },
-    typeText: {
+    timeText: {
+        textTransform: 'uppercase',
+        fontWeight: 'normal',
         color: COLOR.WHITE,
         fontSize: 18,
     },
     titleText: {
         color: COLOR.WHITE,
-        fontSize: 20,
+        fontSize: 24,
     }
 });
 export default ProgramItem;

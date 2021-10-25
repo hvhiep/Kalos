@@ -13,83 +13,75 @@ import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-ges
 import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
-
-function FavoriteScreen()
+import ExeciseItem from '../components/ExeciseItem';
+import ImageOverlayCard from '../components/ImageOverlayCard';
+function FavoriteScreen({navigation})
 {
     const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1','2','3'])
     return (
     <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
-                <View style = {styles.header}>
-                    <Text style = {styles.headerText}>Nội dung yêu thích</Text>
+            <View style = {styles.header}>
+                <Text style = {styles.headerText}>Nội dung yêu thích</Text>
+            </View>
+            <ScrollView style={styles.content}>
+                <View>
+                    <Text style = {styles.description}>Các bài tập, chương trình tập bạn đã yêu thích sẽ được lưu tại đây theo từng hạng mục</Text>
                 </View>
-                <ScrollView style={styles.content}>
-                        <View>
-                            <Text style = {styles.description}>Các bài tập, chương trình tập bạn đã yêu thích sẽ được lưu tại đây theo từng hạng mục</Text>
-                        </View>
-                        <View style = {styles.categoryTitle}>
-                            <Text style = {styles.title}>Lộ trình tập</Text>
-                            <TouchableWithoutFeedback
-                            onPress={()=>{}}>
-                                <Text style = {styles.navText}>Xem tất cả</Text>
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <FlatList
-                        pagingEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.horizontalList}
-                        data={suggestedWorkouts}
-                        renderItem={(item)=>(
-                        <View style={{width:SCREEN_WIDTH}}>
-                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                                       />
-                        </View>
-                        )}
-                        />
+                <View style = {styles.categoryTitle}>
+                    <Text style = {styles.title}>Lộ trình tập</Text>
+                    <TouchableWithoutFeedback
+                    onPress={()=>{}}>
+                        <Text style = {styles.optionText}>Xem tất cả</Text>
+                    </TouchableWithoutFeedback>
+                </View>
+                <FlatList
+                pagingEnabled
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.horizontalList}
+                data={suggestedWorkouts}
+                renderItem={(item)=>(
+                <View style={{width:SCREEN_WIDTH}}>
+                    <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                    isLiked
+                    />
+                </View>
+                )}
+                />
 
 
-                        <View style = {styles.categoryTitle}>
-                            <Text style = {styles.title}>Lộ trình tập</Text>
-                            <TouchableWithoutFeedback
-                            onPress={()=>{}}>
-                                <Text style = {styles.navText}>Xem tất cả</Text>
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <FlatList
-                        pagingEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.horizontalList}
-                        data={suggestedWorkouts}
-                        renderItem={(item)=>(
-                        <View style={{width:SCREEN_WIDTH}}>
-                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                                       />
-                        </View>
-                        )}
-                        />
-                        <View style = {styles.categoryTitle}>
-                            <Text style = {styles.title}>Lộ trình tập</Text>
-                            <TouchableWithoutFeedback
-                            onPress={()=>{}}>
-                                <Text style = {styles.navText}>Xem tất cả</Text>
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <FlatList
-                        pagingEnabled
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.horizontalList}
-                        data={suggestedWorkouts}
-                        renderItem={(item)=>(
-                        <View style={{width:SCREEN_WIDTH}}>
-                            <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                                isLiked = {true}/>
-                        </View>
-                        )}
-                        />
-                </ScrollView>
+                <View style = {styles.categoryTitle}>
+                    <Text style = {styles.title}>Kế hoạch tập</Text>
+                    <TouchableWithoutFeedback
+                    onPress={()=>{}}>
+                        <Text style = {styles.optionText}>Xem tất cả</Text>
+                    </TouchableWithoutFeedback>
+                </View>
+                <FlatList
+                pagingEnabled
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.horizontalList}
+                data={suggestedWorkouts}
+                renderItem={(item)=>(
+                <View style={{width:SCREEN_WIDTH}}>
+                    <WorkoutItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                                />
+                </View>
+                )}
+                />
+                <View style = {styles.categoryTitle}>
+                    <Text style = {styles.title}>Bài tập</Text>
+                </View>
+                <View style={{width:SCREEN_WIDTH}}>
+                    <ImageOverlayCard 
+                    image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
+                    title="Bài tập đã thích"
+                    onPress={()=>{navigation.navigate('LikedExercise')}}/>
+                </View>
+                
+            </ScrollView>
         </View>
         
     </SafeAreaView>
@@ -100,6 +92,7 @@ function FavoriteScreen()
 
 const styles = StyleSheet.create({
     layoutContainer:{
+
         flex: 1,
         backgroundColor: "rgba(0,0,0,0.85)",
     },
@@ -119,7 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 23,
         color: COLOR.WHITE
     },
-    navText: {
+    optionText: {
         fontSize: 18,
         fontWeight: '400',
         textTransform: 'uppercase',
@@ -138,7 +131,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 18,
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: 'center'
     }
 })
 
