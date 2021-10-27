@@ -9,10 +9,10 @@ import {Image,
 from 'react-native';
 import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../../constant';
-import ExeciseItem from '../../components/ExeciseItem';
-function LikedExercisesScreen()
+import ProgramItem from '../../components/ProgramItem';
+function FavoriteProgramScreen()
 {
-    const [likedExercises, setLikedExercise] = useState([1,2,3,1,1,,3,66,4,4,5,5,9])
+    const [likedPrograms, setLikedProgram] = useState([1,2,3,1,1])
     return (
     <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
@@ -23,12 +23,12 @@ function LikedExercisesScreen()
             vertical
             showsVerticalScrollIndicator={false}
             style={styles.content}
-            data={likedExercises}
+            data={likedPrograms}
             renderItem={(item)=>(
             <View style={{width:SCREEN_WIDTH}}>
-                <ExeciseItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                     isLiked = {true}
-                    title="Hít đất nâng cao dành cho người mới"/>
+                    />
             </View>
             )}
             />
@@ -59,4 +59,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default LikedExercisesScreen;
+export default FavoriteProgramScreen;
