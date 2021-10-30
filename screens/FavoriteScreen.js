@@ -6,19 +6,18 @@ import {Image,
     StatusBar,
     SafeAreaView,
     Modal,
-    Button
+    
 }
 from 'react-native';
-import { Icon } from 'react-native-elements';
-import { BackgroundImage } from 'react-native-elements/dist/config';
+import { BottomSheet, Icon, Button } from 'react-native-elements';
 import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
-import ExeciseItem from '../components/ExeciseItem';
 import ImageOverlayCard from '../components/ImageOverlayCard';
 import Video from 'react-native-video';
-import VideoPlayer from 'react-native-video-controls;'
+import VideoPlayer from 'react-native-video-controls';
+
 function FavoriteScreen({navigation})
 {
     const [videoUri, setVideoUri] = useState("");
@@ -76,15 +75,6 @@ function FavoriteScreen({navigation})
                 </View>
                 )}
                 />
-                <View style = {styles.categoryTitle}>
-                    <Text style = {styles.title}>Bài tập</Text>
-                </View>
-                <View style={{width:SCREEN_WIDTH}}>
-                    <ImageOverlayCard 
-                    image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
-                    title="Bài tập đã thích"
-                    onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
-                </View>
 
                 <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Video</Text>
@@ -103,32 +93,47 @@ function FavoriteScreen({navigation})
                 <View style={{width:SCREEN_WIDTH}}>
                     <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                     isLiked
-                    onPress = {()=>setVideoUri("../../assets/5svideo.mp4")}
+                    onPress = {()=>{
+                        var data = {videoUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"};
+                        navigation.push('VideoScreen', data);
+                    }}
                     />
                 </View>
                 )}
                 />
-                
-            </ScrollView>
-            <Modal
-            transparent={true}
-            visible={videoUri != ""}>
-                <View style={styles.popUpContainer}
-                >
-                    <View style={{backgroundColor: "#FFF",width: SCREEN_WIDTH, height: 300}}>
-                        <VideoPlayer style={{width: SCREEN_WIDTH, height: 300}}
-                        source = {{uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"}}
-                        // resizeMode='cover'
-                        // controls = {true}
-                        // rate = {1}
-                        // volume = {1}
-                        />
-                    </View>
-                    <Button title="Close Video "
-                     onPress = {()=>{setVideoUri("")}}/>
+
+
+                <View style = {styles.categoryTitle}>
+                    <Text style = {styles.title}>Bài tập</Text>
+                </View>
+                <View style={{width:SCREEN_WIDTH}}>
+                    <ImageOverlayCard 
+                    image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
+                    title="Bài tập đã thích"
+                    onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
                 </View>
 
-            </Modal>
+                
+                
+            </ScrollView>
+            <BottomSheet
+            containerStyle = {{backgroundColor: '#12121280'}}
+            isVisible={videoUri != "" && videoUri != null}>
+                <View style = {styles.popUpContainer}>
+                    <VideoPlayer style={{width: SCREEN_WIDTH, height: 300}}
+                    source = {{uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"}}
+                    resizeMode='cover'
+                    // controls = {true}
+                    // rate = {1}
+                    // volume = {1}
+                    />
+                    <Text style={styles.title}>Title</Text>
+                    <Button title="Đóng "
+                        onPress = {()=>{setVideoUri("")}}
+                        titleStyle={{color: COLOR.WHITE}}
+                        buttonStyle = {{backgroundColor: COLOR.RED}}/>
+                </View>
+            </BottomSheet>
         </View>
         
     </SafeAreaView>
@@ -141,7 +146,7 @@ const styles = StyleSheet.create({
     layoutContainer:{
 
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.85)",
+        backgroundColor: COLOR.MATTE_BLACK,
     },
     header: {
         padding: 10, 
@@ -182,10 +187,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     popUpContainer:{
-        flex:1,
+        flex: 0.5,
         backgroundColor: "#000000B2",
-        alignItems:'center',
-        justifyContent: 'center'
+        
     },
 })
 

@@ -3,21 +3,20 @@ import {Image,
     Text,
     StyleSheet,
     View,
-    StatusBar,
     SafeAreaView
 }
 from 'react-native';
 import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../../constant';
 import ProgramItem from '../../components/ProgramItem';
-function FavoriteProgramScreen()
+function FavoriteVideoScreen()
 {
     const [likedPrograms, setLikedProgram] = useState([1,2,3,1,1])
     return (
     <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
             <View style = {styles.header}>
-                <Text style = {styles.headerText}>Lộ trình yêu thích</Text>
+                <Text style = {styles.headerText}>Video yêu thích</Text>
             </View>
             <FlatList
             vertical
@@ -59,4 +58,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default FavoriteProgramScreen;
+export default FavoriteVideoScreen;
