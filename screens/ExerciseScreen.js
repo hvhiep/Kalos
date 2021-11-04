@@ -8,18 +8,28 @@ import {
     StyleSheet,
     Image
 } from 'react-native';
-import exercisesData from "../assets/testData/exercisesData";
 import { Icon } from 'react-native-elements';
 import Video from 'react-native-video';
 import { COLOR } from '../constant';
 import { SearchBar } from "react-native-elements";
+
+//Bottom Sheet
+
+import SheetExerciseDetail from "../components/SheetExerciseDetail";
+import { useRef } from "react";
+import { useState } from "react";
+
+//test data
+import exercisesData from "../assets/testData/exercisesData";
 
 function ExerciseScreen() {
 
     //render exercise item
     const renderExerciseItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.exerciseWrapper}>
+            <TouchableOpacity
+                style={styles.exerciseWrapper}
+                onPress={() => handleBottomSheet(item)}>
                 <View style={styles.exerciseLeftWrapper}>
                     <Image
                         style={styles.exerciseImage}
@@ -27,7 +37,7 @@ function ExerciseScreen() {
                     ></Image>
                 </View>
                 <View style={styles.exerciseRightWrapper}>
-                    <Text 
+                    <Text
                         style={styles.exerciseName}
                         numberOfLines={2}>{item.exercise}
                     </Text>
@@ -36,9 +46,22 @@ function ExerciseScreen() {
         )
     }
 
+    //Bottom sheet exercise detail
+    //ref + state for sheet
+    const bottomSheetRef = useRef(null);
+    const [exerciseDetail, setExerciseDetail] = useState(null);
+
+    //handle bottom sheet
+    const handleBottomSheet = (item) => {
+        setExerciseDetail(item);
+        bottomSheetRef.current.snapTo(0);
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Tất Cả Bài Tập</Text>
+
+            {/* Search bar */}
             <View style={styles.searchWrapper}>
                 <SearchBar
                     containerStyle={styles.search}
@@ -54,14 +77,21 @@ function ExerciseScreen() {
                         size={22}></Icon>
                 </TouchableOpacity>
             </View>
+
+            {/* List Exercise */}
             <FlatList
                 style={styles.ListExercise}
                 data={exercisesData}
                 renderItem={renderExerciseItem}
                 keyExtractor={item => `${item.id}`}
-                showsVerticalScrollIndicator={false}
-            >
+                showsVerticalScrollIndicator={false}>
             </FlatList>
+
+            {/*Bottom Sheet Exercise Detail */}
+            <SheetExerciseDetail
+                bottomSheetRef={bottomSheetRef}
+                exerciseDetail={exerciseDetail}>
+            </SheetExerciseDetail>
         </View>
     )
 };
@@ -114,7 +144,7 @@ const styles = StyleSheet.create({
         height: 80,
         width: 100,
         borderRadius: 30,
-        
+
     },
     exerciseName: {
         marginLeft: 20,

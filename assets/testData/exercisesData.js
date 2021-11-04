@@ -12,7 +12,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -43,7 +43,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -57,7 +57,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -71,7 +71,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -86,7 +86,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -101,7 +101,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
     {
@@ -115,7 +115,7 @@ const exercisesData = [
             'Tay Sau',
             'Vai'
         ],
-        equipment: null,
+        equipment: [''],
         link: require('../video/InclinePushUps.mp4'),
     },
 ];
