@@ -1,270 +1,347 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import {Image, Text, StyleSheet, View, StatusBar} from 'react-native';
+import {Icon} from 'react-native-elements';
+import {BackgroundImage} from 'react-native-elements/dist/config';
 import {
-  Image,
-  Text,
-  StyleSheet,
-  View,
-  StatusBar,
-} from 'react-native';
-import { Icon } from 'react-native-elements';
-import { BackgroundImage } from 'react-native-elements/dist/config';
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 import HomeSection from '../components/HomeSection';
-import UserStatus from '../components/UserStatus';
 import WorkoutItem from '../components/WorkoutItem';
-import {COLOR, SCREEN_WIDTH} from '../constant'
-function HomeScreen({navigation}) {
+import {COLOR, SCREEN_WIDTH} from '../constant';
+import ProgramItem from '../components/ProgramItem';
+import HomeCategoryItem from '../components/HomeCategoryItem';
+import CommandButton from '../components/CommandButton';
 
-  const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1','2','3'])
+const HOME_BANNER_HEIGHT = 300;
+function HomeScreen({navigation}) {
+  const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1', '2', '3']);
 
   const renderBanner = () => (
-    <BackgroundImage style={styles.banner}
-        source ={{uri:'https://www.cnet.com/a/img/mSdKK71X29nFhsLSencu7IwYlhQ=/1200x675/2019/11/12/e66cc0f3-c6b8-4f6e-9561-e23e08413ce1/gettyimages-1002863304.jpg'}}
-        resizeMode='cover'
-        >
-          <View style={styles.todayWorkout}>
-            <Text style={styles.todayWorkoutTxt}>Bài Tập Của Ngày</Text>
-          </View>
-          
-          <View style={styles.bannerBlur}>
-            <View style={{flex:4, marginRight:5}}>
-              <View style={styles.bannerTag}>
-                <Icon
-                  name='tags'
-                  type='font-awesome'
-                  size={13}
-                  color={COLOR.BLACK}/>
-                <Text style={styles.bannerTagTxt}>Dành cho bạn</Text>
-              </View>
-              <Text numberOfLines={2} style={styles.bannerTxt}>Bài tập bụng giúp xây dựng sức bền</Text>
-              <View style={{flexDirection:'row', alignItems:'center', position:'absolute', bottom:3, marginRight:10}}>
-                <Icon
-                name='certificate'
-                type='font-awesome-5'
-                size={15}
-                color={COLOR.WHITE}/>
-                <Text numberOfLines={1} style={styles.bannerdesTxt}>Nhóm Cơ: Vai, Tay trước, Lưng, Bụng, Xô</Text>
-              </View>
-            </View>
+    <BackgroundImage
+      style={styles.banner}
+      source={{
+        uri: 'https://www.cnet.com/a/img/mSdKK71X29nFhsLSencu7IwYlhQ=/1200x675/2019/11/12/e66cc0f3-c6b8-4f6e-9561-e23e08413ce1/gettyimages-1002863304.jpg',
+      }}
+      resizeMode="cover">
+      <View style={styles.todayWorkout}>
+        <Text style={styles.todayWorkoutTxt}>Bài Tập Của Ngày</Text>
+      </View>
 
-            <View style={styles.bannerBtn}>
-              <TouchableOpacity onPress={()=>navigation.navigate('WorkoutInfo')}>
-                <Icon
-                  name='dumbbell'
-                  type='font-awesome-5'
-                  size={23}
-                  color={COLOR.GOLD}/>
-                  <Text style={{color:COLOR.WHITE, marginTop:5}}>Tập Ngay</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </BackgroundImage>
-  )
+      <LinearGradient
+        style={styles.bannerLinearGradient}
+        start={{x: 0, y: 0}}
+        end={{x: 0, y: 0.9}}
+        colors={[COLOR.TRANSPARENT, COLOR.MATTE_BLACK]}></LinearGradient>
+
+      <View style={styles.bannerLeft}>
+        <Text style={styles.bannerTxt}>Bài tập bụng giúp xây dựng sức bền</Text>
+        <View style={styles.bannerBtnWrapper}>
+          <TouchableOpacity
+            style={styles.bannerBtn}
+            onPress={() => navigation.navigate('WorkoutInfo')}>
+            <Icon
+              name="dumbbell"
+              type="font-awesome-5"
+              size={13}
+              color={COLOR.WHITE}
+            />
+            <Text style={styles.bannerBtnTxt}>Tập Ngay</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.bannerRight}>
+        <View style={styles.bannerRightInsider}>
+          <Text style={styles.bannerRightTxt}>3</Text>
+          <Text style={styles.bannerRightSmallTxt}>Số set</Text>
+          <Text style={styles.bannerRightTxt}>30m</Text>
+          <Text style={styles.bannerRightSmallTxt}>Thời gian</Text>
+          <Text style={[styles.bannerRightTxt, {fontSize: 15}]}>Medium</Text>
+          <Text style={styles.bannerRightSmallTxt}>Level</Text>
+        </View>
+      </View>
+    </BackgroundImage>
+  );
 
   const renderUserInfo = () => (
     <View style={styles.userStatus}>
       <View style={styles.userTagWrapper}>
-        <View style={[styles.userTag,{borderColor:COLOR.ORANGE}]}>
+        <View style={[styles.userTag, {borderColor: COLOR.WHITE}]}>
           <Icon
-          name='account'
-          type='material-community'
-          size={14}
-          color={COLOR.ORANGE}/>
-          <Text style={[styles.userTagTxt,{color:COLOR.ORANGE}]}>Người mới tập</Text>
+            name="account"
+            type="material-community"
+            size={14}
+            color={COLOR.WHITE}
+          />
+          <Text style={[styles.userTagTxt, {color: COLOR.WHITE}]}>
+            Người mới tập
+          </Text>
         </View>
-        <View style={[styles.userTag,{borderColor:COLOR.LIGHT_BLUE_2}]}>
+        <View style={[styles.userTag, {borderColor: COLOR.WHITE}]}>
           <Icon
-          name='account'
-          type='material-community'
-          size={14}
-          color={COLOR.LIGHT_BLUE_2}/>
-          <Text style={[styles.userTagTxt,{color:COLOR.LIGHT_BLUE_2}]}>Tăng cơ</Text>
+            name="account"
+            type="material-community"
+            size={14}
+            color={COLOR.WHITE}
+          />
+          <Text style={[styles.userTagTxt, {color: COLOR.WHITE}]}>Tăng cơ</Text>
         </View>
       </View>
 
-      <View style={{flexDirection:'row', paddingVertical:5}}>
-        <View style={{flex:5}}>
-          <Text style={styles.darkGreyTxt}>Đào Duy Nam</Text>
-          <Text style={styles.silverTxt}>Chiều Cao: <Text style={styles.darkGreyTxt}>173cm</Text> - Cân nặng:  <Text style={styles.darkGreyTxt}>63.5 kg</Text></Text>
+      <View style={{flexDirection: 'row', paddingVertical: 5}}>
+        <View style={{flex: 5}}>
+          <Text style={styles.numberTxt}>Đào Duy Nam</Text>
+          <Text style={styles.silverTxt}>
+            Chiều Cao: <Text style={styles.numberTxt}>173cm</Text> - Cân nặng:{' '}
+            <Text style={styles.numberTxt}>63.5 kg</Text>
+          </Text>
         </View>
-        <View style={{flex:1, alignItems:'center', marginTop:-10}}>
-          <Text style={{fontWeight:'bold', fontSize:20, color:COLOR.DARK_BROWN}}>BMI</Text>
-          <Text style={{fontSize:20, fontWeight:'bold'}}>2.5</Text>
+        <View style={{flex: 1, alignItems: 'center', marginTop: -20}}>
+          <Text
+            style={{fontWeight: 'bold', fontSize: 20, color: COLOR.DARK_BROWN}}>
+            BMI
+          </Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: COLOR.WHITE}}>
+            2.5
+          </Text>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.userBtn} onPress={() => navigation.navigate('Category')}>
+      <TouchableOpacity
+        style={styles.userBtn}
+        onPress={() => navigation.navigate('Category')}>
         <Icon
-        name='chart-line'
-        type='material-community'
-        size={20}
-        color={COLOR.WHITE}/>
-        <Text style={[styles.userBtnTxt,{marginLeft:10}]}>Cập nhật chỉ số ngay</Text>
+          name="chart-line"
+          type="material-community"
+          size={20}
+          color={COLOR.WHITE}
+        />
+        <Text style={[styles.userBtnTxt, {marginLeft: 10}]}>
+          Cập nhật chỉ số ngay
+        </Text>
       </TouchableOpacity>
     </View>
-  )
+  );
 
   return (
-    <ScrollView style={{ flex: 1}}>
-        <StatusBar barStyle='light-content' backgroundColor={'transparent'} translucent></StatusBar>
-        {renderBanner()}
-        {renderUserInfo()}
-        <HomeSection
-        title='Đề xuất cho bạn'
-        onPress={()=>{}}
-        />
-        <FlatList
+    <ScrollView style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={'transparent'}
+        translucent></StatusBar>
+      {renderBanner()}
+      {renderUserInfo()}
+      <HomeSection title="Đề xuất cho bạn" onPress={() => {}} />
+      <FlatList
         pagingEnabled
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedWorkouts}
-        renderItem={(item)=>(
-          <View style={{width:SCREEN_WIDTH}}>
-            <WorkoutItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}/>
+        renderItem={({item}) => (
+          <View style={{width: SCREEN_WIDTH, paddingRight: 30}}>
+            <WorkoutItem
+              image={{
+                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+              }}
+            />
           </View>
         )}
-        />
-        <HomeSection
-        title='Tham gia thử thách'
-        onPress={()=>{}}
-        />
-        <FlatList
-        pagingEnabled
+      />
+      <HomeSection title="Tham gia thử thách" onPress={() => {}} />
+      <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedWorkouts}
-        renderItem={(item)=>(
-          <View style={{width:SCREEN_WIDTH}}>
-            <WorkoutItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}/>
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
+            <ProgramItem
+              style={{height: 200, width: 160}}
+              title="Thử thách thay đổi bản thân 7 ngày"
+              image={{
+                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+              }}
+            />
           </View>
         )}
+      />
+      <HomeSection title="Lựa chọn cách tập của riêng bạn" onPress={() => {}} />
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.horizontalList}
+        data={suggestedWorkouts}
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
+            <HomeCategoryItem
+              style={{height: 110, width: 250}}
+              title="Giảm Mỡ"
+              subTitle="bao gồm 20 bài tập"
+              image={{
+                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+              }}
+            />
+          </View>
+        )}
+      />
+      <View style={styles.libraryBtnWrapper}>
+        <CommandButton
+          icon="tag"
+          title="Đi đến thư viện bài tập"
+          backgroundColor={COLOR.GOLD}
+          onPress={async () => {
+          }}
         />
-        {/* <TouchableOpacity style={{height:50, backgroundColor:'#123123'}} onPress={()=>navigation.navigate('WorkoutInfo')}/> */}
+      </View>
+      {/* <TouchableOpacity style={{height:50, backgroundColor:'#123123'}} onPress={()=>navigation.navigate('WorkoutInfo')}/> */}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  banner:{
-    height:250,
-    justifyContent:'flex-end',
+  banner: {
+    height: HOME_BANNER_HEIGHT,
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  bannerBlur:{
-    backgroundColor:'#000',
-    opacity:0.8,
-    marginHorizontal:5,
-    marginBottom:5,
-    borderRadius:10,
-    paddingHorizontal:10,
-    paddingTop:10,
-    flexDirection:'row'
+  bannerLinearGradient: {
+    position: 'absolute',
+    height: HOME_BANNER_HEIGHT,
+    width: '100%',
+    bottom: 0,
   },
-  bannerImg:{
-    width:70, 
-    height:70,
-    borderRadius:5,
-    marginLeft:5
+  bannerLeft: {
+    paddingLeft: 20,
+    paddingBottom: 20,
+    flex: 1,
   },
-  bannerTag:{
-    backgroundColor:COLOR.GOLD,
-    borderWidth:1,
-    width:120,
-    borderRadius:5,
-    flexDirection:'row',
-    paddingHorizontal:9,
-    justifyContent:'space-between',
-    alignItems:'center'
+  bannerRight: {
+    backgroundColor: '#18151090',
+    width: 70,
+    height: HOME_BANNER_HEIGHT * 0.6,
+    borderRadius: 15,
+    marginHorizontal: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+    paddingTop: 10,
+    overflow: 'hidden',
+    opacity: 1,
   },
-  bannerTagTxt:{
-    fontSize:13,
-    color:COLOR.BLACK,
-    fontWeight:'bold'
+  bannerRightInsider: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    paddingVertical: 0,
   },
-  bannerTxt:{
-    color:COLOR.WHITE,
-    fontSize:20,
-    fontWeight:'bold'
+  bannerTxt: {
+    color: COLOR.WHITE,
+    fontSize: 26,
+    fontWeight: 'bold',
+    width: '90%',
+    marginBottom: 15,
   },
-  bannerdesTxt:{
-    color:COLOR.WHITE,
-    fontSize:13,
-    fontWeight:'bold',
-    marginLeft:5
+  bannerRightTxt: {
+    color: COLOR.WHITE,
+    fontSize: 20,
   },
-  bannerBtn:{
-    flex:1, 
-    borderLeftWidth:1, 
-    borderLeftColor:COLOR.GREY, 
-    marginVertical:20, 
-    alignItems:'center', 
-    paddingTop:10,
+  bannerRightSmallTxt: {
+    fontSize: 13,
+    color: COLOR.GREY,
+    marginBottom: 10,
   },
-  todayWorkout:{
-    backgroundColor:COLOR.GOLD,
-    width:170,
-    height:25,
-    position:'absolute',
-    bottom:150,
-    right:0,
-    borderTopLeftRadius:10,
-    borderBottomLeftRadius:10,
-    justifyContent:'center',
-    paddingLeft:10,
+  bannerBtn: {
+    backgroundColor: COLOR.RED,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 180,
+    borderRadius: 15,
   },
-  todayWorkoutTxt:{
-    color:COLOR.MATTE_BLACK,
-    fontSize:17,
-    fontWeight:'bold'
+  bannerBtnTxt: {
+    color: COLOR.WHITE,
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
-  userStatus:{
-    width:'100%', 
-    alignSelf:'center',
-    paddingTop:5,
-    marginBottom:20,
-    paddingHorizontal:15,
+  todayWorkout: {
+    backgroundColor: COLOR.GOLD,
+    width: 170,
+    height: 25,
+    position: 'absolute',
+    top: 50,
+    right: 0,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    justifyContent: 'center',
+    paddingLeft: 10,
   },
-  horizontalList:{
+  todayWorkoutTxt: {
+    color: COLOR.MATTE_BLACK,
+    fontSize: 17,
+    fontWeight: 'bold',
   },
-  userBtn:{
-    width:'100%',
-    height:40,
-    backgroundColor:COLOR.LIGHT_BROWN,
-    borderRadius:20,
-    alignSelf:'center',
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center'
+  userStatus: {
+    width: '100%',
+    alignSelf: 'center',
+    paddingTop: 5,
+    marginBottom: 20,
+    paddingHorizontal: 15,
   },
-  userBtnTxt:{
-    color:COLOR.WHITE,
-    fontWeight:'bold',
-    fontSize:16
+  horizontalList: {
+    paddingHorizontal: 15,
+    paddingVertical: 20,
   },
-  darkGreyTxt:{
-    color:COLOR.GREY,
-    fontSize:15
+  userBtn: {
+    width: '100%',
+    height: 40,
+    backgroundColor: COLOR.LIGHT_BROWN,
+    borderRadius: 20,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
-  silverTxt:{
-    fontSize:13,
-    color:'#aaa9ad'
+  userBtnTxt: {
+    color: COLOR.WHITE,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
-  userTag:{
-    height:20,
-    borderWidth:1,
-    borderRadius:7,
-    alignItems:'center',
-    paddingHorizontal:5,
-    flexDirection:'row',
-    marginRight:10
+  numberTxt: {
+    color: COLOR.WHITE,
+    fontSize: 15,
   },
-  userTagWrapper:{
-    flexDirection:'row'
+  silverTxt: {
+    fontSize: 13,
+    color: '#aaa9ad',
   },
-  userTagTxt:{
-    fontSize:11,
-    fontWeight:'bold'
+  userTag: {
+    height: 20,
+    borderWidth: 1,
+    borderRadius: 7,
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    flexDirection: 'row',
+    marginRight: 10,
+    justifyContent: 'space-between',
+  },
+  userTagWrapper: {
+    flexDirection: 'row',
+  },
+  userTagTxt: {
+    fontSize: 11,
+    marginLeft: 3,
+  },
+  libraryBtnWrapper: {
+    height: 50,
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
 });
 

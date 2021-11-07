@@ -2498,7 +2498,7 @@ electron-to-chromium@^1.3.811:
 
 eme-encryption-scheme-polyfill@^2.0.1:
   version "2.0.3"
-  resolved "https://registry.yarnpkg.com/eme-encryption-scheme-polyfill/-/eme-encryption-scheme-polyfill-2.0.3.tgz#2ca6e06480e06cceb5e50efd27943ac46c959878"
+  resolved "https://registry.npmjs.org/eme-encryption-scheme-polyfill/-/eme-encryption-scheme-polyfill-2.0.3.tgz"
   integrity sha512-44CNFMsqzHdKHrzWxlS7xZ8KUHn5XutBqpmCuWzNIynmAyFInHrrD3ozv/RvK9ZhgV6QY6Easx8EWAmxteNodg==
 
 emittery@^0.7.1:
@@ -4272,7 +4272,7 @@ jsonify@~0.0.0:
 
 keymirror@^0.1.1:
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+  resolved "https://registry.npmjs.org/keymirror/-/keymirror-0.1.1.tgz"
   integrity sha1-kYiJ6hP40KQufFVyUO7nE63JXDU=
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
@@ -5584,9 +5584,9 @@ react-native-vector-icons@^8.1.0:
     yargs "^16.1.1"
 
 react-native-video@^5.2.0-alpha1:
-  version "5.2.0-alpha1"
-  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-5.2.0-alpha1.tgz#990381bf2a053f8d3f20c98ff447a7d0cc61b851"
-  integrity sha512-UkvawdXCdInfvV/w8HMnjDnWDirSwEyOyWsY6IJbguZk9xc0chXKM010DwkdTFldY0bkWXEP2XHyEPh/AKwKcg==
+  version "5.2.0"
+  resolved "https://registry.npmjs.org/react-native-video/-/react-native-video-5.2.0.tgz"
+  integrity sha512-5SK1lxyzrCkZF+WuxUxLR1Pt65E0rsWB1w1GrGxSLdC9zWYBumcmuHl+wPJ7UQvznjaH2Ze7uU1R3arejI7+WQ==
   dependencies:
     keymirror "^0.1.1"
     prop-types "^15.7.2"
@@ -6017,7 +6017,7 @@ setprototypeof@1.1.1:
 
 shaka-player@^2.5.9:
   version "2.5.23"
-  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-2.5.23.tgz#db92d1c6cf2314f0180a2cec11b0e2f2560336f5"
+  resolved "https://registry.npmjs.org/shaka-player/-/shaka-player-2.5.23.tgz"
   integrity sha512-3MC9k0OXJGw8AZ4n/ZNCZS2yDxx+3as5KgH6Tx4Q5TRboTBBCu6dYPI5vp1DxKeyU12MBN1Zcbs7AKzXv2EnCg==
   dependencies:
     eme-encryption-scheme-polyfill "^2.0.1"
