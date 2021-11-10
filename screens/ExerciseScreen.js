@@ -18,6 +18,7 @@ import { SearchBar } from "react-native-elements";
 import SheetExerciseDetail from "../components/SheetExerciseDetail";
 import { useRef } from "react";
 import { useState } from "react";
+import SheetFilter from '../components/SheetFilter';
 
 //test data
 import exercisesData from "../assets/testData/exercisesData";
@@ -49,6 +50,7 @@ function ExerciseScreen() {
     //Bottom sheet exercise detail
     //ref + state for sheet
     const bottomSheetRef = useRef(null);
+    const sheetFilterRef = useRef(null);
     const [exerciseDetail, setExerciseDetail] = useState(null);
 
     //handle bottom sheet
@@ -70,11 +72,15 @@ function ExerciseScreen() {
                     inputContainerStyle={styles.searchInput}
                     platform="android"
                 />
-                <TouchableOpacity style={styles.searchFilter}>
+                {/* exercise filter */}
+                <TouchableOpacity 
+                    style={styles.searchFilter}
+                    onPress={() => sheetFilterRef.current.snapTo(0)}>
                     <Icon
                         name="filter-alt"
                         type="material"
-                        size={22}></Icon>
+                        size={22}
+                        color="white"></Icon>
                 </TouchableOpacity>
             </View>
 
@@ -92,6 +98,11 @@ function ExerciseScreen() {
                 bottomSheetRef={bottomSheetRef}
                 exerciseDetail={exerciseDetail}>
             </SheetExerciseDetail>
+            {/* Exercise Filter */}
+            <SheetFilter
+                sheetFilterRef={sheetFilterRef}>
+            </SheetFilter>
+                
         </View>
     )
 };
@@ -99,12 +110,15 @@ function ExerciseScreen() {
 const styles = StyleSheet.create({
     container: {
         marginTop: 24,
+        backgroundColor: COLOR.MATTE_BLACK,
     },
     title: {
         marginLeft: 20,
         fontSize: 20,
         fontWeight: "bold",
         alignSelf: "center",
+        color: 'white',
+        
     },
     searchWrapper: {
         flexDirection: "row",
@@ -116,13 +130,14 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: 20,
         marginRight: 10,
+
     },
     searchInput: {
         height: 20,
 
     },
     searchFilter: {
-
+        
     },
     ListExercise: {
         marginHorizontal: 20,
@@ -151,6 +166,7 @@ const styles = StyleSheet.create({
         marginRight: 5,
         fontSize: 16,
         fontWeight: "bold",
+        color: 'white'
     },
 });
 

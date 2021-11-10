@@ -2,9 +2,7 @@ import React from "react";
 import {
     View,
     Text,
-    TouchableOpacity,
     StyleSheet,
-    Image
 } from 'react-native';
 import Video from 'react-native-video';
 import { useState } from "react";
@@ -99,7 +97,7 @@ export default function SheetExerciseDetail(props) {
 
 const styles = StyleSheet.create({
     HeaderWrapper: {
-        backgroundColor: 'white',
+        backgroundColor: 'black',
         alignItems: "center",
         height: 25,
         borderTopLeftRadius: 20,
@@ -110,6 +108,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         width: 50,
         borderRadius: 40,
+        borderColor: 'white',
     },
 
     likeBtn: {
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
     },
 
     wrapper: {
-        backgroundColor: 'white',
+        backgroundColor: COLOR.MATTE_BLACK,
         height: '100%',
     },
 
@@ -134,6 +133,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         fontSize: 24,
         fontWeight: "bold",
+        color: 'white'
     },
     groupWrapper: {
         paddingHorizontal: 30,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     },
     groupTitle: {
         fontWeight: "bold",
-        color: 'grey',
+        color: COLOR.LIGHT_GREY,
         fontSize: 16,
         marginBottom: 10,
     },
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     },
     groupItem: {
         marginRight: 5,
-        backgroundColor: COLOR.MATTE_BLACK,
+        backgroundColor: COLOR.LIGHT_BROWN,
         padding: 5,
         borderRadius: 8,
         color: 'white',
