@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useMemo} from 'react';
 import {Image,
     Text,
     StyleSheet,
@@ -9,19 +9,21 @@ import {Image,
     
 }
 from 'react-native';
-import { BottomSheet, Icon, Button } from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
 import ImageOverlayCard from '../components/ImageOverlayCard';
-import Video from 'react-native-video';
-import VideoPlayer from 'react-native-video-controls';
+// import BottomSheet from '@gorhom/bottom-sheet';
+import VideoScreen from './FavoriteScreens/VideoScreen';
+// import Video from 'react-native-video';
+// import VideoPlayer from 'react-native-video-controls';
 
 function FavoriteScreen({navigation})
 {
-    const [videoUri, setVideoUri] = useState("");
     const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1','2','3'])
+
     return (
     <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
@@ -79,7 +81,7 @@ function FavoriteScreen({navigation})
                 <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Video</Text>
                     <TouchableWithoutFeedback
-                    onPress={()=>{navigation.navigate('FavoritePrograms')}}>
+                    onPress={()=>{navigation.navigate('FavoriteVideos')}}>
                         <Text style = {styles.optionText}>Xem tất cả</Text>
                     </TouchableWithoutFeedback>
                 </View>
@@ -94,7 +96,7 @@ function FavoriteScreen({navigation})
                     <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                     isLiked
                     onPress = {()=>{
-                        var data = {videoUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"};
+                        var data = {videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"};
                         navigation.push('VideoScreen', data);
                     }}
                     />
@@ -116,24 +118,7 @@ function FavoriteScreen({navigation})
                 
                 
             </ScrollView>
-            <BottomSheet
-            containerStyle = {{backgroundColor: '#12121280'}}
-            isVisible={videoUri != "" && videoUri != null}>
-                <View style = {styles.popUpContainer}>
-                    <VideoPlayer style={{width: SCREEN_WIDTH, height: 300}}
-                    source = {{uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"}}
-                    resizeMode='cover'
-                    // controls = {true}
-                    // rate = {1}
-                    // volume = {1}
-                    />
-                    <Text style={styles.title}>Title</Text>
-                    <Button title="Đóng "
-                        onPress = {()=>{setVideoUri("")}}
-                        titleStyle={{color: COLOR.WHITE}}
-                        buttonStyle = {{backgroundColor: COLOR.RED}}/>
-                </View>
-            </BottomSheet>
+
         </View>
         
     </SafeAreaView>

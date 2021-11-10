@@ -10,19 +10,23 @@ import {Icon} from 'react-native-elements';
 import HeartButton from '../../components/HeartButton';
 
 function VideoScreen({route})
+// function VideoScreen(props)
 {
-    var videoData = route.params;
+    var videoData = route?route.params: null;
     return (
         <View style = {styles.container}>
             <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.titleText}>Video</Text>
             </View>
             <Video
-            source={{uri: videoData.videoUri}}
+            source={{uri: videoData.videoUrl}}
+            // source={{uri: props.videoUrl}}
             style = {{width: SCREEN_WIDTH, height: 300}}
             controls = {true}
             rate = {1}
             volume = {1}
+            playInBackground = {false}
+            // paused = {props.isPaused? false: props.isPaused}
             />
             <View style = {styles.titleContainer}>
                 <Text style={[{flex: 0.75}, styles.titleText]}>Hướng dẫn hít đất dành cho người mới bắt đầu</Text>
@@ -41,7 +45,7 @@ function VideoScreen({route})
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor: COLOR.BLACK,
+        backgroundColor: COLOR.MATTE_BLACK,
     },
     titleContainer:{
         flex: 1,
