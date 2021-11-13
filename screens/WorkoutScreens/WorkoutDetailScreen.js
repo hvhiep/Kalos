@@ -87,7 +87,7 @@ function WorkoutDetailScreen({navigation}) {
 
   const renderItem = (item)=>(
     <View style={styles.itemWrapper}>
-      <TouchableWithoutFeedback onPress={()=>navigation.navigate('ExcerciseInfo')}>
+      <TouchableWithoutFeedback onPress={()=>navigation.navigate('ExerciseInfo')}>
         <View style={styles.excersiseWrapper}>
           <Image resizeMode='cover' style={styles.itemImg}
           source={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}

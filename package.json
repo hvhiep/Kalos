@@ -17,6 +17,8 @@
     "lottie-react-native": "^4.0.3",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-calendars": "^1.1268.0",
+    "react-native-chart-kit": "^6.11.0",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-ionicons": "^4.6.5",
@@ -25,6 +27,7 @@
     "react-native-reanimated": "^2.2.3",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.6.0",
+    "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^8.1.0",
     "react-native-video": "^5.2.0-alpha1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22"

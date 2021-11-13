@@ -8,7 +8,8 @@ import MainTabNavigator from './MainTabNavigator';
 import WorkoutInfoScreen from '../screens/WorkoutScreens/WorkoutInfoScreen';
 import WorkoutDetailScreen from '../screens/WorkoutScreens/WorkoutDetailScreen';
 import CategoryScreen from '../screens/Category/CategoryScreen';
-import ExcerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
+import ExerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
+import WorkoutHistoryScreen from '../screens/Profile/WorkoutHistoryScreen';
 
 const MainStack = createStackNavigator();
 
@@ -33,7 +34,10 @@ function MainStackNavigator () {
           <MainStack.Screen name="Category" component={CategoryScreen} 
           options={{ headerTintColor:'#fff' }}
           />
-          <MainStack.Screen name="ExcerciseInfo" component={ExcerciseInfoScreen} 
+          <MainStack.Screen name="ExerciseInfo" component={ExerciseInfoScreen} 
+          options={{ headerTintColor:'#fff' }}
+          />
+          <MainStack.Screen name="WorkoutHistory" component={WorkoutHistoryScreen} 
           options={{ headerTintColor:'#fff' }}
           />
         </MainStack.Navigator>

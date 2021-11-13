@@ -8,6 +8,7 @@ export const COLOR = {
     TRANSPARENT: '#00000000',
     BLACK : '#181510',
     MATTE_BLACK : '#222222',
+    LIGHT_MATTE_BLACK: '#333333',
     DARK_BROWN : '#785F37',
     LIGHT_BROWN : '#A08C5B',
     GOLD : '#CBB682',
