@@ -32,17 +32,6 @@ function MainTabNavigator() {
           ),
         }}
       />
-      <MainTab.Screen name="Favorite" component={FavoriteScreen} 
-      options={{
-        tabBarLabel: 'Yêu thích',
-        tabBarIcon: ({ color }) => (
-          <Icon name='heart'
-          type='ionicon'
-          size={18} color={color} />
-        ),
-      }}
-      />
-
       <MainTab.Screen
         name="Exercise"
         component={ExerciseScreen}
@@ -57,6 +46,16 @@ function MainTabNavigator() {
           ),
         }}
       ></MainTab.Screen>
+      <MainTab.Screen name="Favorite" component={FavoriteScreen} 
+      options={{
+        tabBarLabel: 'Yêu thích',
+        tabBarIcon: ({ color }) => (
+          <Icon name='heart'
+          type='ionicon'
+          size={18} color={color} />
+        ),
+      }}
+      />
       <MainTab.Screen
         name="Profile"
         component={ProfileScreen}
