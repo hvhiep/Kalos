@@ -1,107 +1,83 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
-    Text,
-    TouchableWithoutFeedback,
-    StyleSheet,
-    View,
-  } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { BackgroundImage } from 'react-native-elements/dist/config';
-import {COLOR, SCREEN_WIDTH} from '../constant';
-import HeartButton from './HeartButton';
+  StyleSheet,
+  View,
+  Image,
+  TouchableWithoutFeedback,
+  Text,
+} from 'react-native';
 import { Icon } from 'react-native-elements';
-import { Colors } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
+import {COLOR} from '../constant';
+
 function ProgramItem(props) {
-    return (
-        <TouchableWithoutFeedback onPress={props.onPress?props.onPress:()=>{}}>
-            <View style={styles.container}>
-                <BackgroundImage
-                style={styles.backgroundImage}
-                imageStyle={styles.backgroundImage}
-                source={props.image}>
-                    <LinearGradient style = {styles.linearGradient}
-                    colors = {["#00000033","#00000080", "#000000B3"]}
-                    // start={{x: 1, y:0.2}}
-                    // end={{x: 0.3, y:0.9}}
-                    >
-                        <View style={styles.tagSession}>
-                            <View style={styles.levelTag}>
-                                <Text style = {styles.levelText}>{props.level?props.level:"Beginner"}</Text>
-                            </View>
-                            <View>
-                                {/* <HeartButton isliked = {props.isLiked}></HeartButton> */}
-                                <Icon name='heart'
-                                type='font-awesome-5'
-                                solid={props.isLiked?props.isLiked:false}
-                                color = {props.isLiked?"#FF0000":"#FFF"}
-                                size = {25}></Icon>
-                            </View>
-                        </View>
-                        <View style={styles.titleSession}>
-                            <Text style = {styles.timeText}>8 tuần</Text>
-                            <Text style = {styles.titleText}>Lộ trình tập cho người mới bắt đầu</Text>
-                        </View>
-                    </LinearGradient>
-                </BackgroundImage>
-            </View>
-        </TouchableWithoutFeedback>
-    );
+  return (
+    <TouchableOpacity onPress={props.onPress}>
+      <View style={[styles.container, props.style]}>
+        <Image
+          source={props.image}
+          style={styles.img}
+          resizeMode="cover"></Image>
+        {/* <LinearGradient
+          start={{x: 0, y: 1}}
+          end={{x: 0, y: 0}}
+          colors={[COLOR.TRANSPARENT, COLOR.BLACK]}
+          style={styles.linearGradient}></LinearGradient> */}
+        <View style={{marginVertical: 5, width:'80%'}}>
+          <Text numberOfLines={3} style={styles.title}>{props.title}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Icon
+          type='font-awesome-5'
+          name='play'
+          size={12}
+          color={COLOR.WHITE}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
-    container:{
-        height: 220,
-        borderRadius: 5,
-        elevation: 5,
-        backgroundColor: COLOR.WHITE,
-        margin: 10,
-    },
-    backgroundImage:{
-        borderRadius: 5,
-        flex: 1, 
-        borderRadius: 5,
-        flexDirection:'row',
-    },
-    linearGradient:{
-        width: "100%",
-        borderRadius: 5,
-        paddingHorizontal: 18,
-        paddingVertical: 18
-    },
-    tagSession:{
-        flex: 1/3, 
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between"
-    },
-    levelTag:{
-        backgroundColor: "#000", 
-        paddingHorizontal: 13,
-        paddingVertical: 5,
-        borderRadius: 5,
-        justifyContent:'center',
-        alignItems: 'center',
-        
-    },
-    levelText:{
-        color: COLOR.WHITE,
-        fontSize: 20,
-    },
-    titleSession:{
-        flex: 2/3,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-end',
-    },
-    timeText: {
-        textTransform: 'uppercase',
-        fontWeight: 'normal',
-        color: COLOR.WHITE,
-        fontSize: 18,
-    },
-    titleText: {
-        color: COLOR.WHITE,
-        fontSize: 24,
-    }
+  container: {
+    //backgroundColor: '#000',
+    borderRadius: 15,
+  },
+  title: {
+    fontSize: 15,
+    color: COLOR.WHITE,
+    position: 'absolute',
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    top: 5,
+  },
+  img: {
+    flex: 0.65,
+    borderRadius: 15,
+  },
+  linearGradient: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  tag: {
+    position: 'absolute',
+    backgroundColor: '#ff6666',
+    borderRadius: 10,
+    bottom: '30%',
+    right: 5,
+    width:30,
+    height:30,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  tagTxt: {
+    color: COLOR.BLACK,
+    fontWeight: 'bold',
+  },
 });
+
 export default ProgramItem;
