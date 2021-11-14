@@ -9,7 +9,7 @@ import {Image,
 from 'react-native';
 import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../../constant';
-import ProgramItem from '../../components/ProgramItem';
+import WorkoutItem from '../../components/WorkoutItem';
 function FavoriteProgramScreen()
 {
     const [likedPrograms, setLikedProgram] = useState([1,2,3,1,1])
@@ -25,13 +25,11 @@ function FavoriteProgramScreen()
             style={styles.content}
             data={likedPrograms}
             renderItem={(item)=>(
-            <View style={{width:SCREEN_WIDTH, paddingHorizontal: 40}}>
-                <ProgramItem
-                title = "Lộ trình tập cho người mới"
+            <View style={{width:SCREEN_WIDTH, padding: 20}}>
+                <WorkoutItem
                 style = {{height: 200}}
                 image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                    isLiked = {true}
-                    />
+                />
             </View>
             )}
             />

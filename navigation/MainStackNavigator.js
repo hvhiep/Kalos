@@ -11,6 +11,7 @@ import CategoryScreen from '../screens/Category/CategoryScreen';
 import ExcerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
 import FavoriteExerciseScreen from '../screens/FavoriteScreens/FavoriteExerciseScreen';
 import FavoriteProgramScreen from '../screens/FavoriteScreens/FavoriteProgramScreen';
+import FavoriteWorkoutScreen from '../screens/FavoriteScreens/FavoriteWorkoutScreen';
 import FavoriteVideoScreen from '../screens/FavoriteScreens/FavoriteVideoScreen';
 import VideoScreen from '../screens/FavoriteScreens/VideoScreen';
 
@@ -44,6 +45,9 @@ function MainStackNavigator () {
           options={{ headerTintColor:'#fff' }}
           />
           <MainStack.Screen name="FavoritePrograms" component={FavoriteProgramScreen} 
+          options={{ headerTintColor:'#fff' }}
+          />
+          <MainStack.Screen name="FavoriteWorkouts" component={FavoriteWorkoutScreen} 
           options={{ headerTintColor:'#fff' }}
           />
           <MainStack.Screen name="FavoriteVideos" component={FavoriteVideoScreen} 

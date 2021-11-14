@@ -15,10 +15,9 @@ import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
 import ImageOverlayCard from '../components/ImageOverlayCard';
-// import BottomSheet from '@gorhom/bottom-sheet';
 import VideoScreen from './FavoriteScreens/VideoScreen';
-// import Video from 'react-native-video';
-// import VideoPlayer from 'react-native-video-controls';
+import VideoItem from '../components/VideoItem'
+import HomeSection from '../components/HomeSection';
 
 function FavoriteScreen({navigation})
 {
@@ -34,36 +33,42 @@ function FavoriteScreen({navigation})
                 <View>
                     <Text style = {styles.description}>Các bài tập, chương trình tập bạn đã yêu thích sẽ được lưu tại đây theo từng hạng mục</Text>
                 </View>
-                <View style = {styles.categoryTitle}>
+                {/* <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Lộ trình tập</Text>
                     <TouchableWithoutFeedback
                     onPress={()=>{navigation.navigate('FavoritePrograms')}}>
-                        <Text style = {styles.optionText}>Xem tất cả</Text>
+                        <Text style = {styles.moreText}>Xem tất cả</Text>
                     </TouchableWithoutFeedback>
-                </View>
+                </View> */}
+                <HomeSection
+                title="Lộ trình tập"
+                onPress={()=>{
+                    navigation.navigate('FavoritePrograms')
+                }}/>
                 <FlatList
-                pagingEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.horizontalList}
                 data={suggestedWorkouts}
                 renderItem={(item)=>(
-                <View style={{width:SCREEN_WIDTH}}>
                     <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                    isLiked
+                    title="Cach tap luyen ABC XYZ"
+                    style={{height: 200, width: 200, padding: 10}}
                     />
-                </View>
                 )}
                 />
 
 
-                <View style = {styles.categoryTitle}>
+                {/* <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Kế hoạch tập</Text>
                     <TouchableWithoutFeedback
                     onPress={()=>{}}>
-                        <Text style = {styles.optionText}>Xem tất cả</Text>
+                        <Text style = {styles.moreText}>Xem tất cả</Text>
                     </TouchableWithoutFeedback>
-                </View>
+                </View> */}
+                <HomeSection title = "Kế hoạch tập" onPress={()=>{
+                    navigation.navigate('FavoriteWorkouts')
+                }}/>
                 <FlatList
                 pagingEnabled
                 horizontal
@@ -71,20 +76,23 @@ function FavoriteScreen({navigation})
                 style={styles.horizontalList}
                 data={suggestedWorkouts}
                 renderItem={(item)=>(
-                <View style={{width:SCREEN_WIDTH}}>
+                <View style={{width:SCREEN_WIDTH, padding: 15}}>
                     <WorkoutItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                         />
                 </View>
                 )}
                 />
 
-                <View style = {styles.categoryTitle}>
+                {/* <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Video</Text>
                     <TouchableWithoutFeedback
                     onPress={()=>{navigation.navigate('FavoriteVideos')}}>
-                        <Text style = {styles.optionText}>Xem tất cả</Text>
+                        <Text style = {styles.moreText}>Xem tất cả</Text>
+                        <Icon />
                     </TouchableWithoutFeedback>
-                </View>
+                </View> */}
+                <HomeSection title = "Video"
+                onPress = {()=>{navigation.navigate('FavoriteVideos')}}/>
                 <FlatList
                 pagingEnabled
                 horizontal
@@ -93,7 +101,7 @@ function FavoriteScreen({navigation})
                 data={suggestedWorkouts}
                 renderItem={(item)=>(
                 <View style={{width:SCREEN_WIDTH}}>
-                    <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                    <VideoItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
                     isLiked
                     onPress = {()=>{
                         var data = {videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"};
@@ -146,14 +154,15 @@ const styles = StyleSheet.create({
         color: COLOR.WHITE
     },
     title: {
-        fontSize: 23,
-        color: COLOR.WHITE
+        fontSize: 18,
+        color: COLOR.WHITE,
+        fontWeight: 'bold'
     },
-    optionText: {
+    moreText: {
         fontSize: 18,
         fontWeight: '400',
-        textTransform: 'uppercase',
-        color: "#FFF"
+        textTransform: 'capitalize',
+        color: COLOR.GOLD,
     },
     content:{
         flex: 1,
@@ -162,7 +171,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: "rgba( 255, 255, 255, 0.85) ",
         paddingHorizontal: 10,
-        marginTop: 10,
+        marginVertical: 10,
     },
     categoryTitle:{
         paddingHorizontal: 10,
