@@ -2,6 +2,7 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import FavoriteScreen from '../screens/FavoriteScreen';
 import ExerciseScreen from '../screens/ExerciseScreen';
 import {
   Text,
@@ -45,6 +46,16 @@ function MainTabNavigator() {
           ),
         }}
       ></MainTab.Screen>
+      <MainTab.Screen name="Favorite" component={FavoriteScreen} 
+      options={{
+        tabBarLabel: 'Yêu thích',
+        tabBarIcon: ({ color }) => (
+          <Icon name='heart'
+          type='ionicon'
+          size={18} color={color} />
+        ),
+      }}
+      />
       <MainTab.Screen
         name="Profile"
         component={ProfileScreen}
@@ -57,6 +68,7 @@ function MainTabNavigator() {
           ),
         }}
       />
+      
     </MainTab.Navigator>
   );
 }
