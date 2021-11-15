@@ -91,7 +91,9 @@ function ProfileScreen({ navigation }) {
           </LinearGradient>
 
           {/*2. setting button */}
-          <TouchableOpacity style={styles.setting}>
+          <TouchableOpacity 
+            style={styles.setting}
+            onPress={() => navigation.navigate('Setting')}>
             <Icon
               style={styles.settingIcon}
               name="settings"
@@ -138,16 +140,12 @@ function ProfileScreen({ navigation }) {
         </View>
 
         {/* 2. workout history  */}
-        <View style={styles.sectionWrapper}>
+        {/* <View style={styles.sectionWrapper}>
           <Text style={styles.sectionTitle}>Lịch Sử</Text>
-
-          {/* strip calendar */}
-
-          {/* navigate to main calendar */}
           <TouchableOpacity style={styles.historyViewMore} onPress={() => navigation.navigate('WorkoutHistory')}>
             <Text style={styles.historyViewMoreText}>Xem</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/* 3. BMI */}
         <View style={styles.sectionWrapper}>

@@ -10,6 +10,8 @@ import WorkoutDetailScreen from '../screens/WorkoutScreens/WorkoutDetailScreen';
 import CategoryScreen from '../screens/Category/CategoryScreen';
 import ExerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
 import WorkoutHistoryScreen from '../screens/Profile/WorkoutHistoryScreen';
+import Setting from '../screens/Profile/Setting';
+import { COLOR } from '../constant';
 
 const MainStack = createStackNavigator();
 
@@ -39,6 +41,12 @@ function MainStackNavigator () {
           />
           <MainStack.Screen name="WorkoutHistory" component={WorkoutHistoryScreen} 
           options={{ headerTintColor:'#fff' }}
+          />
+          <MainStack.Screen name="Setting" component={Setting} 
+          options={{
+            headerTintColor: '#fff',
+            headerTitle:'Cài Đặt',
+            headerTitleAlign: 'center', }}
           />
         </MainStack.Navigator>
     );
