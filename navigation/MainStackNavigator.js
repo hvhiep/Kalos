@@ -11,6 +11,12 @@ import CategoryScreen from '../screens/Category/CategoryScreen';
 import ExerciseInfoScreen from '../screens/Exercise/ExerciseInfoScreen';
 import WorkoutHistoryScreen from '../screens/Profile/WorkoutHistoryScreen';
 import Setting from '../screens/Profile/Setting';
+import SplashScreen from '../screens/SplashScreen';
+import FirstScreen from '../screens/SignIn_Up/FirstScreen';
+import SignUpScreen from '../screens/SignIn_Up/SignUpScreen';
+import SignInScreen from '../screens/SignIn_Up/SignInScreen';
+
+
 import { COLOR } from '../constant';
 
 const MainStack = createStackNavigator();
@@ -19,14 +25,23 @@ function MainStackNavigator () {
 
     return (
         <MainStack.Navigator
-        initialRouteName='Tab'
+        initialRouteName='Splash'
         screenOptions={{
           headerTransparent: true,
           headerTitle: '',
           headerMode:'float'
         }}
         >
-          <MainStack.Screen name="Tab" component={MainTabNavigator} />
+          {/* Flow:
+          1. first time open app: splash -> first screen -> signIn/signUp screen 
+          2. signed in: splash -> tab (must config back button click !!!)
+          */}
+          <MainStack.Screen name="Splash" component={SplashScreen} />
+          <MainStack.Screen name="First" component={FirstScreen} options={{headerShown: false}}/>
+          <MainStack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}} />
+          <MainStack.Screen name="SignIn" component={SignInScreen} options={{headerShown: false}} />
+
+          <MainStack.Screen name="Tab" component={MainTabNavigator}  options={{headerShown: false}}/>
           <MainStack.Screen name="WorkoutInfo" component={WorkoutInfoScreen} 
           options={{ headerTintColor:'#fff' }}
           />
