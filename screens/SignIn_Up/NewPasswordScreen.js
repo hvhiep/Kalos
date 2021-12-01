@@ -11,29 +11,31 @@ import { STATUSBAR_HEIGHT, COLOR } from '../../constant.js';
 import SmallAppLogo from '../../assets/images/SmallAppLogo.png';
 import { Icon } from 'react-native-elements';
 
-export default function SignInScreen(props) {
+export default function NewPasswordScreen(props) {
 
+    //check email input is filled or not
+    const [isFilled, setFilled] = useState(false);
+
+    //check password visibility
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
+    const [isPasswordAuthVisibility, setPasswordAuthVisibility] = useState(true);
+
+    const submit = () => {
+        props.navigation.navigate('SignIn');
+    }
 
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={SmallAppLogo}></Image>
-            <Text style={styles.title}>Đăng Nhập</Text>
+            <Text style={styles.title}>Đổi Mật Khẩu Mới</Text>
 
-            {/* sign in form */}
+            {/* new password form */}
             <View style={styles.wrapper}>
-                {/* username */}
-                <TextInput 
-                    style={styles.username} 
-                    placeholder="Tên Đăng Nhập" 
-                    placeholderTextColor="#888">
-                </TextInput>
-
-                {/* password */}
+                {/* new password */}
                 <View style={styles.passwordWrapper}>
                     <TextInput 
                         style={styles.password} 
-                        placeholder="Mật Khẩu" 
+                        placeholder="Mật Khẩu Mới" 
                         placeholderTextColor="#888" 
                         secureTextEntry={isPasswordVisibility}>
                     </TextInput>
@@ -48,15 +50,31 @@ export default function SignInScreen(props) {
                         </Icon>
                     </TouchableOpacity>
                 </View>
-
-                {/* forgot password */}
-                <TouchableOpacity onPress={() => props.navigation.navigate('ForgotPassword')} style={styles.forgotPass}>
-                    <Text style={styles.forgotPassText}>Quên mật khẩu ?</Text>
-                </TouchableOpacity>
+                {/* new password auth */}
+                <View style={styles.passwordWrapper}>
+                    <TextInput 
+                        style={styles.password} 
+                        placeholder="Xác Nhận" 
+                        placeholderTextColor="#888" 
+                        secureTextEntry={isPasswordAuthVisibility}>
+                    </TextInput>
+                    <TouchableOpacity 
+                        onPress={() => 
+                        setPasswordAuthVisibility(!isPasswordAuthVisibility)}>
+                        <Icon 
+                            style={styles.passVisibleIcon} 
+                            name={isPasswordAuthVisibility ? 'visibility-off' : 'visibility'} 
+                            type="material" 
+                            size={22} 
+                            color="white">
+                        </Icon>
+                    </TouchableOpacity>
+                </View>
+                {/* <Text style={styles.errorText}>Vui lòng nhập Email !</Text> */}
 
                 {/* sign in button */}
-                <TouchableOpacity style={styles.btnSignIn}>
-                    <Text style={styles.btnSignInText}>Đăng Nhập</Text>
+                <TouchableOpacity onPress={submit} style={styles.btnSubmit}>
+                    <Text style={styles.btnSubmitText}>Xác Nhận</Text>
                 </TouchableOpacity>
             </View>
 
@@ -85,13 +103,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 30,
         marginTop: 10,
     },
-    username: {
-        marginBottom: 10,
-        fontSize: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: 'white',
-        color: 'white'
-    },
     passwordWrapper: {
         marginBottom: 10,
         borderBottomWidth: 1,
@@ -107,26 +118,21 @@ const styles = StyleSheet.create({
     passVisibleIcon: {
         marginRight: 5,
     },
-    forgotPass: {
-        marginTop: 8,
-        
-    },
-    forgotPassText: {
-        color: 'white',
+    errorText: {
+        color: 'red',
         fontWeight: "bold",
-        opacity: 0.8
     },
-    btnSignIn: {
+    btnSubmit: {
         width: '100%',
         backgroundColor: COLOR.LIGHT_BROWN,
-        marginTop: 50,
+        marginTop: 30,
         borderRadius: 8,
         alignItems: "center",
         justifyContent: "center",
         padding: 15,
         marginBottom: 10,
     },
-    btnSignInText: {
+    btnSubmitText: {
         fontSize: 16,
         fontWeight: "bold",
         color: 'white'
