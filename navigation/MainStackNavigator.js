@@ -18,6 +18,7 @@ import SignInScreen from '../screens/SignIn_Up/SignInScreen';
 import ForgotPasswordScreen from '../screens/SignIn_Up/ForgotPasswordScreen';
 import EmailAuthScreen from '../screens/SignIn_Up/EmailAuthScreen';
 import NewPasswordScreen from '../screens/SignIn_Up/NewPasswordScreen';
+import SignUpSurveyScreen from '../screens/SignIn_Up/SignUpSurveyScreen';
 
 import { COLOR } from '../constant';
 
@@ -41,10 +42,12 @@ function MainStackNavigator () {
           <MainStack.Screen name="Splash" component={SplashScreen} />
           <MainStack.Screen name="First" component={FirstScreen} options={{headerShown: false}}/>
           <MainStack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}} />
+          <MainStack.Screen name="SignUpSurvey" component={SignUpSurveyScreen} options={{headerShown: false}} />
           <MainStack.Screen name="SignIn" component={SignInScreen} options={{headerShown: false}} />
           <MainStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <MainStack.Screen name="EmailAuth" component={EmailAuthScreen} />
           <MainStack.Screen name="NewPassword" component={NewPasswordScreen} />
+          
 
           <MainStack.Screen name="Tab" component={MainTabNavigator}  options={{headerShown: false}}/>
           <MainStack.Screen name="WorkoutInfo" component={WorkoutInfoScreen} 

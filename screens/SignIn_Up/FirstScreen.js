@@ -26,7 +26,7 @@ export default function FirstScreen(props) {
                 end={{ x: 0, y: 0.9 }}
                 colors={[COLOR.TRANSPARENT, COLOR.MATTE_BLACK]}></LinearGradient>
             <Text style={styles.title}>Ở nhà mà vẫn muốn có cơ bắp cuồn cuộn ?</Text>
-            <TouchableOpacity onPress={() => props.navigation.navigate('SignUp')} style={styles.btnSignUp}>
+            <TouchableOpacity onPress={() => props.navigation.navigate('SignUpSurvey')} style={styles.btnSignUp}>
                 <Text style={styles.signUpText}>Đăng Ký Ngay</Text>
             </TouchableOpacity>
             <View style={styles.signInWrapper}>

@@ -55,7 +55,7 @@ export default function SignInScreen(props) {
                 </TouchableOpacity>
 
                 {/* sign in button */}
-                <TouchableOpacity style={styles.btnSignIn}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('Tab')} style={styles.btnSignIn}>
                     <Text style={styles.btnSignInText}>Đăng Nhập</Text>
                 </TouchableOpacity>
             </View>
