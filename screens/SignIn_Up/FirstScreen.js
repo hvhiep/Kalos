@@ -5,18 +5,25 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
+    StatusBar,
 } from 'react-native';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, STATUSBAR_HEIGHT, COLOR } from '../../constant.js';
 import Video from 'react-native-video';
 import LinearGradient from "react-native-linear-gradient";
+import Intro from '../../assets/video/Intro.mp4';
 
 export default function FirstScreen(props) {
     return (
         <View style={styles.container}>
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor={'transparent'}
+                translucent></StatusBar>
             {/* video */}
             <Video
                 style={styles.bgVideo}
-                source={require('../../assets/video/InclinePushUps.mp4')}
+                // source={require('../../assets/video/InclinePushUps.mp4')}
+                source={Intro}
                 repeat
                 resizeMode="cover">
             </Video>

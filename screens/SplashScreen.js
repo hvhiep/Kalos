@@ -10,6 +10,7 @@ function SplashScreen(props) {
             resolve(0);
         }, 2000)
     })
+    
     checkSignedIn
         .then((isSignedIn) => {
             if(isSignedIn)
