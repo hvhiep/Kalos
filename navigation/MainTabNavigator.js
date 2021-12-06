@@ -18,7 +18,7 @@ const MainTab = createMaterialBottomTabNavigator();
 function MainTabNavigator() {
   return (
     <MainTab.Navigator
-      barStyle={{ backgroundColor: COLOR.MATTE_BLACK }}
+      barStyle={{ backgroundColor: 'black' }}
     >
       <MainTab.Screen
         name="Home"

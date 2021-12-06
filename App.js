@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import MainStackNavigator from './navigation/MainStackNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {LogBox } from 'react-native';
+LogBox.ignoreLogs(['Reanimated 2']);
 
 function App () {
 
