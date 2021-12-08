@@ -193,8 +193,7 @@ function HomeScreen({navigation}) {
           icon="tag"
           title="Đi đến thư viện bài tập"
           backgroundColor={COLOR.GOLD}
-          onPress={async () => {
-          }}
+          onPress={async () => {}}
         />
       </View>
       {/* <TouchableOpacity style={{height:50, backgroundColor:'#123123'}} onPress={()=>navigation.navigate('WorkoutInfo')}/> */}

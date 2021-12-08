@@ -20,10 +20,17 @@ import { useRef } from "react";
 import { useState } from "react";
 import SheetFilter from '../components/SheetFilter';
 
+//backend rules
+import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules";
+
 //test data
 import exercisesData from "../assets/testData/exercisesData";
 
 function ExerciseScreen() {
+
+    console.log('muscle: ', toMuscleGroupName(1));
+    console.log('level: ', toLevelName(2));
+    console.log('equip: ', toEquipmentName('3'));
 
     //render exercise item
     const renderExerciseItem = ({ item }) => {
@@ -40,7 +47,9 @@ function ExerciseScreen() {
                 <View style={styles.exerciseRightWrapper}>
                     <Text
                         style={styles.exerciseName}
-                        numberOfLines={2}>{item.exercise}
+                        numberOfLines={2}
+                    >
+                        {item.exercise}
                     </Text>
                 </View>
             </TouchableOpacity>

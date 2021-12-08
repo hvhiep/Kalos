@@ -7,9 +7,13 @@ import {
     Image,
     TextInput,
 } from 'react-native';
-import {COLOR } from '../../constant.js';
+import { COLOR } from '../../constant.js';
 import SmallAppLogo from '../../assets/images/SmallAppLogo.png';
 import { Icon } from 'react-native-elements';
+
+//form validation
+import { Formik } from 'formik';
+
 
 export default function SignUpScreen(props) {
 
@@ -17,73 +21,103 @@ export default function SignUpScreen(props) {
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
     const [isPasswordAuthVisibility, setPasswordAuthVisibility] = useState(true);
 
+
+    //handle sign up submit
+    const handleSignUpSubmit = () => {
+
+    }
+
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={SmallAppLogo}></Image>
             <Text style={styles.title}>Đăng Ký</Text>
 
-            {/* sign up form */}
-            <View style={styles.wrapper}>
-                {/* username */}
-                <TextInput 
-                    style={styles.username} 
-                    placeholder="Tên Đăng Nhập" 
-                    placeholderTextColor="#888">
-                </TextInput>
+            {/* formik wraps signup form */}
+            <Formik
+                initialValues={{ username: '', email: '', password: '', passwordAuth: '' }}
+                onSubmit={values => console, log(values)}
+            >
+                {({ handleChange, handleBlur, handleSubmit, values }) => (
+                    <View style={styles.wrapper}>
+                        {/* username */}
+                        <TextInput
+                            style={styles.username}
+                            placeholder="Tên Đăng Nhập"
+                            placeholderTextColor="#888"
+                            // use formik props to handle text input
+                            onChangeText={handleChange('username')}
+                            onBlur={handleBlur('username')}
+                            value={values.username}
+                        >
+                        </TextInput>
 
-                 {/* Email */}
-                 <TextInput 
-                    style={styles.username} 
-                    placeholder="Email" 
-                    placeholderTextColor="#888">
-                </TextInput>
+                        {/* Email */}
+                        <TextInput
+                            style={styles.username}
+                            placeholder="Email"
+                            placeholderTextColor="#888"
+                            onChangeText={handleChange('email')}
+                            onBlur={handleBlur('email')}
+                            value={values.email}
+                        >
+                        </TextInput>
 
-                {/* password */}
-                <View style={styles.passwordWrapper}>
-                    <TextInput 
-                        style={styles.password} 
-                        placeholder="Mật Khẩu" 
-                        placeholderTextColor="#888" 
-                        secureTextEntry={isPasswordVisibility}>
-                    </TextInput>
-                    <TouchableOpacity 
-                        onPress={() => setPasswordVisibility(!isPasswordVisibility)}>
-                        <Icon 
-                            style={styles.passVisibleIcon} 
-                            name={isPasswordVisibility ? 'visibility-off' : 'visibility'} 
-                            type="material" 
-                            size={22} 
-                            color="white">
-                        </Icon>
-                    </TouchableOpacity>
-                </View>
+                        {/* password */}
+                        <View style={styles.passwordWrapper}>
+                            <TextInput
+                                style={styles.password}
+                                placeholder="Mật Khẩu"
+                                placeholderTextColor="#888"
+                                secureTextEntry={isPasswordVisibility}
+                                onChangeText={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                value={values.password}
+                            >
+                            </TextInput>
+                            <TouchableOpacity
+                                onPress={() => setPasswordVisibility(!isPasswordVisibility)}>
+                                <Icon
+                                    style={styles.passVisibleIcon}
+                                    name={isPasswordVisibility ? 'visibility-off' : 'visibility'}
+                                    type="material"
+                                    size={22}
+                                    color="white">
+                                </Icon>
+                            </TouchableOpacity>
+                        </View>
 
-                {/* password authentication */}
-                <View style={styles.passwordWrapper}>
-                    <TextInput 
-                        style={styles.password} 
-                        placeholder="Xác Nhận Mật Khẩu" 
-                        placeholderTextColor="#888" 
-                        secureTextEntry={isPasswordAuthVisibility}>
-                    </TextInput>
-                    <TouchableOpacity 
-                        onPress={() => setPasswordAuthVisibility(!isPasswordAuthVisibility)}>
-                        <Icon 
-                            style={styles.passVisibleIcon} 
-                            name={isPasswordAuthVisibility ? 'visibility-off' : 'visibility'} 
-                            type="material" 
-                            size={22} 
-                            color="white">
-                        </Icon>
-                    </TouchableOpacity>
-                </View>
+                        {/* password authentication */}
+                        <View style={styles.passwordWrapper}>
+                            <TextInput
+                                style={styles.password}
+                                placeholder="Xác Nhận Mật Khẩu"
+                                placeholderTextColor="#888"
+                                secureTextEntry={isPasswordAuthVisibility}
+                                onChangeText={handleChange('passwordAuth')}
+                                onBlur={handleBlur('passwordAuth')}
+                                value={values.passwordAuth}
+                            >
+                            </TextInput>
+                            <TouchableOpacity
+                                onPress={() => setPasswordAuthVisibility(!isPasswordAuthVisibility)}>
+                                <Icon
+                                    style={styles.passVisibleIcon}
+                                    name={isPasswordAuthVisibility ? 'visibility-off' : 'visibility'}
+                                    type="material"
+                                    size={22}
+                                    color="white">
+                                </Icon>
+                            </TouchableOpacity>
+                        </View>
 
-                {/* sign up button */}
-                <TouchableOpacity onPress={() => props.navigation.navigate('Tab')}  style={styles.btnSignUp}>
-                    <Text style={styles.btnSignUpText}>Đăng Ký</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+                        {/* sign up button */}
+                        <TouchableOpacity onPress={handleSubmit} style={styles.btnSignUp}>
+                            <Text style={styles.btnSignUpText}>Đăng Ký</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </Formik >
+        </View >
     )
 };
 
@@ -95,7 +129,7 @@ const styles = StyleSheet.create({
     logo: {
         marginTop: 40,
         alignSelf: "center",
-        
+
     },
     title: {
         color: 'white',
@@ -132,7 +166,7 @@ const styles = StyleSheet.create({
     },
     forgotPass: {
         marginTop: 8,
-        
+
     },
     forgotPassText: {
         color: 'white',
