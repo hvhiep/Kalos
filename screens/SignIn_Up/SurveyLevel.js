@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -9,7 +9,7 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyLevel() {
+function SurveyLevel( props, ref ) {
 
     //data for flatlist
     const levels = [
@@ -32,6 +32,13 @@ export default function SurveyLevel() {
 
     //state for an array of selected item
     const [isSelected, SetSelected] = useState();
+
+    //return data to parent component through ref
+    useImperativeHandle(ref, () => ({
+        getLevel() {
+            return isSelected;
+        },
+    }))
 
     //render levels list
     const renderListItems = ({ item }) => {
@@ -68,6 +75,7 @@ export default function SurveyLevel() {
         </View>
     )
 };
+export default forwardRef(SurveyLevel);
 
 const styles = StyleSheet.create({
 

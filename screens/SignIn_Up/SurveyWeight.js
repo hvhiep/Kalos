@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -10,16 +10,23 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyWeight() {
+function SurveyWeight(props, ref) {
+    const [weight, setWeight] = useState();
+    //return data to parent component through ref
+    useImperativeHandle( ref, () => ({
+        getWeight () {
+            return weight;
+        },
+    }))
 
-    const [name, setName] = useState('');
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Cân Nặng Hiện Tại:</Text>
             <View style={styles.wrapper}>
                 <TextInput
                     style={styles.weightInput}
-                    onChangeText={(text) => setName(text)}
+                    onChangeText={(text) => setWeight(parseInt(text))}
                     keyboardType="decimal-pad">
                 </TextInput>
                 <Text style={styles.unitText}>KG</Text>
@@ -27,7 +34,7 @@ export default function SurveyWeight() {
         </View>
     )
 };
-
+export default forwardRef(SurveyWeight);
 const styles = StyleSheet.create({
 
     container: {

@@ -11,16 +11,16 @@ import { STATUSBAR_HEIGHT, COLOR } from '../../constant.js';
 import SmallAppLogo from '../../assets/images/SmallAppLogo.png';
 import { Icon } from 'react-native-elements';
 //userAPI
-import SignInAPI from "../../serverAPIs/userAPI.js";
+import { SignInAPI } from "../../serverAPIs/userAPI.js";
 import { storeUserToken } from "../../AsyncStorage/userStorage.js";
 
 export default function SignInScreen(props) {
 
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
 
-    //==========Tạm thời để là admin để dễ làm việc, sau này sẽ là ''============================================================
-    const [username, setUsername] = useState('admin');
-    const [password, setPassword] = useState('admin');
+    //==========Tạm thời để là admin2 để dễ làm việc, sau này sẽ là ''============================================================
+    const [username, setUsername] = useState('admin2');
+    const [password, setPassword] = useState('admin2');
 
     //show error text if submit form with empty input
     const [isInputEmpty, setInputEmpty] = useState(0);
@@ -34,13 +34,17 @@ export default function SignInScreen(props) {
         else {
             //send username + pass to server to get token
             const res = await SignInAPI(username, password);
-            //store token in async storage
-            const storeResult = await storeUserToken(res.data.token);
-            //navigate to home screen if success
-            if(storeResult)
-                props.navigation.navigate('Tab');
+            if (res !== -1) {
+                //store token in async storage
+                const storeResult = await storeUserToken(res.data.token);
+                //navigate to home screen if success
+                if (storeResult)
+                    props.navigation.navigate('Tab');
+                else
+                    console.log('Có lỗi khi lưu token!');
+            }
             else
-                console.log('Failed to save user token!');
+                console.log('Có Lỗi Khi Đăng Nhập!')
         }
     };
 

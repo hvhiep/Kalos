@@ -13,7 +13,7 @@ import { Icon } from 'react-native-elements';
 
 //form validation
 import { Formik } from 'formik';
-
+import { SignupSchema } from './Validation';
 
 export default function SignUpScreen(props) {
 
@@ -21,10 +21,29 @@ export default function SignUpScreen(props) {
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
     const [isPasswordAuthVisibility, setPasswordAuthVisibility] = useState(true);
 
+    //test
+    const data = props.route.params;
+    console.log('data from survey: ', data);
 
     //handle sign up submit
-    const handleSignUpSubmit = () => {
+    const handleSignUpSubmit = (values) => {
+        //remove passwordAuth element
 
+        //còn phải truyền các thông tin khảo sát ơ các màn hình trước vào newUser này
+        //rồi mới gửi lên server
+        const newUser = {
+            username: values.username,
+            password: values.password,
+            email: values.email,
+        };
+        console.log(newUser);
+
+        //send object data to server for validation
+
+        //if SUCCESS: sign with new user info (username + password above)
+
+        //if FAIL: return error from server response (like: dup username)
+        
     }
 
     return (
@@ -34,15 +53,16 @@ export default function SignUpScreen(props) {
 
             {/* formik wraps signup form */}
             <Formik
+                validationSchema={SignupSchema}
                 initialValues={{ username: '', email: '', password: '', passwordAuth: '' }}
-                onSubmit={values => console, log(values)}
+                onSubmit={(values) => handleSignUpSubmit(values)}
             >
-                {({ handleChange, handleBlur, handleSubmit, values }) => (
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                     <View style={styles.wrapper}>
                         {/* username */}
                         <TextInput
                             style={styles.username}
-                            placeholder="Tên Đăng Nhập"
+                            placeholder="Tên Đăng Nhập *"
                             placeholderTextColor="#888"
                             // use formik props to handle text input
                             onChangeText={handleChange('username')}
@@ -50,23 +70,39 @@ export default function SignUpScreen(props) {
                             value={values.username}
                         >
                         </TextInput>
+                        {/* show validation error */}
+                        {
+                            errors.username && touched.username ? (
+                                <Text style={styles.errorText}>
+                                    {errors.username}
+                                </Text>
+                            ) : null
+                        }
 
                         {/* Email */}
                         <TextInput
                             style={styles.username}
-                            placeholder="Email"
+                            placeholder="Email *"
                             placeholderTextColor="#888"
                             onChangeText={handleChange('email')}
                             onBlur={handleBlur('email')}
                             value={values.email}
                         >
                         </TextInput>
+                        {/* show validation error */}
+                        {
+                            errors.email && touched.email ? (
+                                <Text style={styles.errorText}>
+                                    {errors.email}
+                                </Text>
+                            ) : null
+                        }
 
                         {/* password */}
                         <View style={styles.passwordWrapper}>
                             <TextInput
                                 style={styles.password}
-                                placeholder="Mật Khẩu"
+                                placeholder="Mật Khẩu *"
                                 placeholderTextColor="#888"
                                 secureTextEntry={isPasswordVisibility}
                                 onChangeText={handleChange('password')}
@@ -85,12 +121,21 @@ export default function SignUpScreen(props) {
                                 </Icon>
                             </TouchableOpacity>
                         </View>
+                        {/* show validation error */}
+                        {
+                            errors.password && touched.password ? (
+                                <Text style={styles.errorText}>
+                                    {errors.password}
+                                </Text>
+                            ) : null
+                        }
+
 
                         {/* password authentication */}
                         <View style={styles.passwordWrapper}>
                             <TextInput
                                 style={styles.password}
-                                placeholder="Xác Nhận Mật Khẩu"
+                                placeholder="Xác Nhận Mật Khẩu *"
                                 placeholderTextColor="#888"
                                 secureTextEntry={isPasswordAuthVisibility}
                                 onChangeText={handleChange('passwordAuth')}
@@ -109,6 +154,15 @@ export default function SignUpScreen(props) {
                                 </Icon>
                             </TouchableOpacity>
                         </View>
+                        {/* show validation error */}
+                        {
+                            errors.passwordAuth && touched.passwordAuth ? (
+                                <Text style={styles.errorText}>
+                                    {errors.passwordAuth}
+                                </Text>
+                            ) : null
+                        }
+
 
                         {/* sign up button */}
                         <TouchableOpacity onPress={handleSubmit} style={styles.btnSignUp}>
@@ -172,6 +226,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: "bold",
         opacity: 0.8
+    },
+    errorText: {
+        color: 'red',
+        fontWeight: "bold",
+        fontSize: 14,
     },
     btnSignUp: {
         width: '100%',

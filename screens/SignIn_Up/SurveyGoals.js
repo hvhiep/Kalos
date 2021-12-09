@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -9,28 +9,28 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyGoals() {
+function SurveyGoals( props, ref ) {
 
     //data for flatlist
     const goals = [
         {
-            index: 1,
-            title: 'Xây Dựng Sức Mạnh 👊',
+            title: 'Xây Dựng Sức Mạnh 👊', //title has emoji for render beautiful UI
+            subTitle: 'Xây Dựng Sức Mạnh', //subtitle is for saving to state
             desc: 'Trở nên mạnh mẽ hơn và dễ dàng làm chủ bài tập',
         },
         {
-            index: 2,
             title: 'Xây Dựng Cơ Bắp 💪',
+            subTitle: 'Xây Dựng Cơ Bắp',
             desc: 'Tăng khối lượng và độ khó bài tập để phát triển cơ bắp',
         },
         {
-            index: 3,
             title: 'Giảm Mỡ 🏃',
+            subTitle: 'Giảm Mỡ',
             desc: 'Tối ưu hóa cho các bài tập đốt mỡ',
         },
         {
-            index: 4,
             title: 'Học Kỹ Năng 🤸🏼‍♀️',
+            subTitle: 'Học Kỹ Năng',
             desc: 'Thuần thục nhiều kĩ năng điêu luyện',
         },
     ];
@@ -38,21 +38,28 @@ export default function SurveyGoals() {
     //state for an array of selected item
     const [isSelected, SetSelected] = useState([]);
 
+    //return data to parent component through ref
+    useImperativeHandle(ref, () => ({
+        getGoals() {
+            return isSelected;
+        },
+    }))
+
     //handle multi item click (checkbox)
     const handleSelectedItem = (item) => {
         //if item is not in the array, insert into array else remove from array
-        if (!isSelected.includes(item.index))
-            SetSelected([...isSelected, item.index]);
+        if (!isSelected.includes(item.subTitle))
+            SetSelected([...isSelected, item.subTitle]);
         else
-            SetSelected(isSelected.filter(index => index != item.index));
+            SetSelected(isSelected.filter(selectedTitle => selectedTitle != item.subTitle));
     };
 
     //render goals list
     const renderListItems = ({ item }) => {
 
         //highlight selected item 
-        const borderColor = isSelected.includes(item.index) ? COLOR.LIGHT_BROWN : 'grey';
-        const opacity = isSelected.includes(item.index) ? 1 : 0;
+        const borderColor = isSelected.includes(item.subTitle) ? COLOR.LIGHT_BROWN : 'grey';
+        const opacity = isSelected.includes(item.subTitle) ? 1 : 0;
 
         return (
             <TouchableOpacity
@@ -83,6 +90,7 @@ export default function SurveyGoals() {
         </View>
     )
 };
+export default forwardRef(SurveyGoals);
 
 const styles = StyleSheet.create({
 

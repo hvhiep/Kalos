@@ -35,24 +35,45 @@ export default function SignUpSurveyScreen(props) {
     7. performance
     order array is created for page indicator to use map function to render UI only
     */
+    const GENDER = 0;
+    const NAME = 1;
+    const WEIGHT = 2;
+    const HEIGHT = 3;
+    const LEVEL = 4;
+    const GOALS = 5;
+    const PERFORMANCE = 6;
+
     const order = [
+        { num: 0 },
         { num: 1 },
         { num: 2 },
         { num: 3 },
         { num: 4 },
         { num: 5 },
         { num: 6 },
-        { num: 7 },
     ];
 
     //save x offset of Scroll View
     const scrollX = useRef(0);
-    //handle scroll view
     const scrollViewRef = useRef(null);
+    const genderRef = useRef();
+    const nameRef = useRef();
+    const weightRef = useRef();
+    const heightRef = useRef();
+    const levelRef = useRef();
+    const goalsRef = useRef();
+    const performanceRef = useRef();
+
+    //progress bar
     const [indicatorSelected, setIndicatorSelected] = useState(0);
+    //save user survey info from 7 surveys (gender, name, weight, ...)
+    const [userSurveyInfo, setUserSurveyInfo] = useState({});
+    const [isUserSurveyInfoFull, setUserSurveyInfoFull] = useState(0);
+    console.log('user info: ', userSurveyInfo);
 
 
-    //go back
+
+    //handle top-left back button
     const handleToPreviousPage = () => {
         let currentPageIndex = Math.round(scrollX.current / SCREEN_WIDTH);
         //move to previous page
@@ -66,20 +87,64 @@ export default function SignUpSurveyScreen(props) {
         }
     }
 
-    //go next
+    //handle next button:
+    /*
+        Next button does 3 jobs:
+        a. save data from current page before go to the next page
+        b. calculate current page index to scroll next page
+        c. if current page is final page, then go to Sign Up screen
+    */
     const handleToNextPage = () => {
         let currentPageIndex = Math.round(scrollX.current / SCREEN_WIDTH);
-        //move to next page
+        //a.
+        handleUserInfoSave(currentPageIndex);
+        //check current page index and order array length
         if (scrollViewRef != null && currentPageIndex < order.length - 1) {
+            //b.
             scrollViewRef.current.scrollTo({ x: SCREEN_WIDTH * (currentPageIndex + 1), y: 0, animated: true });
+            //update progress bar
             setIndicatorSelected(currentPageIndex + 1);
         }
-        //if this is last page then go next to SignUpScreen
         else {
-            props.navigation.navigate('SignUp');
+            //c.
+            if(isUserSurveyInfoFull)
+                props.navigation.navigate('SignUp', userSurveyInfo);
+            else
+                console.log('k on r');
         }
-
     }
+
+    //handle user info save
+    const handleUserInfoSave = (currentPageIndex) => {
+
+        //add new data with each page
+        switch (currentPageIndex) {
+            case GENDER:
+                setUserSurveyInfo({ ...userSurveyInfo, gender: genderRef.current.getGender() });
+                break;
+            case NAME:
+                setUserSurveyInfo({ ...userSurveyInfo, name: nameRef.current.getName() });
+                break;
+            case WEIGHT:
+                setUserSurveyInfo({ ...userSurveyInfo, weight: weightRef.current.getWeight() });
+                break;
+            case HEIGHT:
+                setUserSurveyInfo({ ...userSurveyInfo, height: heightRef.current.getHeight() });
+                break;
+            case LEVEL:
+                setUserSurveyInfo({ ...userSurveyInfo, level: levelRef.current.getLevel() });
+                break;
+            case GOALS:
+                setUserSurveyInfo({ ...userSurveyInfo, goals: goalsRef.current.getGoals() });
+                break;
+            case PERFORMANCE:
+                setUserSurveyInfo({ ...userSurveyInfo, performance: performanceRef.current.getPerformance() });
+                setUserSurveyInfoFull(1);
+                break;
+            default: throw new Error('Có lỗi khi cập nhật thông tin người dùng mới!');
+        }
+    }
+
 
     return (
         <View style={styles.container}>
@@ -106,11 +171,11 @@ export default function SignUpSurveyScreen(props) {
                         order.map((item, index) => {
                             //indicator gets brown color when its index is smaller than current selected indicator (like a progress bar)
                             const backgroundColor = index <= indicatorSelected ? COLOR.LIGHT_BROWN : 'white';
-                            
+
                             //style for left and last right indicator
                             let mainStyle = styles.indicator;
                             if (index === 0)
-                            mainStyle = styles.leftBorderIndicator;
+                                mainStyle = styles.leftBorderIndicator;
                             if (index === order.length - 1)
                                 mainStyle = styles.rightBorderIndicator;
 
@@ -134,13 +199,13 @@ export default function SignUpSurveyScreen(props) {
                 scrollEventThrottle={16}
                 ref={scrollViewRef}
             >
-                <SurveyGender></SurveyGender>
-                <SurveyFirstName></SurveyFirstName>
-                <SurveyWeight></SurveyWeight>
-                <SurveyHeight></SurveyHeight>
-                <SurveyLevel></SurveyLevel>
-                <SurveyGoals></SurveyGoals>
-                <SurveyPerformance></SurveyPerformance>
+                <SurveyGender ref={genderRef}></SurveyGender>
+                <SurveyFirstName ref={nameRef}></SurveyFirstName>
+                <SurveyWeight ref={weightRef}></SurveyWeight>
+                <SurveyHeight ref={heightRef}></SurveyHeight>
+                <SurveyLevel ref={levelRef}></SurveyLevel>
+                <SurveyGoals ref={goalsRef}></SurveyGoals>
+                <SurveyPerformance ref={performanceRef}></SurveyPerformance>
             </ScrollView>
 
             {/* btnNext */}
@@ -192,7 +257,7 @@ const styles = StyleSheet.create({
     contentWrapper: {
 
     },
-   
+
     page2: {
         flex: 1,
         width: SCREEN_WIDTH,

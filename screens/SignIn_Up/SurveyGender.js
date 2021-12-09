@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import {
     View,
     Text,
@@ -10,41 +10,47 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyGender() {
+function SurveyGender(props, ref) {
 
     const genders = [
         {
             index: 1,
-            gender: 'male',
+            gender: 'Nam',
         },
         {
             index: 2,
-            gender: 'female',
+            gender: 'Nữ',
         },
     ];
     //gender box selected
-    const [isSelected, setSelected] = useState(1);
+    const [isSelected, setSelected] = useState('');
 
     //render gender box
     const GenderBox = (props) => {
-
         const borderColor = props.selected === true ? COLOR.LIGHT_BROWN : 'grey';
-
+        const iconName = props.gender === 'Nam' ? 'male' : 'female';
         return (
             <TouchableOpacity
                 onPress={props.onPress}
                 style={[styles.genderBox, {borderColor}]}>
                 <Icon
-                    name={`${props.gender}-outline`}
+                    name={`${iconName}-outline`}
                     type="ionicon"
                     size={60}
                     color="white"></Icon>
                 <Text style={styles.genderBoxText}>
-                    {props.gender === 'male' ? 'Nam' : 'Nữ'}
+                    {props.gender}
                 </Text>
             </TouchableOpacity>
         )
     }
+
+    //return selected gender to parent component through ref
+    useImperativeHandle( ref, () => ({
+        getGender () {
+            return isSelected;
+        },
+    }))
 
     return (
         <View style={styles.container}>
@@ -56,8 +62,8 @@ export default function SurveyGender() {
                             <GenderBox
                                 key={item.index}
                                 gender={item.gender}
-                                selected={item.index === isSelected}
-                                onPress={() => setSelected(item.index)}>
+                                selected={item.gender === isSelected}
+                                onPress={() => setSelected(item.gender)}>
                             </GenderBox>
                                     
                         )
@@ -67,6 +73,8 @@ export default function SurveyGender() {
         </View>
     )
 };
+
+export default forwardRef(SurveyGender);
 
 const styles = StyleSheet.create({
 

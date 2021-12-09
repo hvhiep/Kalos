@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -10,16 +10,24 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyHeight() {
+function SurveyHeight(props, ref) {
 
-    const [name, setName] = useState('');
+    const [height, setHeight] = useState('');
+
+    //return data to parent component through ref
+    useImperativeHandle(ref, () => ({
+        getHeight() {
+            return height;
+        },
+    }))
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Chiều Cao Hiện Tại:</Text>
             <View style={styles.wrapper}>
                 <TextInput
                     style={styles.heightInput}
-                    onChangeText={(text) => setName(text)}
+                    onChangeText={(text) => setHeight(parseInt(text))}
                     keyboardType="decimal-pad">
                 </TextInput>
                 <Text style={styles.unitText}>CM</Text>
@@ -27,6 +35,8 @@ export default function SurveyHeight() {
         </View>
     )
 };
+
+export default forwardRef(SurveyHeight);
 
 const styles = StyleSheet.create({
 

@@ -2,15 +2,18 @@ import * as Yup from 'yup';
 
 export const SignupSchema = Yup.object().shape({
     username: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
+        .min(2, 'Quá Ngắn!')
+        .max(30, 'Quá Dài!')
+        .required('Bắt Buộc Nhập!'),
+    email: Yup.string()
+        .email('Phải Là Định Dạng Email!')
+        .required('Bắt Buộc Nhập!'),
     password: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
+        .min(6, 'Tối Thiểu 6 Ký Tự!')
+        .max(30, 'Tối Đa 30 Ký Tự!')
+        .required('Bắt Buộc Nhập!'),
     passwordAuth: Yup.string()
-        .required('required'),
+        .required('Bắt Buộc Nhập!')
+        .oneOf([Yup.ref('password')],'Xác Nhận Mật Khẩu Không Đúng!'),
 
 });

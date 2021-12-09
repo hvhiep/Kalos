@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -10,9 +10,21 @@ import {
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
 import { Icon } from 'react-native-elements';
 
-export default function SurveyFirstName() {
+function SurveyFirstName(props, ref) {
 
     const [name, setName] = useState('');
+
+    //SurveyFirstName component index = 1
+    if (props.pageIndex === 1)
+        //call callback function with name
+        props.name(name);
+
+    useImperativeHandle(ref, () => ({
+        getName() {
+            return name;
+        },
+    }))
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Tên Của Bạn:</Text>
@@ -22,6 +34,8 @@ export default function SurveyFirstName() {
         </View>
     )
 };
+
+export default forwardRef(SurveyFirstName);
 
 const styles = StyleSheet.create({
 

@@ -1,51 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity,
-    Image,
     TextInput,
 } from 'react-native';
 import { SCREEN_WIDTH, COLOR } from '../../constant.js';
-import { Icon } from 'react-native-elements';
 import { ScrollView } from "react-native-gesture-handler";
 
-export default function SurveyPerformance() {
+function SurveyPerformance(props, ref) {
 
     //data
-    const performances = [
+    const performancesArray = [
         {
-            index: 1,
             title: 'Hít Đất',
         },
         {
-            index: 2,
             title: 'Kéo Xà',
         },
         {
-            index: 3,
             title: 'Squats',
         },
         {
-            index: 4,
             title: 'Dips',
         },
     ];
+    //each performance object {title, reps}
+    const [performance, setPerformance] = useState();
+    //array of performance
+    const [performances, setPerformances] = useState({});
+
+    //return data to parent component through ref
+    useImperativeHandle(ref, () => ({
+        getPerformance() {
+            return performances;
+        },
+    }))
+
+    const handleInputBlur = (e, index) => {
+        switch (index) {
+            case 0:
+                setPerformances({ ...performances, pushUp: performance });
+                break;
+            case 1:
+                setPerformances({ ...performances, pullUp: performance });
+                break;
+            case 2:
+                setPerformances({ ...performances, squats: performance });
+                break;
+            case 3:
+                setPerformances({ ...performances, dips: performance });
+                break;
+            default: throw new Error('Lỗi khi thêm performance!');
+        }
+    }
 
     return (
-
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollView}>
             <Text style={styles.title}>Số Reps Tối Đa:</Text>
             {/* render item from data array */}
             {
-                performances.map((item) => {
+                performancesArray.map((item, index) => {
                     return (
-                        <View key={item.index} style={styles.wrapper}>
+                        <View key={item.title} style={styles.wrapper}>
                             <Text style={styles.itemTitle}>{item.title}</Text>
                             <TextInput
                                 style={styles.input}
-                                keyboardType="decimal-pad">
+                                keyboardType="decimal-pad"
+                                onChangeText={(text) => setPerformance(parseInt(text))}
+                                onBlur={e => handleInputBlur(e, index)}
+                            >
                             </TextInput>
                         </View>
                     )
@@ -55,6 +79,7 @@ export default function SurveyPerformance() {
         </ScrollView>
     )
 };
+export default forwardRef(SurveyPerformance);
 
 const styles = StyleSheet.create({
 
@@ -77,7 +102,7 @@ const styles = StyleSheet.create({
     wrapper: {
         flexDirection: "row",
         alignItems: "flex-end",
-        width: SCREEN_WIDTH/2,
+        width: SCREEN_WIDTH / 2,
         justifyContent: "center",
         marginVertical: 10,
     },
