@@ -25,8 +25,14 @@ function VideoItem(props) {
                     // end={{x: 0.3, y:0.9}}
                     >
                         <View style={styles.tagSession}>
-                            <View style={styles.levelTag}>
-                                <Text style = {styles.levelText}>Video</Text>
+                            <View style={styles.youtubeTag}>
+                                {/* <Text style={styles.levelText}>Youtube video  </Text> */}
+                                <Icon
+                                type='font-awesome-5'
+                                name='play'
+                                size={15}
+                                color={COLOR.WHITE}
+                                />
                             </View>
                             <View>
                                 {/* <HeartButton isliked = {props.isLiked}></HeartButton> */}
@@ -38,8 +44,7 @@ function VideoItem(props) {
                             </View>
                         </View>
                         <View style={styles.titleSession}>
-                            <Text style = {styles.timeText}>Hướng dẫn</Text>
-                            <Text style = {styles.titleText}>Luyện tập để có 6 múi</Text>
+                            <Text style = {styles.titleText}>{props.title}</Text>
                         </View>
                     </LinearGradient>
                 </BackgroundImage>
@@ -66,7 +71,8 @@ const styles = StyleSheet.create({
         width: "100%",
         borderRadius: 5,
         paddingHorizontal: 18,
-        paddingVertical: 18
+        paddingTop: 8,
+        paddingBottom: 15
     },
     tagSession:{
         flex: 1/3, 
@@ -75,14 +81,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between"
     },
-    levelTag:{
-        backgroundColor: "#000", 
+    youtubeTag:{
+        backgroundColor: "red", 
         paddingHorizontal: 13,
-        paddingVertical: 5,
-        borderRadius: 5,
+        paddingVertical: 7,
+        borderRadius: 9,
         justifyContent:'center',
         alignItems: 'center',
-        
+        flexDirection: 'row'
     },
     levelText:{
         color: COLOR.WHITE,
@@ -101,7 +107,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         color: COLOR.WHITE,
-        fontSize: 24,
+        fontSize: 20,
     }
 });
 export default VideoItem;

@@ -11,6 +11,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import { COLOR } from '../constant';
 import HeartButton from './HeartButton';
 
+import { toEquipmentName, toLevelName, toMuscleGroupName, toWorkoutTypeName } from "../backendRules";
 
 export default function SheetExerciseDetail(props) {
 
@@ -25,7 +26,8 @@ export default function SheetExerciseDetail(props) {
                 {/* exercise video */}
                 <Video
                     style={styles.video}
-                    source={require('../assets/video/InclinePushUps.mp4')}
+                    // source={require('../assets/video/InclinePushUps.mp4')}
+                    source={exerciseDetail?{uri: exerciseDetail.videoUrl}: require('../assets/video/InclinePushUps.mp4')}
                     repeat
                     resizeMode="cover">
                 </Video>
@@ -34,15 +36,15 @@ export default function SheetExerciseDetail(props) {
                 <HeartButton style={styles.likeBtn} isliked={liked} onButtonPress={() => { liked ? setLiked(false) : setLiked(true) }} />
 
                 {/* exercise name */}
-                <Text style={styles.exerciseName}>{exerciseDetail?.exercise}</Text>
+                <Text style={styles.exerciseName}>{exerciseDetail?.name}</Text>
 
                 {/* level */}
                 <View style={styles.groupWrapper}>
                     <Text style={styles.groupTitle}>Độ Khó</Text>
                     <View style={styles.groupListItem}>
-                        {exerciseDetail?.level.map((levelName, index) => {
+                        {exerciseDetail?.levels.map((index) => {
                             return (
-                                <Text style={styles.groupItem} key={index}>{levelName}</Text>
+                                <Text style={styles.groupItem} key={index}>{toLevelName(index)}</Text>
                             )
                         })}
                     </View>
@@ -52,9 +54,9 @@ export default function SheetExerciseDetail(props) {
                 <View style={styles.groupWrapper}>
                     <Text style={styles.groupTitle}>Nhóm cơ tác động</Text>
                     <View style={styles.groupListItem}>
-                        {exerciseDetail?.muscleGroup.map((muscleGroupName, index) => {
+                        {exerciseDetail?.muscleGroups.map((index) => {
                             return (
-                                <Text style={styles.groupItem} key={index}>{muscleGroupName}</Text>
+                                <Text style={styles.groupItem} key={index}>{toMuscleGroupName(index)}</Text>
                             )
                         })}
                     </View>
@@ -64,11 +66,11 @@ export default function SheetExerciseDetail(props) {
                 <View style={styles.groupWrapper}>
                     <Text style={styles.groupTitle}>Dụng cụ tập</Text>
                     <View style={styles.groupListItem}>
-                        {exerciseDetail?.equipment.map((equipmentName, index) => {
+                        {exerciseDetail?.equipments.length > 0 ? exerciseDetail.equipments.map((index) => {
                             return (
-                                <Text style={styles.groupItem} key={index}>{equipmentName === '' ? 'Không Dụng Cụ' : equipmentName}</Text>
+                                <Text style={styles.groupItem} key={index}>{toEquipmentName(index)}</Text>
                             )
-                        })}
+                        } ): (<Text style={styles.groupItem}>Không có dụng cụ </Text>)}
                     </View>
                 </View>
             </View>

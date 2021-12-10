@@ -1,4 +1,4 @@
-import React, {useState, useRef, useMemo} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Image,
     Text,
     StyleSheet,
@@ -6,7 +6,7 @@ import {Image,
     StatusBar,
     SafeAreaView,
     Modal,
-    
+    ActivityIndicator
 }
 from 'react-native';
 import {Icon} from 'react-native-elements';
@@ -18,10 +18,107 @@ import ImageOverlayCard from '../components/ImageOverlayCard';
 import VideoScreen from './FavoriteScreens/VideoScreen';
 import VideoItem from '../components/VideoItem'
 import HomeSection from '../components/HomeSection';
+import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+
+import {getFavoriteVideos, getFavoriteWorkouts, getFavoritePrograms} from '../serverAPIs/favoriteAPI'
 
 function FavoriteScreen({navigation})
 {
-    const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1','2','3'])
+    const [favoriteWorkouts, setFavoriteWorkouts] = useState([])
+    const [favoritePrograms, setFavoritePrograms] = useState([])
+    const [favoriteVideos, setFavoriteVideos] = useState([])
+    const [isLoadingWorkouts, setLoadingWorkouts] = useState(true)
+    const [isLoadingPrograms, setLoadingPrograms] = useState(true)
+    const [isLoadingVideos, setLoadingVideos] = useState(true)
+     
+    useEffect(()=>{
+        getFavoritePrograms(data =>{
+            setFavoritePrograms(data)
+            setLoadingPrograms(false);
+        });
+        getFavoriteWorkouts((data)=>{
+            setFavoriteWorkouts(data);
+            setLoadingWorkouts(false);
+        });
+        getFavoriteVideos((data)=>{
+            setFavoriteVideos(data);
+            setLoadingVideos(false);
+        });
+        console.log("video ===== ", favoriteVideos)
+        console.log("programs ===== ", favoritePrograms)
+        console.log("workout ===== ", favoriteWorkouts)
+    },[])
+
+    const RenderWorkouts = () =>
+    {
+        if (isLoadingWorkouts)
+            return(<ActivityIndicator animating={isLoadingWorkouts} color='blue' hidesWhenStopped ></ActivityIndicator>)
+        
+        return(
+            <FlatList
+                pagingEnabled
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.horizontalList}
+                data={favoriteWorkouts}
+                renderItem={({item})=>(
+                <View style={{width:SCREEN_WIDTH, padding: 15}}>
+                    <WorkoutItem image={{uri: item.image}}
+                        />
+                </View>
+                )}
+            />
+        )
+    }
+
+    const RenderPrograms = () =>
+    {
+        if (isLoadingPrograms)
+            return (<ActivityIndicator animating={isLoadingPrograms} color='blue' hidesWhenStopped ></ActivityIndicator>);
+        
+        return (<FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.horizontalList}
+            data={favoritePrograms}
+            renderItem={({item})=>{
+                console.log("program-item ----", item)
+                return(
+                <ProgramItem image={{uri:item.image}}
+                title={item.name}
+                style={{height: 200, width: 200, padding: 10}}
+                />
+            )}}
+            />)
+    }
+
+    const RenderVideos = () => {
+        if (isLoadingVideos)
+            return (<ActivityIndicator animating={isLoadingVideos} color='blue' hidesWhenStopped ></ActivityIndicator>);
+        
+        return (
+            <FlatList
+                pagingEnabled
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.horizontalList}
+                data={favoriteVideos}
+                renderItem={({item})=>(
+                <View style={{width:SCREEN_WIDTH}}>
+                    <VideoItem image={{uri:item.image}}
+                    isLiked
+                    title={item.name}
+                    onPress = {()=>{
+                        var data = {videoUrl: item.videoUrl,
+                                    title: item.name};
+                        navigation.push('VideoScreen', data);
+                    }}
+                    />
+                </View>
+                )}
+                />
+        )
+    }
 
     return (
     <SafeAreaView style={{ flex: 1}}>
@@ -33,84 +130,22 @@ function FavoriteScreen({navigation})
                 <View>
                     <Text style = {styles.description}>Các bài tập, chương trình tập bạn đã yêu thích sẽ được lưu tại đây theo từng hạng mục</Text>
                 </View>
-                {/* <View style = {styles.categoryTitle}>
+                <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Lộ trình tập</Text>
-                    <TouchableWithoutFeedback
-                    onPress={()=>{navigation.navigate('FavoritePrograms')}}>
-                        <Text style = {styles.moreText}>Xem tất cả</Text>
-                    </TouchableWithoutFeedback>
-                </View> */}
-                <HomeSection
-                title="Lộ trình tập"
-                onPress={()=>{
-                    navigation.navigate('FavoritePrograms')
-                }}/>
-                <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.horizontalList}
-                data={suggestedWorkouts}
-                renderItem={(item)=>(
-                    <ProgramItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                    title="Cach tap luyen ABC XYZ"
-                    style={{height: 200, width: 200, padding: 10}}
-                    />
-                )}
-                />
+                </View>
+                {RenderPrograms()}
 
 
-                {/* <View style = {styles.categoryTitle}>
+                <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Kế hoạch tập</Text>
-                    <TouchableWithoutFeedback
-                    onPress={()=>{}}>
-                        <Text style = {styles.moreText}>Xem tất cả</Text>
-                    </TouchableWithoutFeedback>
-                </View> */}
-                <HomeSection title = "Kế hoạch tập" onPress={()=>{
-                    navigation.navigate('FavoriteWorkouts')
-                }}/>
-                <FlatList
-                pagingEnabled
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.horizontalList}
-                data={suggestedWorkouts}
-                renderItem={(item)=>(
-                <View style={{width:SCREEN_WIDTH, padding: 15}}>
-                    <WorkoutItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                        />
                 </View>
-                )}
-                />
+                {RenderWorkouts()}
 
-                {/* <View style = {styles.categoryTitle}>
+                <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Video</Text>
-                    <TouchableWithoutFeedback
-                    onPress={()=>{navigation.navigate('FavoriteVideos')}}>
-                        <Text style = {styles.moreText}>Xem tất cả</Text>
-                        <Icon />
-                    </TouchableWithoutFeedback>
-                </View> */}
-                <HomeSection title = "Video"
-                onPress = {()=>{navigation.navigate('FavoriteVideos')}}/>
-                <FlatList
-                pagingEnabled
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.horizontalList}
-                data={suggestedWorkouts}
-                renderItem={(item)=>(
-                <View style={{width:SCREEN_WIDTH}}>
-                    <VideoItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
-                    isLiked
-                    onPress = {()=>{
-                        var data = {videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"};
-                        navigation.push('VideoScreen', data);
-                    }}
-                    />
                 </View>
-                )}
-                />
+                {RenderVideos()}
+                
 
 
                 <View style = {styles.categoryTitle}>
@@ -119,7 +154,7 @@ function FavoriteScreen({navigation})
                 <View style={{width:SCREEN_WIDTH}}>
                     <ImageOverlayCard 
                     image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
-                    title="Bài tập đã thích"
+                    title="Bài tập đã lưu"
                     onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
                 </View>
 
@@ -154,7 +189,7 @@ const styles = StyleSheet.create({
         color: COLOR.WHITE
     },
     title: {
-        fontSize: 18,
+        fontSize: 23,
         color: COLOR.WHITE,
         fontWeight: 'bold'
     },
@@ -175,7 +210,7 @@ const styles = StyleSheet.create({
     },
     categoryTitle:{
         paddingHorizontal: 10,
-        marginTop: 18,
+        marginTop: 15,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'center'
