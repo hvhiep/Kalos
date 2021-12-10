@@ -138,7 +138,7 @@ function WorkoutDetailScreen({navigation}) {
         >
         </Animated.SectionList>
         <View style={styles.btnWrapper}>
-          <TouchableOpacity style={styles.commandBtn}>
+          <TouchableOpacity style={styles.commandBtn} onPress={()=>navigation.navigate('WorkoutProgress')}>
             <Text style={styles.commandTxt}>Bắt Đầu</Text>
           </TouchableOpacity>
         </View>

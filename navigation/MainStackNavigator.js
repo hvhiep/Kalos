@@ -27,6 +27,8 @@ import NewPasswordScreen from '../screens/SignIn_Up/NewPasswordScreen';
 import SignUpSurveyScreen from '../screens/SignIn_Up/SignUpSurveyScreen';
 
 import { COLOR } from '../constant';
+import AllWorkoutScreen from '../screens/WorkoutScreens/AllWorkoutScreen';
+import WorkoutProgressScreen from '../screens/WorkoutScreens/WorkoutProgressScreen';
 
 const MainStack = createStackNavigator();
 
@@ -90,6 +92,13 @@ function MainStackNavigator () {
             headerTintColor: '#fff',
             headerTitle:'Cài Đặt',
             headerTitleAlign: 'center', }}
+          />
+          <MainStack.Screen name="AllWorkout" component={AllWorkoutScreen} 
+          options={{ headerTintColor:'#fff' }}/>
+          <MainStack.Screen
+            name="WorkoutProgress"
+            component={WorkoutProgressScreen}
+            options={{headerTintColor: '#fff'}}
           />
         </MainStack.Navigator>
     );

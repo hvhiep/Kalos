@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {Image, Text, StyleSheet, View, StatusBar} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Image,
+  Text,
+  StyleSheet,
+  View,
+  StatusBar,
+  ToastAndroid,
+} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {BackgroundImage} from 'react-native-elements/dist/config';
 import {
@@ -14,10 +21,53 @@ import {COLOR, SCREEN_WIDTH} from '../constant';
 import ProgramItem from '../components/ProgramItem';
 import HomeCategoryItem from '../components/HomeCategoryItem';
 import CommandButton from '../components/CommandButton';
+import {getAllWorkout} from '../serverAPIs/workoutAPI';
+import {toWorkoutTypeName} from '../backendRules'
 
 const HOME_BANNER_HEIGHT = 300;
 function HomeScreen({navigation}) {
-  const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1', '2', '3']);
+  const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
+  const DUMMY_ARR = ['1', '2', '3'];
+
+  useEffect(() => {
+    getSuggestedWorkout();
+  }, []);
+
+  const getSuggestedWorkout = async () => {
+    try {
+      const res = await getAllWorkout();
+      if (!res?.data?.workouts) throw 'FAIL TO GET WORKOUT';
+      const list = res?.data?.workouts?.filter((item)=>{
+        return toWorkoutTypeName(item?.type) === 'Tập Luyện'
+      })
+      if (list?.length > 5) {
+        const suggestedList = shuffle(list);
+        setSuggestedWorkouts(suggestedList.slice(0, 5));
+      } else setSuggestedWorkouts(shuffle(list));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const shuffle = array => {
+    let currentIndex = array.length,
+      randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+
+    return array;
+  };
 
   const renderBanner = () => (
     <BackgroundImage
@@ -134,7 +184,7 @@ function HomeScreen({navigation}) {
         translucent></StatusBar>
       {renderBanner()}
       {renderUserInfo()}
-      <HomeSection title="Đề xuất cho bạn" onPress={() => {}} />
+      <HomeSection title="Đề xuất cho bạn" onPress={() => {navigation.navigate('AllWorkout')}}  />
       <FlatList
         pagingEnabled
         horizontal
@@ -144,19 +194,22 @@ function HomeScreen({navigation}) {
         renderItem={({item}) => (
           <View style={{width: SCREEN_WIDTH, paddingRight: 30}}>
             <WorkoutItem
+              title={item?.name}
+              muscleGroups={item?.muscleGroups}
               image={{
-                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+                uri: item?.image,
               }}
+              rounds={item?.rounds}
             />
           </View>
         )}
       />
-      <HomeSection title="Tham gia thử thách" onPress={() => {}} />
+      <HomeSection title="Lộ trình tập luyện" />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
-        data={suggestedWorkouts}
+        data={DUMMY_ARR}
         renderItem={({item, index}) => (
           <View style={{paddingRight: 15}} key={index}>
             <ProgramItem
@@ -174,7 +227,7 @@ function HomeScreen({navigation}) {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
-        data={suggestedWorkouts}
+        data={DUMMY_ARR}
         renderItem={({item, index}) => (
           <View style={{paddingRight: 15}} key={index}>
             <HomeCategoryItem
