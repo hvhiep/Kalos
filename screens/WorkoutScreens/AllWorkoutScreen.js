@@ -87,7 +87,7 @@ function AllWorkoutScreen({navigation}) {
           ],
       }]}>
         <View style={styles.headerTxtWrapper}>
-          <Text style={styles.headerTxt}>Thư viện bài tập</Text>
+          <Text style={styles.headerTxt}>Thư viện chương trình tập</Text>
           <Text style={styles.infoTxt}>Số lượng: {listWorkout?.length}</Text>
         </View>
       </Animated.View>

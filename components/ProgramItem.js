@@ -5,6 +5,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
+  ImageBackground,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -27,12 +28,12 @@ function ProgramItem(props) {
         <View style={{marginVertical: 5, width:'80%'}}>
           <Text numberOfLines={3} style={styles.title}>{props.title}</Text>
         </View>
-        <View style={styles.tag}>
+        <View style={[styles.tag, props?.tagColor && {backgroundColor:props.tagColor}]}>
           <Icon
           type='font-awesome-5'
-          name='play'
+          name={props?.icon || 'play'}
           size={12}
-          color={COLOR.WHITE}
+          color={props?.iconColor || COLOR.WHITE}
           />
         </View>
       </View>

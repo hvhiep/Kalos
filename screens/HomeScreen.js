@@ -23,15 +23,35 @@ import HomeCategoryItem from '../components/HomeCategoryItem';
 import CommandButton from '../components/CommandButton';
 import {getAllWorkout} from '../serverAPIs/workoutAPI';
 import {toWorkoutTypeName} from '../backendRules'
+import { getAllVideo } from '../serverAPIs/videoAPI';
+import { shuffle } from '../utilities/Utilities';
+import { getAllProgram } from '../serverAPIs/programAPI';
 
 const HOME_BANNER_HEIGHT = 300;
 function HomeScreen({navigation}) {
   const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
+  const [suggestedVideos, setSuggestedVideos] = useState([]);
+  const [suggestedPrograms, setSuggestedPrograms] = useState([]);
   const DUMMY_ARR = ['1', '2', '3'];
 
   useEffect(() => {
     getSuggestedWorkout();
+    getSuggestedVideo();
+    getSuggestedProgram();
   }, []);
+
+  const getSuggestedVideo = async () => {
+    try {
+      const res = await getAllVideo();
+      if (!res?.data?.videos) throw 'FAIL TO GET VIDEO';
+      if (res?.data?.videos?.length > 5) {
+        const suggestedList = shuffle(res?.data?.videos);
+        setSuggestedVideos(suggestedList.slice(0, 5));
+      } else setSuggestedVideos(shuffle(res?.data?.videos));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const getSuggestedWorkout = async () => {
     try {
@@ -49,24 +69,17 @@ function HomeScreen({navigation}) {
     }
   };
 
-  const shuffle = array => {
-    let currentIndex = array.length,
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
+  const getSuggestedProgram = async () => {
+    try {
+      const res = await getAllProgram();
+      if (!res?.data?.programs) throw 'FAIL TO GET VIDEO';
+      if (res?.data?.programs?.length > 5) {
+        const suggestedList = shuffle(res?.data?.programs);
+        setSuggestedPrograms(suggestedList.slice(0, 5));
+      } else setSuggestedPrograms(shuffle(res?.data?.programs));
+    } catch (e) {
+      console.log(e);
     }
-
-    return array;
   };
 
   const renderBanner = () => (
@@ -204,15 +217,36 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
+      <HomeSection title="Kiến thức tập luyện" onPress={async()=>{}}/>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.horizontalList}
+        data={suggestedVideos}
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
+            <ProgramItem
+            onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
+              style={{height: 200, width: 160}}
+              title={item?.name}
+              image={{
+                uri: item?.image,
+              }}
+            />
+          </View>
+        )}
+      />
       <HomeSection title="Lộ trình tập luyện" />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
-        data={DUMMY_ARR}
+        data={suggestedPrograms}
         renderItem={({item, index}) => (
           <View style={{paddingRight: 15}} key={index}>
             <ProgramItem
+              icon='dumbbell'
+              tagColor={COLOR.BLUE}
               style={{height: 200, width: 160}}
               title="Thử thách thay đổi bản thân 7 ngày"
               image={{
