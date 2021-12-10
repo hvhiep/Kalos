@@ -226,6 +226,7 @@ function HomeScreen({navigation}) {
         renderItem={({item, index}) => (
           <View style={{paddingRight: 15}} key={index}>
             <ProgramItem
+            onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
               style={{height: 200, width: 160}}
               title={item?.name}
               image={{
