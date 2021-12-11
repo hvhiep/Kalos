@@ -14,16 +14,16 @@ function SurveyGender(props, ref) {
 
     const genders = [
         {
+            index: 0,
+            gender: 'Nữ',
+        },
+        {
             index: 1,
             gender: 'Nam',
         },
-        {
-            index: 2,
-            gender: 'Nữ',
-        },
     ];
     //gender box selected
-    const [isSelected, setSelected] = useState('');
+    const [isSelected, setSelected] = useState();
 
     //render gender box
     const GenderBox = (props) => {
@@ -62,8 +62,8 @@ function SurveyGender(props, ref) {
                             <GenderBox
                                 key={item.index}
                                 gender={item.gender}
-                                selected={item.gender === isSelected}
-                                onPress={() => setSelected(item.gender)}>
+                                selected={item.index === isSelected}
+                                onPress={() => setSelected(item.index)}>
                             </GenderBox>
                                     
                         )

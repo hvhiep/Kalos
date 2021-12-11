@@ -14,23 +14,23 @@ function SurveyGoals( props, ref ) {
     //data for flatlist
     const goals = [
         {
-            title: 'Xây Dựng Sức Mạnh 👊', //title has emoji for render beautiful UI
-            subTitle: 'Xây Dựng Sức Mạnh', //subtitle is for saving to state
+            index: 1,
+            title: 'Xây Dựng Sức Mạnh 👊',
             desc: 'Trở nên mạnh mẽ hơn và dễ dàng làm chủ bài tập',
         },
         {
+            index: 2,
             title: 'Xây Dựng Cơ Bắp 💪',
-            subTitle: 'Xây Dựng Cơ Bắp',
             desc: 'Tăng khối lượng và độ khó bài tập để phát triển cơ bắp',
         },
         {
+            index: 3,
             title: 'Giảm Mỡ 🏃',
-            subTitle: 'Giảm Mỡ',
             desc: 'Tối ưu hóa cho các bài tập đốt mỡ',
         },
         {
+            index: 4,
             title: 'Học Kỹ Năng 🤸🏼‍♀️',
-            subTitle: 'Học Kỹ Năng',
             desc: 'Thuần thục nhiều kĩ năng điêu luyện',
         },
     ];
@@ -48,18 +48,18 @@ function SurveyGoals( props, ref ) {
     //handle multi item click (checkbox)
     const handleSelectedItem = (item) => {
         //if item is not in the array, insert into array else remove from array
-        if (!isSelected.includes(item.subTitle))
-            SetSelected([...isSelected, item.subTitle]);
+        if (!isSelected.includes(item.index))
+            SetSelected([...isSelected, item.index]);
         else
-            SetSelected(isSelected.filter(selectedTitle => selectedTitle != item.subTitle));
+            SetSelected(isSelected.filter(index => index != item.index));
     };
 
     //render goals list
     const renderListItems = ({ item }) => {
 
         //highlight selected item 
-        const borderColor = isSelected.includes(item.subTitle) ? COLOR.LIGHT_BROWN : 'grey';
-        const opacity = isSelected.includes(item.subTitle) ? 1 : 0;
+        const borderColor = isSelected.includes(item.index) ? COLOR.LIGHT_BROWN : 'grey';
+        const opacity = isSelected.includes(item.index) ? 1 : 0;
 
         return (
             <TouchableOpacity

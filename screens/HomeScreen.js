@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Image, Text, StyleSheet, View, StatusBar} from 'react-native';
-import {Icon} from 'react-native-elements';
-import {BackgroundImage} from 'react-native-elements/dist/config';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Image, Text, StyleSheet, View, StatusBar, ToastAndroid, BackHandler } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { BackgroundImage } from 'react-native-elements/dist/config';
 import {
   FlatList,
   ScrollView,
@@ -10,14 +10,49 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import HomeSection from '../components/HomeSection';
 import WorkoutItem from '../components/WorkoutItem';
-import {COLOR, SCREEN_WIDTH} from '../constant';
+import { COLOR, SCREEN_WIDTH } from '../constant';
 import ProgramItem from '../components/ProgramItem';
 import HomeCategoryItem from '../components/HomeCategoryItem';
 import CommandButton from '../components/CommandButton';
 
 const HOME_BANNER_HEIGHT = 300;
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation, route }) {
   const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1', '2', '3']);
+
+  const [backPressedCount, setBackPressedCount] = useState(0);
+  // ToastAndroid.showWithGravity(
+  //   'Nhấn lần nữa để thoát ứng dụng!',
+  //   ToastAndroid.LONG,
+  //   ToastAndroid.BOTTOM
+  // )
+
+  //Double back press to exit app
+  useEffect(
+    useCallback(() => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
+          if (navigation.isFocused()) {
+          setBackPressedCount((backPressedCount) => backPressedCount + 1);
+          ToastAndroid.showWithGravity(
+            'Nhấn lần nữa để thoát ứng dụng!',
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM
+          )
+          return true;
+          }
+          else {
+            return false;
+          }
+        });
+        return () =>
+          BackHandler.removeEventListener('hardwareBackPress', () => true);
+    }, []),
+  );
+
+  useEffect(() => {
+    if (backPressedCount === 2) {
+      BackHandler.exitApp();
+    }
+  }, [backPressedCount]);
 
   const renderBanner = () => (
     <BackgroundImage
@@ -32,8 +67,8 @@ function HomeScreen({navigation}) {
 
       <LinearGradient
         style={styles.bannerLinearGradient}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 0.9}}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 0.9 }}
         colors={[COLOR.TRANSPARENT, COLOR.MATTE_BLACK]}></LinearGradient>
 
       <View style={styles.bannerLeft}>
@@ -59,7 +94,7 @@ function HomeScreen({navigation}) {
           <Text style={styles.bannerRightSmallTxt}>Số set</Text>
           <Text style={styles.bannerRightTxt}>30m</Text>
           <Text style={styles.bannerRightSmallTxt}>Thời gian</Text>
-          <Text style={[styles.bannerRightTxt, {fontSize: 15}]}>Medium</Text>
+          <Text style={[styles.bannerRightTxt, { fontSize: 15 }]}>Medium</Text>
           <Text style={styles.bannerRightSmallTxt}>Level</Text>
         </View>
       </View>
@@ -69,42 +104,42 @@ function HomeScreen({navigation}) {
   const renderUserInfo = () => (
     <View style={styles.userStatus}>
       <View style={styles.userTagWrapper}>
-        <View style={[styles.userTag, {borderColor: COLOR.WHITE}]}>
+        <View style={[styles.userTag, { borderColor: COLOR.WHITE }]}>
           <Icon
             name="account"
             type="material-community"
             size={14}
             color={COLOR.WHITE}
           />
-          <Text style={[styles.userTagTxt, {color: COLOR.WHITE}]}>
+          <Text style={[styles.userTagTxt, { color: COLOR.WHITE }]}>
             Người mới tập
           </Text>
         </View>
-        <View style={[styles.userTag, {borderColor: COLOR.WHITE}]}>
+        <View style={[styles.userTag, { borderColor: COLOR.WHITE }]}>
           <Icon
             name="account"
             type="material-community"
             size={14}
             color={COLOR.WHITE}
           />
-          <Text style={[styles.userTagTxt, {color: COLOR.WHITE}]}>Tăng cơ</Text>
+          <Text style={[styles.userTagTxt, { color: COLOR.WHITE }]}>Tăng cơ</Text>
         </View>
       </View>
 
-      <View style={{flexDirection: 'row', paddingVertical: 5}}>
-        <View style={{flex: 5}}>
+      <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
+        <View style={{ flex: 5 }}>
           <Text style={styles.numberTxt}>Đào Duy Nam</Text>
           <Text style={styles.silverTxt}>
             Chiều Cao: <Text style={styles.numberTxt}>173cm</Text> - Cân nặng:{' '}
             <Text style={styles.numberTxt}>63.5 kg</Text>
           </Text>
         </View>
-        <View style={{flex: 1, alignItems: 'center', marginTop: -20}}>
+        <View style={{ flex: 1, alignItems: 'center', marginTop: -20 }}>
           <Text
-            style={{fontWeight: 'bold', fontSize: 20, color: COLOR.DARK_BROWN}}>
+            style={{ fontWeight: 'bold', fontSize: 20, color: COLOR.DARK_BROWN }}>
             BMI
           </Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: COLOR.WHITE}}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLOR.WHITE }}>
             2.5
           </Text>
         </View>
@@ -119,7 +154,7 @@ function HomeScreen({navigation}) {
           size={20}
           color={COLOR.WHITE}
         />
-        <Text style={[styles.userBtnTxt, {marginLeft: 10}]}>
+        <Text style={[styles.userBtnTxt, { marginLeft: 10 }]}>
           Cập nhật chỉ số ngay
         </Text>
       </TouchableOpacity>
@@ -127,22 +162,22 @@ function HomeScreen({navigation}) {
   );
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
+    <ScrollView style={{ flex: 1, backgroundColor: COLOR.MATTE_BLACK }}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={'transparent'}
         translucent></StatusBar>
       {renderBanner()}
       {renderUserInfo()}
-      <HomeSection title="Đề xuất cho bạn" onPress={() => {}} />
+      <HomeSection title="Đề xuất cho bạn" onPress={() => { }} />
       <FlatList
         pagingEnabled
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedWorkouts}
-        renderItem={({item}) => (
-          <View style={{width: SCREEN_WIDTH, paddingRight: 30}}>
+        renderItem={({ item }) => (
+          <View style={{ width: SCREEN_WIDTH, paddingRight: 30 }}>
             <WorkoutItem
               image={{
                 uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
@@ -151,16 +186,16 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Tham gia thử thách" onPress={() => {}} />
+      <HomeSection title="Tham gia thử thách" onPress={() => { }} />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedWorkouts}
-        renderItem={({item, index}) => (
-          <View style={{paddingRight: 15}} key={index}>
+        renderItem={({ item, index }) => (
+          <View style={{ paddingRight: 15 }} key={index}>
             <ProgramItem
-              style={{height: 200, width: 160}}
+              style={{ height: 200, width: 160 }}
               title="Thử thách thay đổi bản thân 7 ngày"
               image={{
                 uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
@@ -169,16 +204,16 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Lựa chọn cách tập của riêng bạn" onPress={() => {}} />
+      <HomeSection title="Lựa chọn cách tập của riêng bạn" onPress={() => { }} />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedWorkouts}
-        renderItem={({item, index}) => (
-          <View style={{paddingRight: 15}} key={index}>
+        renderItem={({ item, index }) => (
+          <View style={{ paddingRight: 15 }} key={index}>
             <HomeCategoryItem
-              style={{height: 110, width: 250}}
+              style={{ height: 110, width: 250 }}
               title="Giảm Mỡ"
               subTitle="bao gồm 20 bài tập"
               image={{
@@ -193,7 +228,7 @@ function HomeScreen({navigation}) {
           icon="tag"
           title="Đi đến thư viện bài tập"
           backgroundColor={COLOR.GOLD}
-          onPress={async () => {}}
+          onPress={async () => { }}
         />
       </View>
       {/* <TouchableOpacity style={{height:50, backgroundColor:'#123123'}} onPress={()=>navigation.navigate('WorkoutInfo')}/> */}

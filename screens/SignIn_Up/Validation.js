@@ -5,9 +5,6 @@ export const SignupSchema = Yup.object().shape({
         .min(2, 'Quá Ngắn!')
         .max(30, 'Quá Dài!')
         .required('Bắt Buộc Nhập!'),
-    email: Yup.string()
-        .email('Phải Là Định Dạng Email!')
-        .required('Bắt Buộc Nhập!'),
     password: Yup.string()
         .min(6, 'Tối Thiểu 6 Ký Tự!')
         .max(30, 'Tối Đa 30 Ký Tự!')

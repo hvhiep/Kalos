@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
+    ActivityIndicator
 } from 'react-native';
 import { STATUSBAR_HEIGHT, COLOR } from '../../constant.js';
 import SmallAppLogo from '../../assets/images/SmallAppLogo.png';
@@ -17,24 +18,31 @@ import { storeUserToken } from "../../AsyncStorage/userStorage.js";
 export default function SignInScreen(props) {
 
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
-
-    //==========Tạm thời để là admin2 để dễ làm việc, sau này sẽ là ''============================================================
-    const [username, setUsername] = useState('admin2');
-    const [password, setPassword] = useState('admin2');
+    const [isAPICalling, setAPICalling] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     //show error text if submit form with empty input
     const [isInputEmpty, setInputEmpty] = useState(0);
+    const [isSignInSuccess, setSignInSuccess] = useState(false);
+    const [isSignInError, setSignInError] = useState(false);
+
 
     //handle and validate sign in form submit
     const handleSignInSubmit = async () => {
         //1. validation: check empty input
+        setAPICalling(true);
         if (username === '' || password === '') {
+            setAPICalling(false);
             setInputEmpty(1);
         }
         else {
             //send username + pass to server to get token
             const res = await SignInAPI(username, password);
             if (res !== -1) {
+                setAPICalling(false);
+                setSignInSuccess(true);
+                setSignInError(false);
                 //store token in async storage
                 const storeResult = await storeUserToken(res.data.token);
                 //navigate to home screen if success
@@ -43,8 +51,11 @@ export default function SignInScreen(props) {
                 else
                     console.log('Có lỗi khi lưu token!');
             }
-            else
+            else {
+                setAPICalling(false);
+                setSignInError(true);
                 console.log('Có Lỗi Khi Đăng Nhập!')
+            }
         }
     };
 
@@ -97,9 +108,32 @@ export default function SignInScreen(props) {
                 {/* input error */}
                 <Text style={[styles.inputError, isInputEmpty === 1 ? { display: 'flex' } : { display: 'none' }]}>Vui lòng điền đầy đủ thông tin!</Text>
 
+                {/* sign in is error */}
+                <Text
+                    style={[styles.errorText, isSignInError === true ? { display: 'flex' } : { display: 'none' }]}
+                >
+                    Tài Khoản Hoặc Mật Khẩu sai!
+                </Text>
+                {/* sign in is success */}
+                <Text
+                    style={[styles.successText, isSignInSuccess === true ? { display: 'flex' } : { display: 'none' }]}
+                >
+                    Đăng Nhập Thành Công!
+                </Text>
+
                 {/* sign in button */}
                 <TouchableOpacity onPress={handleSignInSubmit} style={styles.btnSignIn}>
-                    <Text style={styles.btnSignInText}>Đăng Nhập</Text>
+                    <Text
+                        style={[styles.btnSignInText, isAPICalling === false ? { display: 'flex' } : { display: 'none' }]}
+                    >
+                        Đăng Nhập
+                    </Text>
+                    <ActivityIndicator
+                        style={isAPICalling === true ? { display: 'flex' } : { display: 'none' }}
+                        size="small"
+                        color='white'
+                    >
+                    </ActivityIndicator>
                 </TouchableOpacity>
             </View>
 
@@ -165,6 +199,18 @@ const styles = StyleSheet.create({
         fontSize: 14,
         alignSelf: "center",
         marginTop: 10,
+    },
+    errorText: {
+        color: 'red',
+        fontWeight: "bold",
+        fontSize: 14,
+        alignSelf: "center",
+    },
+    successText: {
+        color: 'green',
+        fontWeight: "bold",
+        fontSize: 14,
+        alignSelf: "center",
     },
     btnSignIn: {
         width: '100%',

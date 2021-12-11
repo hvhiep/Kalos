@@ -6,10 +6,13 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
+    ActivityIndicator
 } from 'react-native';
 import { COLOR } from '../../constant.js';
 import SmallAppLogo from '../../assets/images/SmallAppLogo.png';
 import { Icon } from 'react-native-elements';
+import { SignUpAPI, SignInAPI } from '../../serverAPIs/userAPI';
+import { storeUserToken } from "../../AsyncStorage/userStorage.js";
 
 //form validation
 import { Formik } from 'formik';
@@ -20,30 +23,58 @@ export default function SignUpScreen(props) {
     //check password visibility
     const [isPasswordVisibility, setPasswordVisibility] = useState(true);
     const [isPasswordAuthVisibility, setPasswordAuthVisibility] = useState(true);
-
-    //test
-    const data = props.route.params;
-    console.log('data from survey: ', data);
+    const [isSignUpError, setSignUpError] = useState(false);
+    const [isAPICalling, setAPICalling] = useState(false);
+    const [isSignUpSuccess, setSignUpSuccess] = useState(false);
 
     //handle sign up submit
-    const handleSignUpSubmit = (values) => {
+    const handleSignUpSubmit = async (values) => {
+        setAPICalling(true);
+        //survey info
+        const userSurveyInfo = props.route.params;
         //remove passwordAuth element
-
-        //còn phải truyền các thông tin khảo sát ơ các màn hình trước vào newUser này
-        //rồi mới gửi lên server
         const newUser = {
             username: values.username,
             password: values.password,
-            email: values.email,
+            name: userSurveyInfo.name,
+            gender: userSurveyInfo.gender,
+            goals: userSurveyInfo.goals,
+            level: userSurveyInfo.level,
+            height: userSurveyInfo.height,
+            weight: userSurveyInfo.weight,
+            pullUp: userSurveyInfo.performance.pullUp,
+            pushUp: userSurveyInfo.performance.pushUp,
+            dips: userSurveyInfo.performance.dips,
+            squats: userSurveyInfo.performance.squats,
         };
-        console.log(newUser);
 
         //send object data to server for validation
+        const response = await SignUpAPI(newUser);
+        //if SUCCESS: sign with new user info (username + password above) + navigate to Home
+        if (response !== -1) {
+            setAPICalling(false);
+            const loginResponse = await SignInAPI(values.username, values.password);
+            if (loginResponse !== -1) {
+                setSignUpSuccess(true);
+                setSignUpError(false);
+                //store token in async storage
+                const storeResult = await storeUserToken(loginResponse.data.token);
+                //navigate to home screen if success
+                if (storeResult) {
+                    props.navigation.navigate('Tab');
+                }
+                else
+                    console.log('Có lỗi khi lưu token!');
+            }
+            else
+                console.log('Có Lỗi Khi Đăng Nhập!')
+        }
+        else {
+            setAPICalling(false);
+            //if FAIL: return error from server response (like: dup username)
+            setSignUpError(true);
+        }
 
-        //if SUCCESS: sign with new user info (username + password above)
-
-        //if FAIL: return error from server response (like: dup username)
-        
     }
 
     return (
@@ -54,7 +85,7 @@ export default function SignUpScreen(props) {
             {/* formik wraps signup form */}
             <Formik
                 validationSchema={SignupSchema}
-                initialValues={{ username: '', email: '', password: '', passwordAuth: '' }}
+                initialValues={{ username: '', password: '', passwordAuth: '' }}
                 onSubmit={(values) => handleSignUpSubmit(values)}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -75,25 +106,6 @@ export default function SignUpScreen(props) {
                             errors.username && touched.username ? (
                                 <Text style={styles.errorText}>
                                     {errors.username}
-                                </Text>
-                            ) : null
-                        }
-
-                        {/* Email */}
-                        <TextInput
-                            style={styles.username}
-                            placeholder="Email *"
-                            placeholderTextColor="#888"
-                            onChangeText={handleChange('email')}
-                            onBlur={handleBlur('email')}
-                            value={values.email}
-                        >
-                        </TextInput>
-                        {/* show validation error */}
-                        {
-                            errors.email && touched.email ? (
-                                <Text style={styles.errorText}>
-                                    {errors.email}
                                 </Text>
                             ) : null
                         }
@@ -163,10 +175,34 @@ export default function SignUpScreen(props) {
                             ) : null
                         }
 
+                        {/* duplicated username error */}
+                        <Text
+                            style={[styles.errorText, isSignUpError === true ? { display: 'flex' } : { display: 'none' }]}
+                        >
+                            Tên Đăng Nhập Bị Trùng!
+                        </Text>
+                        {/* sign up is success */}
+                        <Text
+                            style={[styles.successText, isSignUpSuccess === true ? { display: 'flex' } : { display: 'none' }]}
+                        >
+                            Đăng Ký Thành Công!
+                        </Text>
+
 
                         {/* sign up button */}
                         <TouchableOpacity onPress={handleSubmit} style={styles.btnSignUp}>
-                            <Text style={styles.btnSignUpText}>Đăng Ký</Text>
+                            <Text
+                                style={[styles.btnSignUpText, isAPICalling === false ? { display: 'flex' } : { display: 'none' }]}
+                            >
+                                Đăng Ký
+                            </Text>
+                            <ActivityIndicator
+                                style={isAPICalling === true ? { display: 'flex' } : { display: 'none' }}
+                                size="small"
+                                color='white'
+                            >
+                            </ActivityIndicator>
+
                         </TouchableOpacity>
                     </View>
                 )}
@@ -231,11 +267,18 @@ const styles = StyleSheet.create({
         color: 'red',
         fontWeight: "bold",
         fontSize: 14,
+        alignSelf: "center",
+    },
+    successText: {
+        color: 'green',
+        fontWeight: "bold",
+        fontSize: 14,
+        alignSelf: "center",
     },
     btnSignUp: {
         width: '100%',
         backgroundColor: COLOR.LIGHT_BROWN,
-        marginTop: 50,
+        marginTop: 30,
         borderRadius: 8,
         alignItems: "center",
         justifyContent: "center",
