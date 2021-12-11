@@ -72,7 +72,7 @@ function HomeScreen({navigation}) {
   const getSuggestedProgram = async () => {
     try {
       const res = await getAllProgram();
-      if (!res?.data?.programs) throw 'FAIL TO GET VIDEO';
+      if (!res?.data?.programs) throw 'FAIL TO GET PROGRAM';
       if (res?.data?.programs?.length > 5) {
         const suggestedList = shuffle(res?.data?.programs);
         setSuggestedPrograms(suggestedList.slice(0, 5));
@@ -217,7 +217,7 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Kiến thức tập luyện" onPress={async()=>{}}/>
+      <HomeSection title="Kiến thức tập luyện" onPress={()=>{navigation.navigate('AllVideo')}}/>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -236,7 +236,7 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Lộ trình tập luyện" />
+      <HomeSection title="Lộ trình tập luyện" onPress={()=>{navigation.navigate('AllProgram')}}/>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -248,9 +248,9 @@ function HomeScreen({navigation}) {
               icon='dumbbell'
               tagColor={COLOR.BLUE}
               style={{height: 200, width: 160}}
-              title="Thử thách thay đổi bản thân 7 ngày"
+              title={item?.name}
               image={{
-                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+                uri: item?.image,
               }}
             />
           </View>

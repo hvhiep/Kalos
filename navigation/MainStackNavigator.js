@@ -30,6 +30,8 @@ import { COLOR } from '../constant';
 import AllWorkoutScreen from '../screens/WorkoutScreens/AllWorkoutScreen';
 import WorkoutProgressScreen from '../screens/WorkoutScreens/WorkoutProgressScreen';
 import WatchVideoScreen from '../screens/Video/WatchVideoScreen';
+import AllVideoScreen from '../screens/Video/AllVideoScreen';
+import AllProgramScreen from '../screens/Program/AllProgramScreen';
 
 const MainStack = createStackNavigator();
 
@@ -101,11 +103,21 @@ function MainStackNavigator () {
             component={WorkoutProgressScreen}
             options={{headerTintColor: '#fff'}}
           />
-           <MainStack.Screen
+          <MainStack.Screen
             name="WatchVideo"
             component={WatchVideoScreen}
             options={{headerTintColor: '#fff'}}
           />
+          <MainStack.Screen
+            name="AllVideo"
+            component={AllVideoScreen}
+            options={{headerTintColor: '#fff'}}
+          />
+          <MainStack.Screen
+          name="AllProgram"
+          component={AllProgramScreen}
+          options={{headerTintColor: '#fff'}}
+        />
         </MainStack.Navigator>
     );
   };
