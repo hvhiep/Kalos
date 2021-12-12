@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {
     View,
     Text,
@@ -6,31 +6,38 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Image
+    Image,
+    SafeAreaView
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Video from 'react-native-video';
-import { COLOR } from '../constant';
+import { COLOR, HOST } from '../constant';
 import { SearchBar } from "react-native-elements";
 
 //Bottom Sheet
 
 import SheetExerciseDetail from "../components/SheetExerciseDetail";
-import { useRef } from "react";
-import { useState } from "react";
 import SheetFilter from '../components/SheetFilter';
 
 //backend rules
 import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules";
 
+// get Token
+import { getAllExercises } from "../serverAPIs/exercisesAPI";
 //test data
-import exercisesData from "../assets/testData/exercisesData";
+// import exercisesData from "../assets/testData/exercisesData";
 
 function ExerciseScreen() {
+   
+    // console.log('muscle: ', toMuscleGroupName(1));
+    // console.log('level: ', toLevelName(2));
+    // console.log('equip: ', toEquipmentName('3'));
 
-    console.log('muscle: ', toMuscleGroupName(1));
-    console.log('level: ', toLevelName(2));
-    console.log('equip: ', toEquipmentName('3'));
+    const [exercisesData, setExercisesData] = useState([]);
+    
+    useEffect(()=>{
+        getAllExercises(setExercisesData);
+    },[])
 
     //render exercise item
     const renderExerciseItem = ({ item }) => {
@@ -41,7 +48,8 @@ function ExerciseScreen() {
                 <View style={styles.exerciseLeftWrapper}>
                     <Image
                         style={styles.exerciseImage}
-                        source={require('../assets/images/InclinePushUps.png')}
+                        // source={require('../assets/images/InclinePushUps.png')}
+                        source={{uri: item.image}}
                     ></Image>
                 </View>
                 <View style={styles.exerciseRightWrapper}>
@@ -49,7 +57,7 @@ function ExerciseScreen() {
                         style={styles.exerciseName}
                         numberOfLines={2}
                     >
-                        {item.exercise}
+                        {item.name}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -69,50 +77,52 @@ function ExerciseScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Tất Cả Bài Tập</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Tất Cả Bài Tập</Text>
 
-            {/* Search bar */}
-            <View style={styles.searchWrapper}>
-                <SearchBar
-                    containerStyle={styles.search}
-                    inputStyle={styles.searchInput}
-                    placeholder="Tìm Kiếm"
-                    inputContainerStyle={styles.searchInput}
-                    platform="android"
-                />
-                {/* exercise filter */}
-                <TouchableOpacity 
-                    style={styles.searchFilter}
-                    onPress={() => sheetFilterRef.current.snapTo(0)}>
-                    <Icon
-                        name="filter-alt"
-                        type="material"
-                        size={22}
-                        color="white"></Icon>
-                </TouchableOpacity>
+                {/* Search bar */}
+                <View style={styles.searchWrapper}>
+                    <SearchBar
+                        containerStyle={styles.search}
+                        inputStyle={styles.searchInput}
+                        placeholder="Tìm Kiếm"
+                        inputContainerStyle={styles.searchInput}
+                        platform="android"
+                    />
+                    {/* exercise filter */}
+                    <TouchableOpacity 
+                        style={styles.searchFilter}
+                        onPress={() => sheetFilterRef.current.snapTo(0)}>
+                        <Icon
+                            name="filter-alt"
+                            type="material"
+                            size={22}
+                            color="white"></Icon>
+                    </TouchableOpacity>
+                </View>
+
+                {/* List Exercise */}
+                <FlatList
+                    style={styles.ListExercise}
+                    data={exercisesData}
+                    renderItem={renderExerciseItem}
+                    keyExtractor={item => `${item._id}`}
+                    showsVerticalScrollIndicator={false}>
+                </FlatList>
+
+                {/*Bottom Sheet Exercise Detail */}
+                <SheetExerciseDetail
+                    bottomSheetRef={bottomSheetRef}
+                    exerciseDetail={exerciseDetail}>
+                </SheetExerciseDetail>
+                {/* Exercise Filter */}
+                <SheetFilter
+                    sheetFilterRef={sheetFilterRef}>
+                </SheetFilter>
+                    
             </View>
-
-            {/* List Exercise */}
-            <FlatList
-                style={styles.ListExercise}
-                data={exercisesData}
-                renderItem={renderExerciseItem}
-                keyExtractor={item => `${item.id}`}
-                showsVerticalScrollIndicator={false}>
-            </FlatList>
-
-            {/*Bottom Sheet Exercise Detail */}
-            <SheetExerciseDetail
-                bottomSheetRef={bottomSheetRef}
-                exerciseDetail={exerciseDetail}>
-            </SheetExerciseDetail>
-            {/* Exercise Filter */}
-            <SheetFilter
-                sheetFilterRef={sheetFilterRef}>
-            </SheetFilter>
-                
-        </View>
+        </SafeAreaView>
     )
 };
 

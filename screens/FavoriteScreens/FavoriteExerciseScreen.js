@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useMemo} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {Image,
     Text,
     StyleSheet,
@@ -14,11 +14,16 @@ import {Button} from 'react-native-elements'
 import ExcerciseInfoScreen from '../Exercise/ExerciseInfoScreen';
 import BottomSheet from '@gorhom/bottom-sheet';
 
+import {getFavoriteExercise, getFavoriteExercises} from '../../serverAPIs/favoriteAPI'
 
 function FavoriteExerciseScreen()
 {
-    const [likedExercises, setLikedExercise] = useState([1,2,3,1,1])
-
+    const [favoriteExercises, setFavoriteExercises] = useState([])
+    useEffect(() => {
+        getFavoriteExercises(setFavoriteExercises)
+        
+    }, [])
+    console.log("exercise =-------------------------------", favoriteExercises)
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['50%','90%'], []);
 
@@ -31,12 +36,12 @@ function FavoriteExerciseScreen()
             <FlatList
             vertical
             showsVerticalScrollIndicator={false}
-            data={likedExercises}
-            renderItem={(item)=>(
+            data={favoriteExercises}
+            renderItem={({item})=>(
             <View style={{width:SCREEN_WIDTH}}>
-                <ExeciseItem image={{uri:'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg'}}
+                <ExeciseItem image={{uri:item.image}}
                     isLiked = {true}
-                    title="Hít đất nâng cao dành cho người mới"
+                    title={item.name}
                     onPress = {()=>{
                         bottomSheetRef.current.expand();
                     }}/>
