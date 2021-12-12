@@ -3,9 +3,10 @@ import {getUserToken} from '../AsyncStorage/userStorage'
 
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MThmMzMxNTU3YTkyMDY0ZDIyMzc1YWQiLCJpYXQiOjE2MzkwNTQ0Nzl9.rHmT0FR2r0hnMmdvSZ0DXlwalVRFjKlIxXuNrtfSobg"
 
-export const getAllExercises = (setDataFunction)=>
+export const getAllExercises = async (setDataFunction)=>
 {
-    console.log(token);
+    const token = await getUserToken();
+    console.log('test token: ', token);
     fetch(HOST + '/api/exercises' , 
         {
             method: "GET",
@@ -18,7 +19,6 @@ export const getAllExercises = (setDataFunction)=>
     .then(response => response.json())
     .then(data => data["exercises"])
     .then(exercises => {
-        console.log(exercises)
         setDataFunction(exercises)
     })
 }

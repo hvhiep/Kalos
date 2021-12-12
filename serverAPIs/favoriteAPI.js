@@ -1,10 +1,12 @@
 import { HOST } from "../constant";
 import {getUserToken} from '../AsyncStorage/userStorage'
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MThmMzMxNTU3YTkyMDY0ZDIyMzc1YWQiLCJpYXQiOjE2MzkwNTQ0Nzl9.rHmT0FR2r0hnMmdvSZ0DXlwalVRFjKlIxXuNrtfSobg"
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MThmMzMxNTU3YTkyMDY0ZDIyMzc1YWQiLCJpYXQiOjE2MzkwNTQ0Nzl9.rHmT0FR2r0hnMmdvSZ0DXlwalVRFjKlIxXuNrtfSobg"
 
-export const getFavoriteVideos = (setDataFunction)=>
+export const getFavoriteVideos = async (setDataFunction)=>
 {
+    const token = await getUserToken();
+
     console.log(token);
     fetch(HOST + '/api/users/me/favorite/videos' , 
         {
@@ -23,8 +25,10 @@ export const getFavoriteVideos = (setDataFunction)=>
     })
 }
 
-export const getFavoriteExercises = (setDataFunction) =>
+export const getFavoriteExercises = async (setDataFunction) =>
 {
+    const token = await getUserToken();
+
     console.log(token);
     fetch(HOST + '/api/users/me/favorite/exercises' , 
         {
@@ -42,8 +46,10 @@ export const getFavoriteExercises = (setDataFunction) =>
         setDataFunction(videos)
     })
 }
-export const getFavoritePrograms = (setDataFunction) =>
+export const getFavoritePrograms = async (setDataFunction) =>
 {
+    const token = await getUserToken();
+
     console.log(token);
     fetch(HOST + '/api/users/me/favorite/programs' , 
         {
@@ -61,8 +67,10 @@ export const getFavoritePrograms = (setDataFunction) =>
         setDataFunction(programs)
     })
 }
-export const getFavoriteWorkouts = (setDataFunction) =>
+export const getFavoriteWorkouts = async (setDataFunction) =>
 {
+    const token = await getUserToken();
+
     console.log(token);
     fetch(HOST + '/api/users/me/favorite/workouts' , 
         {
