@@ -24,5 +24,9 @@ export const COLOR = {
     DARK_RED:'#8b0000',
     SILVER:'#bec2cb',
     YELLOW:'#ffff00',
-    ORANGE:'#ff5e13'
+    ORANGE:'#ff5e13',
+    BLUE:'#187bcd',
+    LIGHT_BLACK : '#484848',
 }
+
+export const HORIZONTAL_LIST_HEIGHT = 200; //left view 130

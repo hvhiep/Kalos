@@ -27,6 +27,11 @@ import NewPasswordScreen from '../screens/SignIn_Up/NewPasswordScreen';
 import SignUpSurveyScreen from '../screens/SignIn_Up/SignUpSurveyScreen';
 
 import { COLOR } from '../constant';
+import AllWorkoutScreen from '../screens/WorkoutScreens/AllWorkoutScreen';
+import WorkoutProgressScreen from '../screens/WorkoutScreens/WorkoutProgressScreen';
+import WatchVideoScreen from '../screens/Video/WatchVideoScreen';
+import AllVideoScreen from '../screens/Video/AllVideoScreen';
+import AllProgramScreen from '../screens/Program/AllProgramScreen';
 
 const MainStack = createStackNavigator();
 
@@ -91,6 +96,28 @@ function MainStackNavigator () {
             headerTitle:'Cài Đặt',
             headerTitleAlign: 'center', }}
           />
+          <MainStack.Screen name="AllWorkout" component={AllWorkoutScreen} 
+          options={{ headerTintColor:'#fff' }}/>
+          <MainStack.Screen
+            name="WorkoutProgress"
+            component={WorkoutProgressScreen}
+            options={{headerTintColor: '#fff'}}
+          />
+          <MainStack.Screen
+            name="WatchVideo"
+            component={WatchVideoScreen}
+            options={{headerTintColor: '#fff'}}
+          />
+          <MainStack.Screen
+            name="AllVideo"
+            component={AllVideoScreen}
+            options={{headerTintColor: '#fff'}}
+          />
+          <MainStack.Screen
+          name="AllProgram"
+          component={AllProgramScreen}
+          options={{headerTintColor: '#fff'}}
+        />
         </MainStack.Navigator>
     );
   };

@@ -14,10 +14,66 @@ import { COLOR, SCREEN_WIDTH } from '../constant';
 import ProgramItem from '../components/ProgramItem';
 import HomeCategoryItem from '../components/HomeCategoryItem';
 import CommandButton from '../components/CommandButton';
+import {getAllWorkout} from '../serverAPIs/workoutAPI';
+import {toWorkoutTypeName} from '../backendRules'
+import { getAllVideo } from '../serverAPIs/videoAPI';
+import { shuffle } from '../utilities/Utilities';
+import { getAllProgram } from '../serverAPIs/programAPI';
 
 const HOME_BANNER_HEIGHT = 300;
-function HomeScreen({ navigation, route }) {
-  const [suggestedWorkouts, setSuggestedWorkouts] = useState(['1', '2', '3']);
+function HomeScreen({navigation}) {
+  const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
+  const [suggestedVideos, setSuggestedVideos] = useState([]);
+  const [suggestedPrograms, setSuggestedPrograms] = useState([]);
+  const DUMMY_ARR = ['1', '2', '3'];
+
+  useEffect(() => {
+    getSuggestedWorkout();
+    getSuggestedVideo();
+    getSuggestedProgram();
+  }, []);
+
+  const getSuggestedVideo = async () => {
+    try {
+      const res = await getAllVideo();
+      if (!res?.data?.videos) throw 'FAIL TO GET VIDEO';
+      if (res?.data?.videos?.length > 5) {
+        const suggestedList = shuffle(res?.data?.videos);
+        setSuggestedVideos(suggestedList.slice(0, 5));
+      } else setSuggestedVideos(shuffle(res?.data?.videos));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getSuggestedWorkout = async () => {
+    try {
+      const res = await getAllWorkout();
+      if (!res?.data?.workouts) throw 'FAIL TO GET WORKOUT';
+      const list = res?.data?.workouts?.filter((item)=>{
+        return toWorkoutTypeName(item?.type) === 'Tập Luyện'
+      })
+      if (list?.length > 5) {
+        const suggestedList = shuffle(list);
+        setSuggestedWorkouts(suggestedList.slice(0, 5));
+      } else setSuggestedWorkouts(shuffle(list));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getSuggestedProgram = async () => {
+    try {
+      const res = await getAllProgram();
+      if (!res?.data?.programs) throw 'FAIL TO GET PROGRAM';
+      if (res?.data?.programs?.length > 5) {
+        const suggestedList = shuffle(res?.data?.programs);
+        setSuggestedPrograms(suggestedList.slice(0, 5));
+      } else setSuggestedPrograms(shuffle(res?.data?.programs));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const [backPressedCount, setBackPressedCount] = useState(0);
   // ToastAndroid.showWithGravity(
@@ -169,7 +225,7 @@ function HomeScreen({ navigation, route }) {
         translucent></StatusBar>
       {renderBanner()}
       {renderUserInfo()}
-      <HomeSection title="Đề xuất cho bạn" onPress={() => { }} />
+      <HomeSection title="Đề xuất cho bạn" onPress={() => {navigation.navigate('AllWorkout')}}  />
       <FlatList
         pagingEnabled
         horizontal
@@ -179,26 +235,50 @@ function HomeScreen({ navigation, route }) {
         renderItem={({ item }) => (
           <View style={{ width: SCREEN_WIDTH, paddingRight: 30 }}>
             <WorkoutItem
+              title={item?.name}
+              muscleGroups={item?.muscleGroups}
               image={{
-                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+                uri: item?.image,
+              }}
+              rounds={item?.rounds}
+            />
+          </View>
+        )}
+      />
+      <HomeSection title="Kiến thức tập luyện" onPress={()=>{navigation.navigate('AllVideo')}}/>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.horizontalList}
+        data={suggestedVideos}
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
+            <ProgramItem
+            onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
+              style={{height: 200, width: 160}}
+              title={item?.name}
+              image={{
+                uri: item?.image,
               }}
             />
           </View>
         )}
       />
-      <HomeSection title="Tham gia thử thách" onPress={() => { }} />
+      <HomeSection title="Lộ trình tập luyện" onPress={()=>{navigation.navigate('AllProgram')}}/>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
-        data={suggestedWorkouts}
-        renderItem={({ item, index }) => (
-          <View style={{ paddingRight: 15 }} key={index}>
+        data={suggestedPrograms}
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
             <ProgramItem
-              style={{ height: 200, width: 160 }}
-              title="Thử thách thay đổi bản thân 7 ngày"
+              icon='dumbbell'
+              tagColor={COLOR.BLUE}
+              style={{height: 200, width: 160}}
+              title={item?.name}
               image={{
-                uri: 'https://ggstorage.oxii.vn/images/oxii-2021-3-2/728/tong-hop-22-bai-tap-workout-khong-ta-tai-nha-xin-nhat-2021-phan-1-1.jpg',
+                uri: item?.image,
               }}
             />
           </View>
@@ -209,9 +289,9 @@ function HomeScreen({ navigation, route }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
-        data={suggestedWorkouts}
-        renderItem={({ item, index }) => (
-          <View style={{ paddingRight: 15 }} key={index}>
+        data={DUMMY_ARR}
+        renderItem={({item, index}) => (
+          <View style={{paddingRight: 15}} key={index}>
             <HomeCategoryItem
               style={{ height: 110, width: 250 }}
               title="Giảm Mỡ"

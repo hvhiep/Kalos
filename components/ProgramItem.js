@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -5,6 +6,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Text,
+  ImageBackground,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -15,10 +17,13 @@ function ProgramItem(props) {
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View style={[styles.container, props.style]}>
-        <Image
+        <ImageBackground
           source={props.image}
           style={styles.img}
-          resizeMode="cover"></Image>
+          imageStyle={{borderRadius:15, backgroundColor:COLOR.BLACK, opacity:0.7}}
+          resizeMode="cover">
+            <Text style={{color:COLOR.WHITE, fontSize:14, fontWeight:'bold'}}>{moment(props?.updatedAt).format('LL')}</Text>
+          </ImageBackground>
         {/* <LinearGradient
           start={{x: 0, y: 1}}
           end={{x: 0, y: 0}}
@@ -27,12 +32,12 @@ function ProgramItem(props) {
         <View style={{marginVertical: 5, width:'80%'}}>
           <Text numberOfLines={3} style={styles.title}>{props.title}</Text>
         </View>
-        <View style={styles.tag}>
+        <View style={[styles.tag, props?.tagColor && {backgroundColor:props.tagColor}]}>
           <Icon
           type='font-awesome-5'
-          name='play'
+          name={props?.icon || 'play'}
           size={12}
-          color={COLOR.WHITE}
+          color={props?.iconColor || COLOR.WHITE}
           />
         </View>
       </View>
@@ -56,6 +61,8 @@ const styles = StyleSheet.create({
   img: {
     flex: 0.65,
     borderRadius: 15,
+    paddingHorizontal:20,
+    paddingTop:10
   },
   linearGradient: {
     position: 'absolute',

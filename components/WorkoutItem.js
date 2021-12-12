@@ -15,6 +15,14 @@ function WorkoutItem(props) {
 
     const defaultPfp='https://media.istockphoto.com/vectors/user-profile-icon-vector-avatar-portrait-symbol-flat-shape-person-vector-id1270368615?k=20&m=1270368615&s=170667a&w=0&h=qpvA8Z6L164ZcKfIyOl-E8fKnfmRZ09Tks7WEoiLawA='
 
+    const handleListMuscleGroup = () => {
+        let str = ''
+        props?.muscleGroups?.map((item, index)=>{
+            index === muscleGroups?.length - 1 ?
+            str + item + ', '
+            :str + item
+        })
+    }
     return (
       <TouchableWithoutFeedback onPress={props.onPress?props.onPress:()=>{}}>
           <View style={[styles.container,props.style?props.style:{}]}>
@@ -35,7 +43,7 @@ function WorkoutItem(props) {
                         type='font-awesome-5'
                         size={12}
                         color={COLOR.WHITE}/>
-                        <Text style={styles.tagTxt}>Set: x4</Text>
+                        <Text style={styles.tagTxt}>Round: x{props?.rounds?.length}</Text>
                     </View>
                     <View style={styles.tag}>
                         <Icon
@@ -43,14 +51,14 @@ function WorkoutItem(props) {
                         type='font-awesome-5'
                         size={12}
                         color={COLOR.WHITE}/>
-                        <Text style={styles.tagTxt}>Thời gian: 1.5 giờ</Text>
+                        <Text style={styles.tagTxt}>Thời gian: {props?.rounds?.length * 0.5} giờ</Text>
                     </View>
                 </View>
             </LinearGradient>
           </BackgroundImage>
           <View style={styles.infoWrapper}>
-            <Text numberOfLines={1} style={styles.titleTxt}>Xây dựng cơ ngực với chống đẩy</Text>
-            <Text numberOfLines={1} >Nhóm cơ tác động: Ngực, Vai, Lưng, Xô</Text>
+            <Text numberOfLines={1} style={styles.titleTxt}>{props.title}</Text>
+            {props?.muscleGroups && <Text numberOfLines={1} >Nhóm cơ tác động: {handleListMuscleGroup()}</Text>}
           </View>
           
         <View style={styles.level}>
