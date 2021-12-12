@@ -28,16 +28,17 @@ const equipments = [
     'Ghế Dài',
 ];
 
-/*
-1. parallettes
-2. pull up bar - Xà Đơn
-3. low bar - Xà Thấp
-4. weight vest - Áo Tạ
-5. dip bar - Xà Kép
-6. resistance band - Dây Kháng Lực
-7. box - Hộp
-8. bench - Ghế Dài
-*/
+const gender = [
+    'Nữ',
+    'Nam'
+]
+
+const goals = [
+    'Xây Dựng Sức Mạnh',
+    'Xây Dựng Cơ Bắp',
+    'Giảm Mỡ',
+    'Học Kỹ Năng'
+]
 
 export const toMuscleGroupName = ( muscleGroupIndex ) => {
     return muscleGroups.find((item, index) => {
@@ -64,5 +65,18 @@ export const toEquipmentName = ( EquipmentIndex ) => {
     return equipments.find((item, index) => {
         //index + 1 is because EquipmentIndex starts at 1, index starts at 0
         return (index + 1) == EquipmentIndex; 
+    })
+};
+
+export const toGender = ( GenderIndex ) => {
+    return gender.find((item, index) => {
+        return (index) == GenderIndex; 
+    })
+};
+
+export const toGoals = ( GoalsIndex ) => {
+    return goals.find((item, index) => {
+        //index + 1 is because GoalsIndex starts at 1, index starts at 0
+        return (index + 1) == GoalsIndex; 
     })
 };
