@@ -14,14 +14,14 @@ import { COLOR, SCREEN_WIDTH } from '../constant';
 import ProgramItem from '../components/ProgramItem';
 import HomeCategoryItem from '../components/HomeCategoryItem';
 import CommandButton from '../components/CommandButton';
-import {getAllWorkout} from '../serverAPIs/workoutAPI';
-import {toWorkoutTypeName} from '../backendRules'
+import { getAllWorkout } from '../serverAPIs/workoutAPI';
+import { toWorkoutTypeName } from '../backendRules'
 import { getAllVideo } from '../serverAPIs/videoAPI';
 import { shuffle } from '../utilities/Utilities';
 import { getAllProgram } from '../serverAPIs/programAPI';
 
 const HOME_BANNER_HEIGHT = 300;
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
   const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
   const [suggestedVideos, setSuggestedVideos] = useState([]);
   const [suggestedPrograms, setSuggestedPrograms] = useState([]);
@@ -50,7 +50,7 @@ function HomeScreen({navigation}) {
     try {
       const res = await getAllWorkout();
       if (!res?.data?.workouts) throw 'FAIL TO GET WORKOUT';
-      const list = res?.data?.workouts?.filter((item)=>{
+      const list = res?.data?.workouts?.filter((item) => {
         return toWorkoutTypeName(item?.type) === 'Tập Luyện'
       })
       if (list?.length > 5) {
@@ -76,17 +76,11 @@ function HomeScreen({navigation}) {
   };
 
   const [backPressedCount, setBackPressedCount] = useState(0);
-  // ToastAndroid.showWithGravity(
-  //   'Nhấn lần nữa để thoát ứng dụng!',
-  //   ToastAndroid.LONG,
-  //   ToastAndroid.BOTTOM
-  // )
-
   //Double back press to exit app
   useEffect(
     useCallback(() => {
-        BackHandler.addEventListener('hardwareBackPress', () => {
-          if (navigation.isFocused()) {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        if (navigation.isFocused()) {
           setBackPressedCount((backPressedCount) => backPressedCount + 1);
           ToastAndroid.showWithGravity(
             'Nhấn lần nữa để thoát ứng dụng!',
@@ -94,19 +88,26 @@ function HomeScreen({navigation}) {
             ToastAndroid.BOTTOM
           )
           return true;
-          }
-          else {
-            return false;
-          }
-        });
-        return () =>
-          BackHandler.removeEventListener('hardwareBackPress', () => true);
+        }
+        else {
+          return false;
+        }
+      });
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', () => true);
     }, []),
   );
 
   useEffect(() => {
-    if (backPressedCount === 2) {
+    // Use a flag (isSubscribed) to determine when to cancel your subscription. 
+    // At the end of the effect, you'd make a call to clean up.
+    let isSubscribed = true;
+    if (backPressedCount === 2 && isSubscribed) {
       BackHandler.exitApp();
+    }
+    return () => {
+
+      isSubscribed = false;
     }
   }, [backPressedCount]);
 
@@ -225,7 +226,7 @@ function HomeScreen({navigation}) {
         translucent></StatusBar>
       {renderBanner()}
       {renderUserInfo()}
-      <HomeSection title="Đề xuất cho bạn" onPress={() => {navigation.navigate('AllWorkout')}}  />
+      <HomeSection title="Đề xuất cho bạn" onPress={() => { navigation.navigate('AllWorkout') }} />
       <FlatList
         pagingEnabled
         horizontal
@@ -245,17 +246,17 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Kiến thức tập luyện" onPress={()=>{navigation.navigate('AllVideo')}}/>
+      <HomeSection title="Kiến thức tập luyện" onPress={() => { navigation.navigate('AllVideo') }} />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedVideos}
-        renderItem={({item, index}) => (
-          <View style={{paddingRight: 15}} key={index}>
+        renderItem={({ item, index }) => (
+          <View style={{ paddingRight: 15 }} key={index}>
             <ProgramItem
-            onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
-              style={{height: 200, width: 160}}
+              onPress={() => { navigation.navigate('WatchVideo', { video: item }) }}
+              style={{ height: 200, width: 160 }}
               title={item?.name}
               image={{
                 uri: item?.image,
@@ -264,18 +265,18 @@ function HomeScreen({navigation}) {
           </View>
         )}
       />
-      <HomeSection title="Lộ trình tập luyện" onPress={()=>{navigation.navigate('AllProgram')}}/>
+      <HomeSection title="Lộ trình tập luyện" onPress={() => { navigation.navigate('AllProgram') }} />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={suggestedPrograms}
-        renderItem={({item, index}) => (
-          <View style={{paddingRight: 15}} key={index}>
+        renderItem={({ item, index }) => (
+          <View style={{ paddingRight: 15 }} key={index}>
             <ProgramItem
               icon='dumbbell'
               tagColor={COLOR.BLUE}
-              style={{height: 200, width: 160}}
+              style={{ height: 200, width: 160 }}
               title={item?.name}
               image={{
                 uri: item?.image,
@@ -290,8 +291,8 @@ function HomeScreen({navigation}) {
         showsHorizontalScrollIndicator={false}
         style={styles.horizontalList}
         data={DUMMY_ARR}
-        renderItem={({item, index}) => (
-          <View style={{paddingRight: 15}} key={index}>
+        renderItem={({ item, index }) => (
+          <View style={{ paddingRight: 15 }} key={index}>
             <HomeCategoryItem
               style={{ height: 110, width: 250 }}
               title="Giảm Mỡ"

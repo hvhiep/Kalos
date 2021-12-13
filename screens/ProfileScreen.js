@@ -263,7 +263,7 @@ function ProfileScreen({ navigation }) {
           {/*2. setting button */}
           <TouchableOpacity
             style={styles.setting}
-            onPress={() => navigation.navigate('Setting')}>
+            onPress={() => navigation.navigate('Setting', {userInfo})}>
             <Icon
               style={styles.settingIcon}
               name="settings"
