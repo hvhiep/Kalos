@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text,Image } from 'react-native';
+import { View, Text, Image, StatusBar } from 'react-native';
 import AppLogo from "../assets/images/AppLogo.png";
 import { getUserToken } from '../AsyncStorage/userStorage';
 
@@ -34,6 +34,10 @@ function SplashScreen(props) {
 
     return (
         <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: '#222222'}}>
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor={'transparent'}
+                translucent></StatusBar>
             <Image source={AppLogo} />   
         </View>
     )

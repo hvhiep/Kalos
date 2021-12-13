@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
-    SafeAreaView
+    SafeAreaView,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Video from 'react-native-video';
