@@ -26,6 +26,7 @@ import bmi from '../assets/images/bmi.png';
 //api
 import { getMe } from '../serverAPIs/getMeAPI';
 import { toLevelName, toGoals } from '../backendRules';
+import { updateBodyIndex } from '../serverAPIs/bodyIndexUpdateAPI';
 
 //--------------------------------------------
 const HEADER_HEIGHT = 200;
@@ -38,6 +39,7 @@ function ProfileScreen({ navigation }) {
   const [weights, setWeights] = useState([1, 2, 3]);
   const [weightDates, setWeightDates] = useState([1, 2, 3]);
   const [isLoadingMainChart, setLoadingMainChart] = useState(true);
+  const [isUpdateBodyIndex, setUpdateBodyIndex] = useState(false);
 
   //BMI
   const BMI = [
@@ -102,13 +104,15 @@ function ProfileScreen({ navigation }) {
     useShadowColorFromDataset: false // optional
   };
 
-  // console.log('profile tab - userInfo: ', userInfo);
-  console.log('profile tab - weights: ', weights);
-  console.log('profile tab - weightDates: ', weightDates);
-
   useEffect(() => {
     getUserInfo();
-  }, []);
+    if (isUpdateBodyIndex)
+      setUpdateBodyIndex(false);
+    
+    return () => {
+      setUpdateBodyIndex(false);
+    }
+  }, [isUpdateBodyIndex]);
 
 
   //get user info
@@ -130,7 +134,6 @@ function ProfileScreen({ navigation }) {
       setWeights([...weightValues]);
       setWeightDates([...weightDates]);
       setLoadingMainChart(false);
-      console.log('profile tab - weight: ', weightArray);
     }
     else
       console.log('profile - Khong call dc getMe!');
@@ -139,11 +142,25 @@ function ProfileScreen({ navigation }) {
 
   //new updated weight on current day. Need to update to database.....
   //if type === 1 then update, else then do nothing
-  const setNewWeight = (type, data) => {
-    console.log(type, data);
+  const setNewWeight = async (type, data) => {
+    if (type === 1) {
+      const response = await updateBodyIndex(data, -1);
+      if (response !== -1)
+        setUpdateBodyIndex(true);
+      else
+        console.log('cap nhat weight that bai!');
+    }
+
   };
-  const setNewHeight = (type, data) => {
-    console.log(type, data);
+  const setNewHeight = async (type, data) => {
+    if (type === 1) {
+      const response = await updateBodyIndex(-1, data);
+      if (response !== -1)
+        setUpdateBodyIndex(true);
+      else
+        console.log('cap nhat height that bai!');
+    }
+
   };
 
   //-------------render function ------------------
@@ -211,17 +228,12 @@ function ProfileScreen({ navigation }) {
       return (
         <View style={styles.itemWrapper}>
           <Text style={styles.bmiNumber}>Hiện Tại: {bmi} </Text>
-          <Text style={[styles.bmiState,{color: color}]}>
+          <Text style={[styles.bmiState, { color: color }]}>
             {title}
           </Text>
         </View>
       )
     }
-  }
-
-  //render bmi title
-  const renderBMITitle = () => {
-
   }
   //-----------------------------------------------
 
