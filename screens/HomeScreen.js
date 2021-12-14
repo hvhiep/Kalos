@@ -1,5 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Image, Text, StyleSheet, View, StatusBar, ToastAndroid, BackHandler } from 'react-native';
+import {
+  Image,
+  Text,
+  StyleSheet,
+  View,
+  StatusBar,
+  ToastAndroid,
+  BackHandler,
+  ActivityIndicator
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { BackgroundImage } from 'react-native-elements/dist/config';
 import {
@@ -19,15 +28,23 @@ import { toWorkoutTypeName } from '../backendRules'
 import { getAllVideo } from '../serverAPIs/videoAPI';
 import { shuffle } from '../utilities/Utilities';
 import { getAllProgram } from '../serverAPIs/programAPI';
+import { getMe } from '../serverAPIs/getMeAPI';
+import { toLevelName } from '../backendRules';
 
 const HOME_BANNER_HEIGHT = 300;
 function HomeScreen({ navigation }) {
   const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
   const [suggestedVideos, setSuggestedVideos] = useState([]);
   const [suggestedPrograms, setSuggestedPrograms] = useState([]);
+  const [backPressedCount, setBackPressedCount] = useState(0);
   const DUMMY_ARR = ['1', '2', '3'];
+  //user info
+  const [userInfo, setUserInfo] = useState({});
+  const [isLoadingUserInfo, setLoadingUserInfo] = useState(true);
+  console.log('HOME user info: ', userInfo);
 
   useEffect(() => {
+    getUserInfo();
     getSuggestedWorkout();
     getSuggestedVideo();
     getSuggestedProgram();
@@ -75,7 +92,17 @@ function HomeScreen({ navigation }) {
     }
   };
 
-  const [backPressedCount, setBackPressedCount] = useState(0);
+  //get user info 
+  const getUserInfo = async () => {
+    const response = await getMe();
+    if (response !== -1) {
+      setUserInfo(response?.user);
+      setLoadingUserInfo(false);
+    }
+    else
+      console.log('profile - Khong call dc getMe!');
+  }
+
   //Double back press to exit app
   useEffect(
     useCallback(() => {
@@ -105,10 +132,7 @@ function HomeScreen({ navigation }) {
     if (backPressedCount === 2 && isSubscribed) {
       BackHandler.exitApp();
     }
-    return () => {
-
-      isSubscribed = false;
-    }
+    return () => isSubscribed = false;
   }, [backPressedCount]);
 
   const renderBanner = () => (
@@ -158,65 +182,75 @@ function HomeScreen({ navigation }) {
     </BackgroundImage>
   );
 
-  const renderUserInfo = () => (
-    <View style={styles.userStatus}>
-      <View style={styles.userTagWrapper}>
-        <View style={[styles.userTag, { borderColor: COLOR.WHITE }]}>
-          <Icon
-            name="account"
-            type="material-community"
-            size={14}
-            color={COLOR.WHITE}
-          />
-          <Text style={[styles.userTagTxt, { color: COLOR.WHITE }]}>
-            Người mới tập
-          </Text>
-        </View>
-        <View style={[styles.userTag, { borderColor: COLOR.WHITE }]}>
-          <Icon
-            name="account"
-            type="material-community"
-            size={14}
-            color={COLOR.WHITE}
-          />
-          <Text style={[styles.userTagTxt, { color: COLOR.WHITE }]}>Tăng cơ</Text>
-        </View>
-      </View>
+  //render user info
+  const renderUserInfo = () => {
+    if (isLoadingUserInfo)
+      return (
+        //loading
+        <ActivityIndicator
+          animating={isLoadingUserInfo}
+          color='white'
+          hidesWhenStopped >
+        </ActivityIndicator>
+      )
+    else {
+      const weight = userInfo.information.weight.slice(-1)[0].value;
+      const height = userInfo.information.height;
+      let bmi = ((weight / (height * 2)) * 100).toFixed(2);
+      return (
+        <View style={styles.userStatus}>
+          <View style={styles.userTagWrapper}>
+            <View style={[styles.userTag, { borderColor: COLOR.WHITE }]}>
+              <Icon
+                name="account"
+                type="material-community"
+                size={14}
+                color={COLOR.WHITE}
+              />
+              <Text style={[styles.userTagTxt, { color: COLOR.WHITE }]}>
+                {toLevelName(userInfo.information.level)}
+              </Text>
+            </View>
+          </View>
 
-      <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
-        <View style={{ flex: 5 }}>
-          <Text style={styles.numberTxt}>Đào Duy Nam</Text>
-          <Text style={styles.silverTxt}>
-            Chiều Cao: <Text style={styles.numberTxt}>173cm</Text> - Cân nặng:{' '}
-            <Text style={styles.numberTxt}>63.5 kg</Text>
-          </Text>
-        </View>
-        <View style={{ flex: 1, alignItems: 'center', marginTop: -20 }}>
-          <Text
-            style={{ fontWeight: 'bold', fontSize: 20, color: COLOR.DARK_BROWN }}>
-            BMI
-          </Text>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLOR.WHITE }}>
-            2.5
-          </Text>
-        </View>
-      </View>
+          <View style={{ flexDirection: 'row', paddingVertical: 5 }}>
+            <View style={{ flex: 5 }}>
+              <Text style={styles.numberTxt}>{userInfo.name}</Text>
+              <Text style={styles.silverTxt}>
+                Chiều Cao: <Text style={styles.numberTxt}>{height} cm</Text> - Cân nặng:
+                <Text style={styles.numberTxt}> {weight} kg</Text>
+              </Text>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', marginTop: -20 }}>
+              <Text
+                style={{ fontWeight: 'bold', fontSize: 20, color: COLOR.DARK_BROWN }}>
+                BMI
+              </Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLOR.WHITE }}>
+                {bmi}
+              </Text>
+            </View>
+          </View>
 
-      <TouchableOpacity
-        style={styles.userBtn}
-        onPress={() => navigation.navigate('Category')}>
-        <Icon
-          name="chart-line"
-          type="material-community"
-          size={20}
-          color={COLOR.WHITE}
-        />
-        <Text style={[styles.userBtnTxt, { marginLeft: 10 }]}>
-          Cập nhật chỉ số ngay
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+          <TouchableOpacity
+            style={styles.userBtn}
+            onPress={() => navigation.navigate('Category')}>
+            <Icon
+              name="chart-line"
+              type="material-community"
+              size={20}
+              color={COLOR.WHITE}
+            />
+            <Text style={[styles.userBtnTxt, { marginLeft: 10 }]}>
+              Cập nhật chỉ số ngay
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
+
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: COLOR.MATTE_BLACK }}>

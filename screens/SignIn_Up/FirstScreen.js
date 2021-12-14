@@ -39,6 +39,7 @@ export default function FirstScreen(props) {
         }, []),
     );
 
+        //double back button to exit
     useEffect(() => {
         // Use a flag (isSubscribed) to determine when to cancel your subscription. 
         // At the end of the effect, you'd make a call to clean up.
