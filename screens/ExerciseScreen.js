@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
-    SafeAreaView
+    SafeAreaView,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Video from 'react-native-video';
@@ -15,24 +15,19 @@ import { COLOR, HOST } from '../constant';
 import { SearchBar } from "react-native-elements";
 
 //Bottom Sheet
-
 import SheetExerciseDetail from "../components/SheetExerciseDetail";
 import SheetFilter from '../components/SheetFilter';
-
 //backend rules
 import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules";
-
 // get Token
 import { getAllExercises } from "../serverAPIs/exercisesAPI";
-//test data
-// import exercisesData from "../assets/testData/exercisesData";
 
 function ExerciseScreen() {
-   
-    // console.log('muscle: ', toMuscleGroupName(1));
-    // console.log('level: ', toLevelName(2));
-    // console.log('equip: ', toEquipmentName('3'));
-
+     //Bottom sheet exercise detail
+    //ref + state for sheet
+    const bottomSheetRef = useRef(null);
+    const sheetFilterRef = useRef(null);
+    const [exerciseDetail, setExerciseDetail] = useState(null);
     const [exercisesData, setExercisesData] = useState([]);
     
     useEffect(()=>{
@@ -64,16 +59,18 @@ function ExerciseScreen() {
         )
     }
 
-    //Bottom sheet exercise detail
-    //ref + state for sheet
-    const bottomSheetRef = useRef(null);
-    const sheetFilterRef = useRef(null);
-    const [exerciseDetail, setExerciseDetail] = useState(null);
-
     //handle bottom sheet
     const handleBottomSheet = (item) => {
         setExerciseDetail(item);
         bottomSheetRef.current.snapTo(0);
+    }
+    //handle filter submit
+    const handleFilterSubmit = (filterData) => {
+        //RULES:
+        // level === 0 -> select all level
+        // muscleGroup === -1 -> select all 
+        // equipment === -1 -> select all
+        console.log('filter submit: ', filterData);
     }
 
     return (
@@ -93,7 +90,7 @@ function ExerciseScreen() {
                     {/* exercise filter */}
                     <TouchableOpacity 
                         style={styles.searchFilter}
-                        onPress={() => sheetFilterRef.current.snapTo(0)}>
+                        onPress={() => sheetFilterRef.current.snapTo(1)}>
                         <Icon
                             name="filter-alt"
                             type="material"
@@ -114,11 +111,14 @@ function ExerciseScreen() {
                 {/*Bottom Sheet Exercise Detail */}
                 <SheetExerciseDetail
                     bottomSheetRef={bottomSheetRef}
+                    index={-1}
                     exerciseDetail={exerciseDetail}>
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
                 <SheetFilter
-                    sheetFilterRef={sheetFilterRef}>
+                    index={-1}
+                    sheetFilterRef={sheetFilterRef}
+                    onSubmit={handleFilterSubmit}>
                 </SheetFilter>
                     
             </View>
