@@ -29,6 +29,9 @@ import {IconButton} from 'react-native-paper';
 import WorkoutProgressBar from '../../components/WorkoutProgressBar';
 import CustomModal from '../../components/CustomModal';
 import ProgressCircle from 'react-native-progress-circle';
+import LoadingView from '../../components/LoadingView';
+import Toast from 'react-native-toast-message';
+import {submitWorkout} from '../../serverAPIs/workoutAPI'
 
 const STOP_WATCH_HEIGHT = 100;
 
@@ -44,9 +47,11 @@ function WorkoutProgressScreen({route, navigation}, props) {
   const [mainTimerRunning, setMainTimerRunning] = useState(true);
   const [showModalExit, setShowModalExit] = useState(false);
   const [showModalConfirmFinish, setshowModalConfirmFinish] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const excersiseStatusRef = useRef();
   const currentExcersiseTimerRef = useRef();
+  const mainTimerRef = useRef();
   const doneIconRef = useRef();
   const flatListRef = useRef();
 
@@ -82,7 +87,7 @@ function WorkoutProgressScreen({route, navigation}, props) {
     let arr = [];
     workoutData?.rounds?.map(round => {
       for (let i = 0; i < round?.sets; i++) {
-        arr = arr.concat(round?.excercises);
+        arr = arr.concat(round?.exercises);
       }
     });
     console.log('DATA', arr);
@@ -93,8 +98,7 @@ function WorkoutProgressScreen({route, navigation}, props) {
   const onHideDoneIcon = () => {
     if (!isRest) {
       //Ghi nhan du lieu:
-      listExcercise[currentIndex].doneTime =
-        currentExcersiseTimerRef?.current?.currentTime;
+      listExcercise[currentIndex].doneTime = currentExcersiseTimerRef?.current?.currentTime;
       listExcercise[currentIndex].isDone = true;
       // setIsRest phai duoc dat sau ghi nhan du lieu
       setIsRest(true);
@@ -124,13 +128,30 @@ function WorkoutProgressScreen({route, navigation}, props) {
     ) {
       setshowModalConfirmFinish(true)
     } else {
-      alert('Done');
+      onSubmitWorkout();
     }
   };
 
-  const onFinishWorkout = () => {
-   //Luu du lieu
-   navigation.navigate('Home')
+  const onSubmitWorkout = async () => {
+   try{
+    setIsLoading(true)
+    const res = await submitWorkout(workoutData?._id, mainTimerRef?.current?.currentTime)
+    if (!res) throw 'Đã xảy ra lỗi khi Submit Bài tập'
+    Toast.show({
+      type: 'success',
+      text1: 'Thông báo',
+      text2: 'Chúc mừng bạn đã hoàn thành bài tập 👋'
+    });
+    navigation.navigate('Home')
+   } catch (e){
+    Toast.show({
+      type: 'error',
+      text1: 'Thông báo',
+      text2: e + ' 👋'
+    });
+   } finally{
+     setIsLoading(false)
+   }
   };
 
   const goToExcercise = index => {
@@ -208,14 +229,14 @@ function WorkoutProgressScreen({route, navigation}, props) {
             <Timer
               ref={currentExcersiseTimerRef}
               style={{position: 'absolute', right: 30, top: 10}}
-              warningTime={currentExcersise?.rest}
+              warningTime={currentExcersise?.duration || 999999}
             />
           </View>
         )}
         <View style={styles.nameWrapper}>
           <Text style={styles.nameTxt}>{currentExcersise?.data?.name}</Text>
-          {currentExcersise?.time ? (
-            <Text style={styles.repTxt}>{currentExcersise?.time} Giây</Text>
+          {currentExcersise?.duration ? (
+            <Text style={styles.repTxt}>{currentExcersise?.duration} Giây</Text>
           ) : (
             <Text style={styles.repTxt}>{currentExcersise?.reps} Reps</Text>
           )}
@@ -315,6 +336,12 @@ function WorkoutProgressScreen({route, navigation}, props) {
     }
   };
 
+  if (isLoading) return(
+    <View style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
+      <LoadingView/>
+    </View>
+  )
+
   return (
     <View style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
       <Animated.View
@@ -330,6 +357,7 @@ function WorkoutProgressScreen({route, navigation}, props) {
         <View style={{alignItems: 'center', flex: 1}}>
           <View style={{position: 'absolute', width: SCREEN_WIDTH}}>
             <Timer
+              ref={mainTimerRef}
               isMinuteAndSecondFormat
               isActive={mainTimerRunning}
               textStyle={{color: COLOR.WHITE, fontWeight: 'bold'}}
@@ -418,10 +446,10 @@ function WorkoutProgressScreen({route, navigation}, props) {
       />
       <CustomModal
         visible={showModalConfirmFinish}
-        title="Bạn chưa hoàn thành bài tập, bạn có chắc muốn kết thúc ?"
+        title="Bạn chưa hoàn thành bài tập, Nếu xác nhận thì tất cả dữ liệu tập sẽ không được ghi nhận ?"
         onConfirm={() => {
           setshowModalConfirmFinish(false);
-          onFinishWorkout();
+          navigation.pop()
         }}
         onCancel={() => setshowModalConfirmFinish(false)}
       />

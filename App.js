@@ -3,12 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import {
   StyleSheet,
   BackHandler,
-  ToastAndroid
+  ToastAndroid,
 } from 'react-native';
 import MainStackNavigator from './navigation/MainStackNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LogBox } from 'react-native';
+import Toast from 'react-native-toast-message';
+
 LogBox.ignoreLogs(['Reanimated 2']);
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 function App() {
 
@@ -17,6 +21,7 @@ function App() {
       <NavigationContainer>
         <MainStackNavigator />
       </NavigationContainer>
+      <Toast />
     </SafeAreaProvider>
   );
 };
