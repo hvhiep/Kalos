@@ -1,17 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {COLOR} from '../../constant';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import moment from 'moment';
 import HeartButton from '../../components/HeartButton';
+import { getVideoById } from '../../serverAPIs/videoAPI';
 
 function WatchVideoScreen({route}, props) {
-  const {video} = route.params;
+  const {videoData} = route.params;
 
-  const getYoutubeId = url => {
-    const arr = url.split('https://www.youtube.com/watch?');
-    return arr[1];
+  const [video, setVideo] = useState({})
+
+  useEffect(()=>{
+    getVideoDetail()
+  }, [])
+
+  const getVideoDetail = async () => {
+    const res = await getVideoById(videoData?._id)
+    if (res) setVideo(res?.data?.video)
   };
+
   function youtube_parser(url) {
     console.log(url);
     var regExp =
@@ -28,7 +36,7 @@ function WatchVideoScreen({route}, props) {
         <Text style={styles.desTxt}>{moment(video?.updatedAt).format('LL')}</Text>
       </View>
       <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal:20, justifyContent:'flex-end', marginTop:10}}>
-          <HeartButton heartStyle={{width:50, height:50}} isliked={false}/>
+          <HeartButton heartStyle={{width:50, height:50}} isliked={video?.liked}/>
           <Text style={styles.desTxt}>{video?.likes || 0}</Text>
       </View>
 
@@ -36,7 +44,7 @@ function WatchVideoScreen({route}, props) {
         <YoutubePlayer
           height={300}
           play={true}
-          videoId={youtube_parser(video?.videoUrl)}
+          videoId={youtube_parser(video?.videoUrl || '')}
         />
       </View>
     </View>
