@@ -16,7 +16,7 @@ import { getUserToken, storeUserToken } from "../../AsyncStorage/userStorage";
 
 export default function Setting({ route, navigation }) {
 
-    const { userInfo } = route.params;
+    const { userInfo } = route?.params;
     console.log(userInfo);
 
     //render section
@@ -68,15 +68,15 @@ export default function Setting({ route, navigation }) {
                 style={styles.container}
             >
                 <Text style={styles.sectionHeaderWrapper}>Cá Nhân</Text>
-                <Section title="Tên: " value={userInfo.name}></Section>
-                <Section title="Giới Tính: " value={toGender(userInfo.information.gender)}></Section>
-                <Section title="Chiều Cao: " value={userInfo.information.height}></Section>
-                <Section title="Cân Nặng: " value={userInfo.information.weight.slice(-1)[0].value}></Section>
-                <Section title="Trình Độ: " value={toLevelName(userInfo.information.level)}></Section>
-                <Section title="Hít Đất: " value={userInfo.information.performance.pushUp}></Section>
-                <Section title="Kéo Xà: " value={userInfo.information.performance.pullUp}></Section>
-                <Section title="Squats: " value={userInfo.information.performance.squats}></Section>
-                <Section title="Dips: " value={userInfo.information.performance.dips}></Section>
+                <Section title="Tên: " value={userInfo?.name}></Section>
+                <Section title="Giới Tính: " value={toGender(userInfo?.information?.gender)}></Section>
+                <Section title="Chiều Cao: " value={userInfo?.information?.height}></Section>
+                <Section title="Cân Nặng: " value={userInfo?.information?.weight.slice(-1)[0].value}></Section>
+                <Section title="Trình Độ: " value={toLevelName(userInfo?.information?.level)}></Section>
+                <Section title="Hít Đất: " value={userInfo?.information?.performance?.pushUp}></Section>
+                <Section title="Kéo Xà: " value={userInfo?.information?.performance?.pullUp}></Section>
+                <Section title="Squats: " value={userInfo?.information?.performance?.squats}></Section>
+                <Section title="Dips: " value={userInfo?.information?.performance?.dips}></Section>
                 <TouchableOpacity style={styles.sectionWrapper}
                 >
                     <Text style={styles.sectionTitle}>Mục Tiêu: </Text>

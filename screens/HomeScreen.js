@@ -194,8 +194,8 @@ function HomeScreen({ navigation }) {
         </ActivityIndicator>
       )
     else {
-      const weight = userInfo.information.weight.slice(-1)[0].value;
-      const height = userInfo.information.height;
+      const weight = userInfo?.information?.weight?.slice(-1)[0]?.value;
+      const height = userInfo?.information?.height;
       let bmi = ((weight / (height * 2)) * 100).toFixed(2);
       return (
         <View style={styles.userStatus}>
