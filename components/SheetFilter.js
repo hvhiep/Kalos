@@ -12,7 +12,7 @@ import { COLOR } from '../constant';
 import { useState } from "react";
 
 
-export default function SheetFilter({ sheetFilterRef }) {
+export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
 
     // test data: level, muscleGroup, equipment
     const levels = [
@@ -22,38 +22,58 @@ export default function SheetFilter({ sheetFilterRef }) {
         'Nâng Cao'
     ];
     const muscleGroups = [
-        'Ngực',
+        'Toàn Thân',
+        'Lưng',
+        'Bắp Tay Trước',
+        'Ngực',
+        'Bắp Tay Sau',
         'Vai',
-        'Tay Sau',
-        'Xô',
-        'Tay Trước',
+        'Bụng',
         'Chân',
-        'Bụng'
     ];
     const equipments = [
-        'Có Dụng Cụ',
         'Không Dụng Cụ',
+        'Có Dụng Cụ',
     ];
 
     //state cho việc nhấn vào từng item
-    const [selectedLevel, setSelectedLevel] = useState(0);
-    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState(null);
-    const [selectedEquipment, setSelectedEquipment] = useState(null);
+    const [selectedLevel, setSelectedLevel] = useState(-1);
+    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState(-1);
+    const [selectedEquipment, setSelectedEquipment] = useState(-1);
 
     //handle press function: highlight item khi nhấn vào item
     const handleLevelPress = (index) => {
-        setSelectedLevel(index);
+        if (selectedLevel !== index)
+            setSelectedLevel(index);
+        else
+        //else set selected item to -1 for removing
+            setSelectedLevel(-1);
     }
     const handleMuscleGroupPress = (index) => {
-        setSelectedMuscleGroup(index);
+        if (selectedMuscleGroup !== index)
+            setSelectedMuscleGroup(index);
+        else
+        setSelectedMuscleGroup(-1);
     }
     const handleEquipmentPress = (index) => {
-        setSelectedEquipment(index);
+        if (selectedEquipment !== index)
+            setSelectedEquipment(index);
+        else
+            setSelectedEquipment(-1);
     }
 
     //handle apply fitler: lấy dữ liệu đã chọn -> đóng bottom sheet và filter vào flatlist các bài tập
     const handleApplyFilter = () => {
-        sheetFilterRef.current.snapTo(1);
+        //prepare data 
+        let data = {
+            level: selectedLevel,
+            muscleGroup: selectedMuscleGroup,
+            equipment: selectedEquipment
+        };
+        onSubmit(data);
+
+        //close sheet
+        sheetFilterRef.current.snapTo(0);
     }
 
     //render nội dung bên trong bottom sheet
@@ -149,8 +169,8 @@ export default function SheetFilter({ sheetFilterRef }) {
     return (
         <BottomSheet
             ref={sheetFilterRef}
-            snapPoints={['100%', 0]}
-            initialSnap={1}
+            snapPoints={[0, '100%']}
+            index={index}
             renderContent={renderContent}
             renderHeader={renderHeader}
             enabledInnerScrolling

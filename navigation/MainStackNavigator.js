@@ -104,7 +104,7 @@ function MainStackNavigator () {
           <MainStack.Screen
             name="WorkoutProgress"
             component={WorkoutProgressScreen}
-            options={{headerTintColor: '#fff'}}
+            options={{headerTintColor: '#fff', headerLeft:()=>null}}
           />
           <MainStack.Screen
             name="WatchVideo"
