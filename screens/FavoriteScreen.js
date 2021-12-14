@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {Image,
     Text,
     StyleSheet,
@@ -6,11 +6,14 @@ import {Image,
     StatusBar,
     SafeAreaView,
     Modal,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl,
+    FlatList,
+    ScrollView
 }
 from 'react-native';
 import {Icon} from 'react-native-elements';
-import { FlatList, ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {COLOR, SCREEN_WIDTH} from '../constant';
 import WorkoutItem from '../components/WorkoutItem'
 import ProgramItem from '../components/ProgramItem';
@@ -19,34 +22,58 @@ import VideoScreen from './FavoriteScreens/VideoScreen';
 import VideoItem from '../components/VideoItem'
 import HomeSection from '../components/HomeSection';
 import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+import NotFoundItemCard from '../components/NotFoundItemCard'
 
-import {getFavoriteVideos, getFavoriteWorkouts, getFavoritePrograms} from '../serverAPIs/favoriteAPI'
+
+import {getFavoriteVideos, getFavoriteWorkouts, getFavoritePrograms, getFavoriteExercises} from '../serverAPIs/favoriteAPI'
 
 function FavoriteScreen({navigation})
 {
     const [favoriteWorkouts, setFavoriteWorkouts] = useState([])
     const [favoritePrograms, setFavoritePrograms] = useState([])
     const [favoriteVideos, setFavoriteVideos] = useState([])
+    const [favoriteExercises, setFavoriteExercises] = useState([])
+
     const [isLoadingWorkouts, setLoadingWorkouts] = useState(true)
     const [isLoadingPrograms, setLoadingPrograms] = useState(true)
     const [isLoadingVideos, setLoadingVideos] = useState(true)
-     
+    const [isLoadingExercises, setLoadingExercises] = useState(true)
+
+    const [isRefreshing, setRefreshing] = useState(false);
+
+    console.log("is refresiong, ", isRefreshing)
+    const onRefreshing = useCallback(
+        () => {
+            console.log("run on refreshing ", isRefreshing)
+            // set Loading effect run
+            setRefreshing(true);
+            setLoadingPrograms(true);
+            setLoadingVideos(true);
+            setLoadingWorkouts(true);
+            setLoadingExercises(true);
+            // fetch data
+            getFavoritePrograms(data =>{
+                setFavoritePrograms(data)
+                setLoadingPrograms(false);
+            });
+            getFavoriteWorkouts((data)=>{
+                setFavoriteWorkouts(data);
+                setLoadingWorkouts(false);
+            });
+            getFavoriteVideos((data)=>{
+                setFavoriteVideos(data);
+                setLoadingVideos(false);
+            });
+            getFavoriteExercises((data)=>{
+                setFavoriteExercises(data);
+                setLoadingExercises(false);
+            })
+
+            setRefreshing(false);
+        },[isRefreshing]);
+
     useEffect(()=>{
-        getFavoritePrograms(data =>{
-            setFavoritePrograms(data)
-            setLoadingPrograms(false);
-        });
-        getFavoriteWorkouts((data)=>{
-            setFavoriteWorkouts(data);
-            setLoadingWorkouts(false);
-        });
-        getFavoriteVideos((data)=>{
-            setFavoriteVideos(data);
-            setLoadingVideos(false);
-        });
-        console.log("video ===== ", favoriteVideos)
-        console.log("programs ===== ", favoritePrograms)
-        console.log("workout ===== ", favoriteWorkouts)
+        onRefreshing()
     },[])
 
     const RenderWorkouts = () =>
@@ -54,6 +81,21 @@ function FavoriteScreen({navigation})
         if (isLoadingWorkouts)
             return(<ActivityIndicator animating={isLoadingWorkouts} color='blue' hidesWhenStopped ></ActivityIndicator>)
         
+        if (favoriteWorkouts.length == 0)
+        {
+            return (
+                <View style={{width:SCREEN_WIDTH}}>
+                    <NotFoundItemCard title="Kế hoạch tập yêu thích của bạn sẽ hiển thị ở đây"
+                    onPress={()=>{}}
+                    buttonTitle="Xem thêm thư viện kế hoạch tập"
+                    image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
+                    >
+
+                    </NotFoundItemCard>
+                </View>
+            );
+        }
+
         return(
             <FlatList
                 pagingEnabled
@@ -63,31 +105,60 @@ function FavoriteScreen({navigation})
                 data={favoriteWorkouts}
                 renderItem={({item})=>(
                 <View style={{width:SCREEN_WIDTH, padding: 15}}>
-                    <WorkoutItem image={{uri: item.image}}
-                        />
+                    <WorkoutItem
+                    title={item?.name}
+                    muscleGroups={item?.muscleGroups}
+                    image={{
+                        uri: item?.image,
+                    }}
+                    rounds={item?.rounds}
+                    />
                 </View>
                 )}
             />
         )
     }
-
+    
     const RenderPrograms = () =>
     {
         if (isLoadingPrograms)
             return (<ActivityIndicator animating={isLoadingPrograms} color='blue' hidesWhenStopped ></ActivityIndicator>);
         
+        if (favoritePrograms.length == 0)
+        {
+            return (
+                <View style={{width:SCREEN_WIDTH}}>
+                    <NotFoundItemCard title="Lộ trình yêu thích của bạn sẽ hiển thị ở đây"
+                    onPress={()=>{}}
+                    buttonTitle="Xem thêm thư viện lộ trình tập"
+                    image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
+                    >
+
+                    </NotFoundItemCard>
+                </View>
+            );
+        }
+
         return (<FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
             style={styles.horizontalList}
             data={favoritePrograms}
+            keyExtractor={item => item._id}
             renderItem={({item})=>{
                 console.log("program-item ----", item)
                 return(
-                <ProgramItem image={{uri:item.image}}
-                title={item.name}
-                style={{height: 200, width: 200, padding: 10}}
-                />
+                    <View style={{paddingRight: 15}}>
+                        <ProgramItem
+                        icon='dumbbell'
+                        tagColor={COLOR.BLUE}
+                        style={{height: 200, width: 160}}
+                        title={item?.name}
+                        image={{
+                            uri: item?.image,
+                        }}
+                        />
+                    </View>
             )}}
             />)
     }
@@ -96,6 +167,21 @@ function FavoriteScreen({navigation})
         if (isLoadingVideos)
             return (<ActivityIndicator animating={isLoadingVideos} color='blue' hidesWhenStopped ></ActivityIndicator>);
         
+        if (favoriteVideos.length == 0)
+        {
+            return (
+                <View style={{width:SCREEN_WIDTH}}>
+                    <NotFoundItemCard title="Video yêu thích của bạn sẽ hiển thị ở đây"
+                    onPress={()=>{}}
+                    buttonTitle="Xem thêm các video"
+                    image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
+                    >
+
+                    </NotFoundItemCard>
+                </View>
+            );
+        }
+
         return (
             <FlatList
                 pagingEnabled
@@ -104,29 +190,67 @@ function FavoriteScreen({navigation})
                 style={styles.horizontalList}
                 data={favoriteVideos}
                 renderItem={({item})=>(
-                <View style={{width:SCREEN_WIDTH}}>
-                    <VideoItem image={{uri:item.image}}
-                    isLiked
-                    title={item.name}
-                    onPress = {()=>{
-                        var data = {videoUrl: item.videoUrl,
-                                    title: item.name};
-                        navigation.push('VideoScreen', data);
-                    }}
-                    />
-                </View>
+                    <View style={{paddingLeft: 15}}>
+                        <ProgramItem
+                        onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
+                        style={{height: 200, width: 160}}
+                        title={item?.name}
+                        image={{
+                            uri: item?.image,
+                        }}
+                        />
+                    </View>
                 )}
                 />
         )
     }
 
+    const RenderExercises = () => {
+        if (isLoadingExercises)
+            return (<ActivityIndicator animating={isLoadingExercises} color='blue' hidesWhenStopped ></ActivityIndicator>);
+        
+        if (favoriteExercises.length == 0)
+        {
+            return (
+                <View style={{width:SCREEN_WIDTH}}>
+                    <NotFoundItemCard title="Bài tập yêu thích của bạn sẽ hiển thị ở đây"
+                    onPress={()=>{}}
+                    buttonTitle="Xem thêm các bài tập"
+                    image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
+                    >
+
+                    </NotFoundItemCard>
+                </View>
+            );
+        }
+
+        return (
+            <View style={{width:SCREEN_WIDTH}}>
+                <ImageOverlayCard 
+                image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
+                title={favoriteExercises.length + " Bài tập đã lưu"}
+                onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
+            </View>
+        )
+    }
+    console.log("video ===== ", favoriteVideos)
+    console.log("programs ===== ", favoritePrograms)
+    console.log("workout ===== ", favoriteWorkouts)
+    console.log("exercises ===== ", favoriteExercises)
     return (
     <SafeAreaView style={{ flex: 1}}>
         <View style={styles.layoutContainer}>
             <View style = {styles.header}>
                 <Text style = {styles.headerText}>Nội dung yêu thích</Text>
             </View>
-            <ScrollView style={styles.content}>
+            <ScrollView style={styles.content}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefreshing}
+                    />
+                }
+            >
                 <View>
                     <Text style = {styles.description}>Các bài tập, chương trình tập bạn đã yêu thích sẽ được lưu tại đây theo từng hạng mục</Text>
                 </View>
@@ -151,12 +275,7 @@ function FavoriteScreen({navigation})
                 <View style = {styles.categoryTitle}>
                     <Text style = {styles.title}>Bài tập</Text>
                 </View>
-                <View style={{width:SCREEN_WIDTH}}>
-                    <ImageOverlayCard 
-                    image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
-                    title="Bài tập đã lưu"
-                    onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
-                </View>
+                {RenderExercises()}
 
                 
                 
@@ -209,7 +328,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     categoryTitle:{
-        paddingHorizontal: 10,
+        padding: 10,
         marginTop: 15,
         flexDirection: "row",
         justifyContent: "space-between",

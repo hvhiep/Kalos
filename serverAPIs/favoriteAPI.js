@@ -88,3 +88,19 @@ export const getFavoriteWorkouts = async (setDataFunction) =>
         setDataFunction(workouts)
     })
 }
+
+export const toggleExerciseLike = async (exerciseId)=>{
+    const token = await getUserToken();
+    const response = fetch(HOST + '/api/users/me/favorite/exercises' , 
+        {
+            method: "POST",
+            headers:{
+                'Content-type' : 'application/json',
+                'Accept' : 'application/json',
+                'klos-access-token': token
+            },
+            body: JSON.stringify({idExercise: exerciseId})
+        }
+    )
+    return response.json();
+}
