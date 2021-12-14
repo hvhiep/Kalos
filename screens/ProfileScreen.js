@@ -216,15 +216,15 @@ function ProfileScreen({ navigation }) {
       )
     else {
       //calculate bmi base on weight and height
-      let bmi = ((weights.slice(-1)[0] / (userInfo.information.height * 2)) * 100).toFixed(2);
+      let bmi = ((weights?.slice(-1)[0] / (userInfo?.information?.height * 2)) * 100).toFixed(2);
       //get bmi name
       const userBMI = BMI.find((item) => {
         if (bmi > item.range[0] && bmi <= item.range[1])
           return true;
         return false;
       });
-      const color = userBMI.color;
-      const title = userBMI.title;
+      const color = userBMI?.color;
+      const title = userBMI?.title;
       return (
         <View style={styles.itemWrapper}>
           <Text style={styles.bmiNumber}>Hiện Tại: {bmi} </Text>
