@@ -90,7 +90,7 @@ export default function SheetExerciseDetail(props) {
             ref={bottomSheetRef}
             snapPoints={['95%', 0]}
             borderRadius={10}
-            initialSnap={1}
+            index={props.index}
             renderContent={() => renderContent(exerciseDetail, liked)}
             renderHeader={renderHeader}>
         </BottomSheet>
