@@ -52,7 +52,7 @@ function ExerciseScreen() {
                         style={styles.exerciseName}
                         numberOfLines={2}
                     >
-                        {item.name}
+                        {item?.name}
                     </Text>
                 </View>
             </TouchableOpacity>

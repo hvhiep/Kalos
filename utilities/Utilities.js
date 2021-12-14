@@ -25,3 +25,7 @@ export const handleFormatSecond = (seconds) => {
 
     return array;
   };
+
+  export const cloneArrayOrObject = (arr) => {
+    return JSON.parse(JSON.stringify(arr))
+  }

@@ -27,6 +27,7 @@ export const COLOR = {
     ORANGE:'#ff5e13',
     BLUE:'#187bcd',
     LIGHT_BLACK : '#484848',
+    KELLY_GREEN:'#4cbb17',
 }
 
 export const HORIZONTAL_LIST_HEIGHT = 200; //left view 130

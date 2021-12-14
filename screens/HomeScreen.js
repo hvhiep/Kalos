@@ -33,6 +33,7 @@ import { toLevelName } from '../backendRules';
 
 const HOME_BANNER_HEIGHT = 300;
 function HomeScreen({ navigation }) {
+  const [workoutOfTheDay, setWorkoutOfTheDay] = useState({});
   const [suggestedWorkouts, setSuggestedWorkouts] = useState([]);
   const [suggestedVideos, setSuggestedVideos] = useState([]);
   const [suggestedPrograms, setSuggestedPrograms] = useState([]);
@@ -70,6 +71,7 @@ function HomeScreen({ navigation }) {
       const list = res?.data?.workouts?.filter((item) => {
         return toWorkoutTypeName(item?.type) === 'Tập Luyện'
       })
+      setWorkoutOfTheDay(list[0])
       if (list?.length > 5) {
         const suggestedList = shuffle(list);
         setSuggestedWorkouts(suggestedList.slice(0, 5));
@@ -139,7 +141,7 @@ function HomeScreen({ navigation }) {
     <BackgroundImage
       style={styles.banner}
       source={{
-        uri: 'https://www.cnet.com/a/img/mSdKK71X29nFhsLSencu7IwYlhQ=/1200x675/2019/11/12/e66cc0f3-c6b8-4f6e-9561-e23e08413ce1/gettyimages-1002863304.jpg',
+        uri: workoutOfTheDay?.image,
       }}
       resizeMode="cover">
       <View style={styles.todayWorkout}>
@@ -153,11 +155,11 @@ function HomeScreen({ navigation }) {
         colors={[COLOR.TRANSPARENT, COLOR.MATTE_BLACK]}></LinearGradient>
 
       <View style={styles.bannerLeft}>
-        <Text style={styles.bannerTxt}>Bài tập bụng giúp xây dựng sức bền</Text>
+        <Text style={styles.bannerTxt}>{workoutOfTheDay?.name}</Text>
         <View style={styles.bannerBtnWrapper}>
           <TouchableOpacity
             style={styles.bannerBtn}
-            onPress={() => navigation.navigate('WorkoutInfo')}>
+            onPress={() => navigation.navigate('WorkoutInfo', {workoutData: workoutOfTheDay})}>
             <Icon
               name="dumbbell"
               type="font-awesome-5"
@@ -171,9 +173,9 @@ function HomeScreen({ navigation }) {
 
       <View style={styles.bannerRight}>
         <View style={styles.bannerRightInsider}>
-          <Text style={styles.bannerRightTxt}>3</Text>
-          <Text style={styles.bannerRightSmallTxt}>Số set</Text>
-          <Text style={styles.bannerRightTxt}>30m</Text>
+          <Text style={styles.bannerRightTxt}>{workoutOfTheDay?.rounds?.length}</Text>
+          <Text style={styles.bannerRightSmallTxt}>Số round</Text>
+          <Text style={styles.bannerRightTxt}>{workoutOfTheDay?.rounds?.length * 15}m</Text>
           <Text style={styles.bannerRightSmallTxt}>Thời gian</Text>
           <Text style={[styles.bannerRightTxt, { fontSize: 15 }]}>Medium</Text>
           <Text style={styles.bannerRightSmallTxt}>Level</Text>
