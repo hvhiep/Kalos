@@ -235,6 +235,7 @@ function HomeScreen({navigation}) {
         renderItem={({ item }) => (
           <View style={{ width: SCREEN_WIDTH, paddingRight: 30 }}>
             <WorkoutItem
+              onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item})}}
               title={item?.name}
               muscleGroups={item?.muscleGroups}
               image={{
@@ -254,7 +255,7 @@ function HomeScreen({navigation}) {
         renderItem={({item, index}) => (
           <View style={{paddingRight: 15}} key={index}>
             <ProgramItem
-            onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
+            onPress={()=>{navigation.navigate('WatchVideo', {videoData: item})}}
               style={{height: 200, width: 160}}
               title={item?.name}
               image={{

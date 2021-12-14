@@ -81,7 +81,7 @@ function AllVideoScreen({navigation}) {
     <View style={styles.itemWrapper}>
       <ProgramItem
         onPress={() => {
-          navigation.navigate('WatchVideo', {video: item});
+          navigation.navigate('WatchVideo', {videoData: item});
         }}
         style={{height: 200, width: '100%'}}
         title={item?.name}
