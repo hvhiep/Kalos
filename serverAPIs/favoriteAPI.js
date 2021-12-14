@@ -104,3 +104,43 @@ export const toggleExerciseLike = async (exerciseId)=>{
     )
     return response.json();
 }
+
+export const toggleVideoLike = async (videoId)=>{
+    const token = await getUserToken();
+    const response = fetch(HOST + '/api/users/me/favorite/videos' , 
+        {
+            method: "POST",
+            headers:{
+                'Content-type' : 'application/json',
+                'Accept' : 'application/json',
+                'klos-access-token': token
+            },
+            body: JSON.stringify({idVideo: videoId})
+        }
+    ).then(res => console.log(res))
+}
+
+
+
+
+export const getVideoById = async (videoId, setDataFunction) =>
+{
+    const token = await getUserToken();
+
+    console.log(token);
+    fetch(HOST + '/api/videos/' + videoId , 
+        {
+            method: "GET",
+            headers:{
+                'Content-type' : 'application/json',
+                'Accept' : 'application/json',
+                'klos-access-token': token
+        }}
+    )
+    .then(response => response.json())
+    .then(data => data["video"])
+    .then(video => {
+        console.log(video)
+        setDataFunction(video)
+    })
+}

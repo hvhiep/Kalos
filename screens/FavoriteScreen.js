@@ -192,7 +192,9 @@ function FavoriteScreen({navigation})
                 renderItem={({item})=>(
                     <View style={{paddingLeft: 15}}>
                         <ProgramItem
-                        onPress={()=>{navigation.navigate('WatchVideo', {video: item})}}
+                        onPress={()=>{
+                            console.log("video item ====== ", item)
+                            navigation.navigate('WatchVideo', {videoData: item})}}
                         style={{height: 200, width: 160}}
                         title={item?.name}
                         image={{
@@ -233,6 +235,7 @@ function FavoriteScreen({navigation})
             </View>
         )
     }
+
     console.log("video ===== ", favoriteVideos)
     console.log("programs ===== ", favoritePrograms)
     console.log("workout ===== ", favoriteWorkouts)
