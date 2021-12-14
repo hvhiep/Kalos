@@ -101,8 +101,7 @@ export const toggleExerciseLike = async (exerciseId)=>{
             },
             body: JSON.stringify({idExercise: exerciseId})
         }
-    )
-    return response.json();
+    ).then(res => console.log(res))
 }
 
 export const toggleVideoLike = async (videoId)=>{

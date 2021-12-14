@@ -43,7 +43,7 @@ function FavoriteScreen({navigation})
 
     console.log("is refresiong, ", isRefreshing)
     const onRefreshing = useCallback(
-        () => {
+        async () => {
             console.log("run on refreshing ", isRefreshing)
             // set Loading effect run
             setRefreshing(true);
@@ -86,7 +86,7 @@ function FavoriteScreen({navigation})
             return (
                 <View style={{width:SCREEN_WIDTH}}>
                     <NotFoundItemCard title="Kế hoạch tập yêu thích của bạn sẽ hiển thị ở đây"
-                    onPress={()=>{}}
+                    onPress={()=>{navigation.navigate('AllWorkout')}}
                     buttonTitle="Xem thêm thư viện kế hoạch tập"
                     image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
                     >
@@ -129,7 +129,7 @@ function FavoriteScreen({navigation})
             return (
                 <View style={{width:SCREEN_WIDTH}}>
                     <NotFoundItemCard title="Lộ trình yêu thích của bạn sẽ hiển thị ở đây"
-                    onPress={()=>{}}
+                    onPress={()=>{navigation.navigate('AllProgram')}}
                     buttonTitle="Xem thêm thư viện lộ trình tập"
                     image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
                     >
@@ -172,7 +172,7 @@ function FavoriteScreen({navigation})
             return (
                 <View style={{width:SCREEN_WIDTH}}>
                     <NotFoundItemCard title="Video yêu thích của bạn sẽ hiển thị ở đây"
-                    onPress={()=>{}}
+                    onPress={()=>{navigation.navigate('AllVideo')}}
                     buttonTitle="Xem thêm các video"
                     image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
                     >
@@ -216,7 +216,7 @@ function FavoriteScreen({navigation})
             return (
                 <View style={{width:SCREEN_WIDTH}}>
                     <NotFoundItemCard title="Bài tập yêu thích của bạn sẽ hiển thị ở đây"
-                    onPress={()=>{}}
+                    onPress={()=>{navigation.navigate('AllExercise')}}
                     buttonTitle="Xem thêm các bài tập"
                     image={{uri: "https://dfd5gcc6b7vw5.cloudfront.net/assets/thenx-header-b0f1a2685be5ff4f739a7333baf90c8045a39f170347548609b634e39709357c.jpg"}}
                     >

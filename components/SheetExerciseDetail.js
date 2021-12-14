@@ -12,11 +12,12 @@ import { COLOR } from '../constant';
 import HeartButton from './HeartButton';
 
 import { toEquipmentName, toLevelName, toMuscleGroupName, toWorkoutTypeName } from "../backendRules";
+import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 export default function SheetExerciseDetail(props) {
 
     const { bottomSheetRef, exerciseDetail } = props;
-    const [liked, setLiked] = useState(true);
+    const [isLiked, setLiked] = useState(exerciseDetail?.liked);
 
     //render sheet
     const renderContent = (exerciseDetail) => {
@@ -33,7 +34,11 @@ export default function SheetExerciseDetail(props) {
                 </Video>
 
                 {/* heart button */}
-                <HeartButton style={styles.likeBtn} isliked={liked} onButtonPress={() => { liked ? setLiked(false) : setLiked(true) }} />
+                <HeartButton style={styles.likeBtn} isliked={isLiked} onButtonPress={() => { 
+                    setLiked(prev => !prev)
+                    console.log("exercis e id====", exerciseDetail)
+                    toggleExerciseLike(exerciseDetail._id)
+                }} />
 
                 {/* exercise name */}
                 <Text style={styles.exerciseName}>{exerciseDetail?.name}</Text>
@@ -91,7 +96,7 @@ export default function SheetExerciseDetail(props) {
             snapPoints={['95%', 0]}
             borderRadius={10}
             initialSnap={1}
-            renderContent={() => renderContent(exerciseDetail, liked)}
+            renderContent={() => renderContent(exerciseDetail)}
             renderHeader={renderHeader}>
         </BottomSheet>
     )

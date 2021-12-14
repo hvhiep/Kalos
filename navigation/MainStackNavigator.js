@@ -32,6 +32,7 @@ import WorkoutProgressScreen from '../screens/WorkoutScreens/WorkoutProgressScre
 import WatchVideoScreen from '../screens/Video/WatchVideoScreen';
 import AllVideoScreen from '../screens/Video/AllVideoScreen';
 import AllProgramScreen from '../screens/Program/AllProgramScreen';
+import ExerciseScreen from '../screens/ExerciseScreen'
 
 const MainStack = createStackNavigator();
 
@@ -97,6 +98,8 @@ function MainStackNavigator () {
             headerTitleAlign: 'center', }}
           />
           <MainStack.Screen name="AllWorkout" component={AllWorkoutScreen} 
+          options={{ headerTintColor:'#fff' }}/>
+          <MainStack.Screen name="AllExercise" component={ExerciseScreen} 
           options={{ headerTintColor:'#fff' }}/>
           <MainStack.Screen
             name="WorkoutProgress"

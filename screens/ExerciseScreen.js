@@ -38,6 +38,7 @@ function ExerciseScreen() {
     useEffect(()=>{
         getAllExercises(setExercisesData);
     },[])
+    console.log("exercises ====", exercisesData)
 
     //render exercise item
     const renderExerciseItem = ({ item }) => {
