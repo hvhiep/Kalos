@@ -54,7 +54,7 @@ function WorkoutStatus(props, ref) {
                 flexDirection: 'row',
               }}>
               <View style={styles.background} />
-              <Image style={styles.excersiseImg} source={{uri: item.img}} />
+              <Image style={styles.excersiseImg} source={{uri: item?.image}} />
 
               <View style={styles.excersiseItemDesWrapper}>
                 <TextTicker
@@ -63,10 +63,10 @@ function WorkoutStatus(props, ref) {
                   bounce
                   loop
                   marqueeDelay={1000}>
-                  {item.name}
+                  {item?.name}
                 </TextTicker>
                 <Text style={[styles.excersisesSmallDesTxt]}>
-                  Thời gian nghỉ: {item.restTime}
+                  Thời gian nghỉ: {item.rest}
                 </Text>
               </View>
               <View style={styles.nextExcercise}>
@@ -116,13 +116,13 @@ function WorkoutStatus(props, ref) {
                     bounce
                     loop
                     marqueeDelay={1000}>
-                    {item.name}
+                    {item?.name}
                   </TextTicker>
                   <Text style={[styles.excersisesSmallDesTxt]}>
-                    Số reps: {item.restTime}
+                    Số reps: {item.rest}
                   </Text>
                   <Text style={[styles.excersisesSmallDesTxt]}>
-                    Thời gian nghỉ: {item.restTime}
+                    Thời gian nghỉ: {item.rest}
                   </Text>
                 </LinearGradient>
                 <View style={styles.tag}>
