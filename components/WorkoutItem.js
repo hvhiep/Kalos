@@ -18,7 +18,7 @@ function WorkoutItem(props) {
     const handleListMuscleGroup = () => {
         let str = ''
         props?.muscleGroups?.map((item, index)=>{
-            index === muscleGroups?.length - 1 ?
+            index === props?.muscleGroups?.length - 1 ?
             str + item + ', '
             :str + item
         })
