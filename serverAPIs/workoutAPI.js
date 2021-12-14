@@ -3,7 +3,7 @@ import { postWithCheckingToken } from './manageAPI';
 const axios = require('axios');
 
 export async function getAllWorkout() {
-    const response = await axios.get('https://klos-backend.herokuapp.com/api/workouts');
+    const response = await axios.get('https://klos-backend.herokuapp.com/api/workouts?free=1');
     return response
   }
 
