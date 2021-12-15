@@ -15,7 +15,7 @@ import { toEquipmentName, toLevelName, toMuscleGroupName, toWorkoutTypeName } fr
 
 export default function SheetExerciseDetail(props) {
 
-    const { bottomSheetRef, exerciseDetail } = props;
+    const { bottomSheetRef, exerciseDetail, initialSnap } = props;
     const [liked, setLiked] = useState(true);
 
     //render sheet
@@ -88,9 +88,9 @@ export default function SheetExerciseDetail(props) {
     return (
         <BottomSheet
             ref={bottomSheetRef}
-            snapPoints={['95%', 0]}
+            snapPoints={[0, '95%']}
             borderRadius={10}
-            index={props.index}
+            initialSnap={initialSnap}
             renderContent={() => renderContent(exerciseDetail, liked)}
             renderHeader={renderHeader}>
         </BottomSheet>
