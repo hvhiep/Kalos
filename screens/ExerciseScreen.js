@@ -21,6 +21,8 @@ import SheetFilter from '../components/SheetFilter';
 import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules";
 // get Token
 import { getAllExercises } from "../serverAPIs/exercisesAPI";
+import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
+
 
 function ExerciseScreen() {
      //Bottom sheet exercise detail
@@ -29,6 +31,7 @@ function ExerciseScreen() {
     const sheetFilterRef = useRef(null);
     const [exerciseDetail, setExerciseDetail] = useState(null);
     const [exercisesData, setExercisesData] = useState([]);
+    const[isSelectedLiked, setSelectedLike] = useState(false)
     
     useEffect(()=>{
         getAllExercises(setExercisesData);
@@ -40,7 +43,10 @@ function ExerciseScreen() {
         return (
             <TouchableOpacity
                 style={styles.exerciseWrapper}
-                onPress={() => handleBottomSheet(item)}>
+                onPress={() => {
+                    console.log("selected ex====", item)
+                    handleBottomSheet(item)
+                }}>
                 <View style={styles.exerciseLeftWrapper}>
                     <Image
                         style={styles.exerciseImage}
@@ -63,6 +69,7 @@ function ExerciseScreen() {
     //handle bottom sheet
     const handleBottomSheet = (item) => {
         setExerciseDetail(item);
+        setSelectedLike(item.liked)
         bottomSheetRef.current.snapTo(0);
     }
     //handle filter submit
@@ -113,7 +120,14 @@ function ExerciseScreen() {
                 <SheetExerciseDetail
                     bottomSheetRef={bottomSheetRef}
                     index={-1}
-                    exerciseDetail={exerciseDetail}>
+                    exerciseDetail={exerciseDetail}
+                    isLiked = {isSelectedLiked}
+                    onLikePress = {async ()=>{
+                        setSelectedLike(prev => !prev)
+                        setExercisesData(prevarr => prevarr.map((val)=>val?._id == exerciseDetail._id ? {...val, liked: !val?.liked} : val))
+                        toggleExerciseLike(exerciseDetail._id)
+                    }}
+                    >
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
                 <SheetFilter

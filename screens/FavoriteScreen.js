@@ -41,7 +41,7 @@ function FavoriteScreen({navigation})
 
     const [isRefreshing, setRefreshing] = useState(false);
 
-    console.log("is refresiong, ", isRefreshing)
+    console.log("is refreshing, ", isRefreshing)
     const onRefreshing = useCallback(
         async () => {
             console.log("run on refreshing ", isRefreshing)
@@ -112,6 +112,7 @@ function FavoriteScreen({navigation})
                         uri: item?.image,
                     }}
                     rounds={item?.rounds}
+                    onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item, isLiked: true})}}
                     />
                 </View>
                 )}
@@ -231,7 +232,7 @@ function FavoriteScreen({navigation})
                 <ImageOverlayCard 
                 image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
                 title={favoriteExercises.length + " Bài tập đã lưu"}
-                onPress={()=>{navigation.navigate('FavoriteExercises')}}/>
+                onPress={()=>{navigation.navigate('FavoriteExercises', {favoriteExercises: favoriteExercises})}}/>
             </View>
         )
     }

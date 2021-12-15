@@ -16,9 +16,10 @@ import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 export default function SheetExerciseDetail(props) {
 
-    const { bottomSheetRef, exerciseDetail } = props;
-    const [isLiked, setLiked] = useState(exerciseDetail?.liked);
-
+    const { bottomSheetRef, exerciseDetail, isLiked, onLikePress } = props;
+    // const [isLiked, setLiked] = useState(exerciseDetail?.liked);
+    console.log("exercise drtail,===", exerciseDetail)
+    console.log("isliked===",isLiked)
     //render sheet
     const renderContent = (exerciseDetail) => {
         return (
@@ -35,9 +36,10 @@ export default function SheetExerciseDetail(props) {
 
                 {/* heart button */}
                 <HeartButton style={styles.likeBtn} isliked={isLiked} onButtonPress={() => { 
-                    setLiked(prev => !prev)
-                    console.log("exercis e id====", exerciseDetail)
-                    toggleExerciseLike(exerciseDetail._id)
+                    // setLiked(prev => !prev)
+                    // console.log("exercis e id====", exerciseDetail)
+                    // toggleExerciseLike(exerciseDetail._id)
+                    onLikePress()
                 }} />
 
                 {/* exercise name */}

@@ -12,17 +12,15 @@ import {COLOR, SCREEN_WIDTH} from '../../constant';
 import ExeciseItem from '../../components/ExeciseItem';
 import {Button} from 'react-native-elements'
 import ExcerciseInfoScreen from '../Exercise/ExerciseInfoScreen';
+import ExerciseBottomSheetContent from '../Exercise/ExerciseBottomSheetContent';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-import {getFavoriteExercise, getFavoriteExercises} from '../../serverAPIs/favoriteAPI'
+import { getFavoriteExercises} from '../../serverAPIs/favoriteAPI'
 
-function FavoriteExerciseScreen()
+function FavoriteExerciseScreen({navigation, route})
 {
-    const [favoriteExercises, setFavoriteExercises] = useState([])
-    useEffect(() => {
-        getFavoriteExercises(setFavoriteExercises)
-        
-    }, [])
+    const {favoriteExercises} = route.params;
+    const [selectedExercise, setSelectedExercise] = useState(favoriteExercises[0])
     console.log("exercise =-------------------------------", favoriteExercises)
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['50%','90%'], []);
@@ -43,6 +41,8 @@ function FavoriteExerciseScreen()
                     isLiked = {true}
                     title={item.name}
                     onPress = {()=>{
+                        console.log("selected ex===",item);
+                        setSelectedExercise(item)
                         bottomSheetRef.current.expand();
                     }}/>
             </View>
@@ -56,7 +56,9 @@ function FavoriteExerciseScreen()
         snapPoints={snapPoints}
         enablePanDownToClose
         >
-            <ExcerciseInfoScreen/>
+            <ExerciseBottomSheetContent 
+            exerciseDetail = {selectedExercise == {} ? null: selectedExercise}
+            liked = {true}/>
         </BottomSheet>
 
     </SafeAreaView>
