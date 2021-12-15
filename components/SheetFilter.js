@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import {
     View,
     Text,
@@ -12,9 +12,9 @@ import { COLOR } from '../constant';
 import { useState } from "react";
 
 
-export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
+function SheetFilter({ sheetFilterRef, initialSnap, onSubmit }, ref) {
 
-    // test data: level, muscleGroup, equipment
+    //tags: level, muscleGroup, equipment
     const levels = [
         'Tất Cả',
         'Người Mới',
@@ -35,25 +35,40 @@ export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
         'Không Dụng Cụ',
         'Có Dụng Cụ',
     ];
-
     //state cho việc nhấn vào từng item
+    // -1 === unselect
     const [selectedLevel, setSelectedLevel] = useState(-1);
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState(-1);
     const [selectedEquipment, setSelectedEquipment] = useState(-1);
+    console.log(selectedLevel, selectedMuscleGroup, selectedEquipment);
+
+    useImperativeHandle(ref, () => ({
+        //parent component (ExerciseScreen) uses this functions for unselecting through ref
+        setLevel() {
+            setSelectedLevel(-1);
+        },
+        setMuscleGroup() {
+            setSelectedMuscleGroup(-1);
+        },
+        setEquipment() {
+            setSelectedEquipment(-1);
+        },
+    }))
+
 
     //handle press function: highlight item khi nhấn vào item
     const handleLevelPress = (index) => {
         if (selectedLevel !== index)
             setSelectedLevel(index);
         else
-        //else set selected item to -1 for removing
+            //else set selected item to -1 for removing
             setSelectedLevel(-1);
     }
     const handleMuscleGroupPress = (index) => {
         if (selectedMuscleGroup !== index)
             setSelectedMuscleGroup(index);
         else
-        setSelectedMuscleGroup(-1);
+            setSelectedMuscleGroup(-1);
     }
     const handleEquipmentPress = (index) => {
         if (selectedEquipment !== index)
@@ -62,14 +77,23 @@ export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
             setSelectedEquipment(-1);
     }
 
-    //handle apply fitler: lấy dữ liệu đã chọn -> đóng bottom sheet và filter vào flatlist các bài tập
+    //handle apply fitler: lấy dữ liệu đã chọn -> đóng bottom sheet và gửi dữ liệu về component cha
     const handleApplyFilter = () => {
         //prepare data 
-        let data = {
-            level: selectedLevel,
-            muscleGroup: selectedMuscleGroup,
-            equipment: selectedEquipment
-        };
+        let data = [
+            {
+                title: 'level',
+                value: selectedLevel,
+            },
+            {
+                title: 'muscleGroup',
+                value: selectedMuscleGroup,
+            },
+            {
+                title: 'equipment',
+                value: selectedEquipment,
+            }
+        ];
         onSubmit(data);
 
         //close sheet
@@ -170,7 +194,7 @@ export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
         <BottomSheet
             ref={sheetFilterRef}
             snapPoints={[0, '100%']}
-            index={index}
+            initialSnap={initialSnap}
             renderContent={renderContent}
             renderHeader={renderHeader}
             enabledInnerScrolling
@@ -178,7 +202,8 @@ export default function SheetFilter({ sheetFilterRef, index, onSubmit }) {
         </BottomSheet>
 
     )
-}
+};
+export default forwardRef(SheetFilter);
 
 const styles = StyleSheet.create({
     HeaderWrapper: {

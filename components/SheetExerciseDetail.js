@@ -16,10 +16,9 @@ import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 export default function SheetExerciseDetail(props) {
 
-    const { bottomSheetRef, exerciseDetail, isLiked, onLikePress } = props;
-    // const [isLiked, setLiked] = useState(exerciseDetail?.liked);
-    console.log("exercise drtail,===", exerciseDetail)
-    console.log("isliked===",isLiked)
+    const { bottomSheetRef, exerciseDetail, initialSnap } = props;
+    const [liked, setLiked] = useState(true);
+
     //render sheet
     const renderContent = (exerciseDetail) => {
         return (
@@ -95,11 +94,10 @@ export default function SheetExerciseDetail(props) {
     return (
         <BottomSheet
             ref={bottomSheetRef}
-            snapPoints={['95%', 0]}
+            snapPoints={[0, '95%']}
             borderRadius={10}
-            initialSnap={1}
-            renderContent={() => renderContent(exerciseDetail)}
-            index={props.index}
+            initialSnap={initialSnap}
+            renderContent={() => renderContent(exerciseDetail, liked)}
             renderHeader={renderHeader}>
         </BottomSheet>
     )

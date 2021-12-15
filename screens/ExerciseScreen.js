@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     View,
     Text,
@@ -19,24 +19,97 @@ import SheetExerciseDetail from "../components/SheetExerciseDetail";
 import SheetFilter from '../components/SheetFilter';
 //backend rules
 import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules";
+import { toLevelTag, toMuscleGroupTag, toEquipmentTag } from "./Exercise/tagsRule";
 // get Token
 import { getAllExercises } from "../serverAPIs/exercisesAPI";
 import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 
 function ExerciseScreen() {
-     //Bottom sheet exercise detail
+
+    const initFilterData = [
+        { title: 'level', value: -1, },
+        { title: 'muscleGroup', value: -1, },
+        { title: 'equipment', value: -1, }
+    ];
+
+
+    //Bottom sheet exercise detail
     //ref + state for sheet
     const bottomSheetRef = useRef(null);
     const sheetFilterRef = useRef(null);
+    //ref chứa tất cả bài tập lấy từ api về
+    const exercisesRef = useRef([]);
     const [exerciseDetail, setExerciseDetail] = useState(null);
     const [exercisesData, setExercisesData] = useState([]);
-    const[isSelectedLiked, setSelectedLike] = useState(false)
-    
-    useEffect(()=>{
-        getAllExercises(setExercisesData);
-    },[])
-    console.log("exercises ====", exercisesData)
+    //list bài tập sau khi search
+    const [exercisesDataSearched, setExercisesDataSearched] = useState([]);
+    // list bài tập sau khi filter
+    const [exercisesDataFilter, setExercisesDataFilter] = useState([]);
+    // list các tag
+    const [filterData, setFilterData] = useState(initFilterData);
+    //ref để đồng bộ tag với component SheetFilter
+    const filterDataRef = useRef();
+    useEffect(() => {
+        getExercises();
+    }, [])
+
+    //filter bài tập thông qua tag nếu tag state được cập nhật
+    useEffect(() => {
+        let isSubscribed = true;
+        if(isSubscribed)
+            filterTag()
+        return () => isSubscribed = false;
+    }, [filterData])
+
+    //hàm để filter qua tag
+    const filterTag = () => {
+        const final = filterData.reduce((filterArray, item) => {
+            //item.value !== -1 là tag đó có đc hiển thị
+            if (item.value !== -1) {
+                //case cho từng loại tag
+                switch (item.title) {
+                    case 'level':
+                        const levelFilter = filterArray?.filter((item) => {
+                            if (filterData[0].value !== 0)
+                                return item.levels.includes(filterData[0].value);
+                            return item;
+                        })
+                        filterArray = [...levelFilter];
+                        return filterArray;
+                    case 'muscleGroup':
+                        const muscleGroupFilter = filterArray?.filter((item) => {
+                            return item.muscleGroups.includes(filterData[1].value + 1);
+                        })
+                        filterArray = [...muscleGroupFilter];
+                        return filterArray;
+                    case 'equipment':
+                        const equipmentFilter = filterArray?.filter((item) => {
+                            if (filterData[2].value === 0)
+                                return item.equipments.length <= 0;
+                            if (filterData[2].value === 1)
+                                return item.equipments.length > 0;
+                        })
+                        filterArray = [...equipmentFilter];
+                        return filterArray;
+                }
+            }
+            else
+                return filterArray;
+        }, exercisesDataSearched.length > 0 ? exercisesDataSearched : exercisesData)
+        console.log('========final filter======: ',final);
+        //cập nhật lại bài tập đã filter
+        setExercisesDataFilter(final);
+    };
+    const getExercises = async () => {
+        const response = await getAllExercises();
+        if (response !== -1) {
+            exercisesRef.current = response;
+            setExercisesData(response);
+        }
+        else
+            console.log('loi get all exercises');
+    }
 
     //render exercise item
     const renderExerciseItem = ({ item }) => {
@@ -50,8 +123,7 @@ function ExerciseScreen() {
                 <View style={styles.exerciseLeftWrapper}>
                     <Image
                         style={styles.exerciseImage}
-                        // source={require('../assets/images/InclinePushUps.png')}
-                        source={{uri: item.image}}
+                        source={{ uri: item.image }}
                     ></Image>
                 </View>
                 <View style={styles.exerciseRightWrapper}>
@@ -69,20 +141,83 @@ function ExerciseScreen() {
     //handle bottom sheet
     const handleBottomSheet = (item) => {
         setExerciseDetail(item);
-        setSelectedLike(item.liked)
-        bottomSheetRef.current.snapTo(0);
+        bottomSheetRef.current.snapTo(1);
     }
     //handle filter submit
-    const handleFilterSubmit = (filterData) => {
+    const handleFilterSubmit = (data) => {
         //RULES:
         // level === 0 -> select all level
         // muscleGroup === -1 -> select all 
         // equipment === -1 -> select all
-        console.log('filter submit: ', filterData);
+        setFilterData([...data]);
     }
 
+    //handle search
+    const handleSearch = (search) => {
+        const filterExercises = exercisesRef.current.filter((item, index) => {
+            return item.name.toLowerCase().includes(search.trim().toLowerCase());
+        })
+        setExercisesDataSearched(filterExercises.length > 0 ? filterExercises : exercisesData);
+        //sau khi search, tiếp tục filter với các tag (nếu có)
+        filterTag();
+    }
+
+    //render filter tags
+    const renderFilterTags = () => {
+        return filterData.map((item) => {
+            //
+            if (item.value !== -1) {
+                //convert value to tag name
+                let title = '';
+                if (item.title === 'level')
+                    title = toLevelTag(item.value);
+                if (item.title === 'muscleGroup')
+                    title = toMuscleGroupTag(item.value);
+                if (item.title === 'equipment')
+                    title = toEquipmentTag(item.value);
+                return (
+                    <View key={item.title} style={styles.filterTagWrapper}>
+                        <Text style={styles.filterTagText}>{title}</Text>
+                        <TouchableOpacity onPress={() => handleFilterTagClick(item)}>
+                            <Icon
+                                style={styles.filterIcon}
+                                name="close"
+                                type="material"
+                                size={14}
+                                color="white"></Icon>
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+        })
+    }
+
+    //handle Filter Tag Click
+    const handleFilterTagClick = (item) => {
+        //hide tag when click on icon
+        setFilterData(
+            filterData.map((filterItem) => {
+                return filterItem === item ? { title: filterItem.title, value: -1, } : filterItem;
+            }));
+
+        //unselect item in SheetFilter Component
+        switch (item.title) {
+            case 'level':
+                filterDataRef.current.setLevel();
+                break;
+            case 'muscleGroup':
+                filterDataRef.current.setMuscleGroup();
+                break;
+            case 'equipment':
+                filterDataRef.current.setEquipment();
+                break;
+            default:
+                console.log('Loi khi an filter item');
+
+        }
+    }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.MATTE_BLACK }}>
             <View style={styles.container}>
                 <Text style={styles.title}>Tất Cả Bài Tập</Text>
 
@@ -94,9 +229,10 @@ function ExerciseScreen() {
                         placeholder="Tìm Kiếm"
                         inputContainerStyle={styles.searchInput}
                         platform="android"
+                        onChangeText={handleSearch}
                     />
                     {/* exercise filter */}
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.searchFilter}
                         onPress={() => sheetFilterRef.current.snapTo(1)}>
                         <Icon
@@ -106,37 +242,34 @@ function ExerciseScreen() {
                             color="white"></Icon>
                     </TouchableOpacity>
                 </View>
-
+                {/* filter tags */}
+                <View style={{ flexDirection: "row", marginVertical: 10, marginHorizontal: 20 }}>
+                    {renderFilterTags()}
+                </View>
                 {/* List Exercise */}
                 <FlatList
                     style={styles.ListExercise}
-                    data={exercisesData}
+                    data={exercisesDataFilter.length > 0 ? exercisesDataFilter : exercisesData}
                     renderItem={renderExerciseItem}
                     keyExtractor={item => `${item._id}`}
                     showsVerticalScrollIndicator={false}>
                 </FlatList>
-
                 {/*Bottom Sheet Exercise Detail */}
                 <SheetExerciseDetail
+                // sheet bi che mat 1 it phia duoi
                     bottomSheetRef={bottomSheetRef}
-                    index={-1}
-                    exerciseDetail={exerciseDetail}
-                    isLiked = {isSelectedLiked}
-                    onLikePress = {async ()=>{
-                        setSelectedLike(prev => !prev)
-                        setExercisesData(prevarr => prevarr.map((val)=>val?._id == exerciseDetail._id ? {...val, liked: !val?.liked} : val))
-                        toggleExerciseLike(exerciseDetail._id)
-                    }}
-                    >
+                    initialSnap={0}
+                    exerciseDetail={exerciseDetail}>
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
                 <SheetFilter
-                    index={-1}
+                    initialSnap={0}
                     sheetFilterRef={sheetFilterRef}
-                    onSubmit={handleFilterSubmit}>
+                    onSubmit={handleFilterSubmit}
+                    ref={filterDataRef}>
                 </SheetFilter>
-                    
             </View>
+
         </SafeAreaView>
     )
 };
@@ -144,6 +277,7 @@ function ExerciseScreen() {
 const styles = StyleSheet.create({
     container: {
         marginTop: 24,
+        marginBottom: 30,
         backgroundColor: COLOR.MATTE_BLACK,
     },
     title: {
@@ -152,7 +286,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         alignSelf: "center",
         color: 'white',
-        
+
     },
     searchWrapper: {
         flexDirection: "row",
@@ -171,11 +305,11 @@ const styles = StyleSheet.create({
 
     },
     searchFilter: {
-        
+
     },
     ListExercise: {
         marginHorizontal: 20,
-        marginTop: 20,
+        height: '100%',
     },
     exerciseWrapper: {
         flexDirection: "row",
@@ -201,6 +335,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: 'white'
+    },
+    filterTagWrapper: {
+        marginRight: 5,
+        padding: 5,
+        backgroundColor: COLOR.LIGHT_BROWN,
+        borderRadius: 8,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    filterTagText: {
+        color: 'white',
+        fontSize: 14
+    },
+    filterIcon: {
+        padding: 3,
+        borderRadius: 40,
+        fontWeight: "bold"
     },
 });
 
