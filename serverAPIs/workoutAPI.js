@@ -1,10 +1,10 @@
-import { postWithCheckingToken } from './manageAPI';
-import { getUserToken } from '../AsyncStorage/userStorage';
 import { HOST } from '../constant';
+import { getWithCheckingToken, postWithCheckingToken } from './manageAPI';
+
 const axios = require('axios');
 
 export async function getAllWorkout() {
-  const response = await axios.get('https://klos-backend.herokuapp.com/api/workouts?free=1');
+  const response = await getWithCheckingToken(HOST + '/api/workouts?free=1');
   return response
 }
 
@@ -13,7 +13,7 @@ export const submitWorkout = async (workoutId, time) => {
     idWorkout: workoutId,
     duration: time
   }
-  const respone = await postWithCheckingToken('https://klos-backend.herokuapp.com/api/workouts/submit', body, {})
+  const respone = await postWithCheckingToken(HOST + '/api/workouts/submit', body, {})
   return respone
 }
 
@@ -31,6 +31,7 @@ export const getSubmittedWorkout = async () => {
           'klos-access-token': token,
         },
       })
+      console.log('submittedddddddddddd: ', response);
       return response?.data?.submitted;
     }
   } catch (error) {
@@ -38,7 +39,7 @@ export const getSubmittedWorkout = async () => {
   }
 }
 
-export const getWorkoutById = async (id) => {
+export const getWorkoutByIdHistory = async (id) => {
   try {
     const token = await getUserToken();
     if (token !== -1) {
@@ -55,6 +56,14 @@ export const getWorkoutById = async (id) => {
       return response?.data?.workout;
     }
   } catch (error) {
+    return -1;
+  }
+}
+export const getWorkoutById = async (id) => {
+  try {
+    const response = await getWithCheckingToken(HOST + '/api/workouts/' + id);
+    return response;
+  }catch (error) {
     return -1;
   }
 }

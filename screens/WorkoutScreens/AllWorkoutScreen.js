@@ -112,13 +112,14 @@ function AllWorkoutScreen({navigation}) {
   const renderItem = item => (
     <View style={styles.itemWrapper}>
       <WorkoutRowItem
-              onPress={() => navigation.navigate('WorkoutInfo', {workoutData: item})}
+              onPress={() => navigation.navigate('WorkoutInfo', {workoutId: item?._id})}
               isliked={false}
               createdTime={moment(item?.updatedAt).format('LL')}
               title={item?.name}
               image={{
                 uri: item?.image,
               }}
+              level={item?.level}
             />
     </View>
   );

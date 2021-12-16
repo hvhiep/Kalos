@@ -47,6 +47,6 @@ export const getAllExercises = async () => {
 }
 
 export async function getExcerciseById(id) {
-    const response = await getWithCheckingToken('https://klos-backend.herokuapp.com/api/exercises/' + id)
+    const response = await getWithCheckingToken(HOST + '/api/exercises/' + id)
     return response
   }

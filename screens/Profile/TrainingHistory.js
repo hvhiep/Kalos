@@ -11,7 +11,7 @@ import { COLOR, SCREEN_HEIGHT, SCREEN_WIDTH } from '../../constant';
 import { Icon } from 'react-native-elements';
 // import WorkoutRowItem from '../../components/WorkoutRowItem';
 import WorkoutHistoryRowItem from './WorkoutHistoryRowItem';
-import { getSubmittedWorkout, getWorkoutById } from '../../serverAPIs/workoutAPI';
+import { getSubmittedWorkout, getWorkoutById as getWorkoutByIdHistory } from '../../serverAPIs/workoutAPI';
 import moment from 'moment';
 
 const HEADER_HEIGHT = 250; // height of the image
@@ -43,7 +43,7 @@ function TrainingHistory({ navigation, route }) {
   }
 
   const handleRowItemClick = async (item) => {
-    const response = await getWorkoutById(item?._id);
+    const response = await getWorkoutByIdHistory(item?._id);
     if(response !== -1){
     // console.log('detail: ', response);
       navigation.navigate('WorkoutInfo', { workoutData: response });
