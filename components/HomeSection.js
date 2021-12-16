@@ -15,14 +15,14 @@ function HomeSection(props) {
     return (
         <View style={styles.section}>
             <Text style={styles.sectionTxt}>{props.title}</Text>
-            <TouchableOpacity onPress={props.onPress?props.onPress:()=>{}} style={{flexDirection:'row'}}>
+            {!props?.hideButton && <TouchableOpacity onPress={props.onPress?props.onPress:()=>{}} style={{flexDirection:'row'}}>
             <Text style={{color:COLOR.GOLD}}>Xem Thêm</Text>
             <Icon
             name='chevron-forward-outline'
             type='ionicon'
             size={18}
             color={COLOR.GOLD}/>
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     );
   }

@@ -236,7 +236,7 @@ function HomeScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.userBtn}
-            onPress={() => navigation.navigate('Category')}>
+            onPress={() => navigation.navigate('Profile')}>
             <Icon
               name="chart-line"
               type="material-community"
@@ -323,7 +323,7 @@ function HomeScreen({ navigation }) {
           </View>
         )}
       />
-      <HomeSection title="Lựa chọn cách tập của riêng bạn" onPress={() => { }} />
+      <HomeSection title="Lựa chọn cách tập của riêng bạn" hideButton/>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -348,7 +348,7 @@ function HomeScreen({ navigation }) {
           icon="tag"
           title="Đi đến thư viện bài tập"
           backgroundColor={COLOR.GOLD}
-          onPress={async () => { }}
+          onPress={() => { navigation.navigate('AllExercise') }}
         />
       </View>
     </ScrollView>
