@@ -57,7 +57,7 @@ function FavoriteScreen({navigation})
                 setLoadingPrograms(false);
             });
             getFavoriteWorkouts((data)=>{
-                setFavoriteWorkouts(mapIsLikedArray(data));
+                setFavoriteWorkouts(data);
                 setLoadingWorkouts(false);
             });
             getFavoriteVideos((data)=>{
@@ -106,13 +106,13 @@ function FavoriteScreen({navigation})
                 renderItem={({item})=>(
                 <View style={{width:SCREEN_WIDTH, padding: 15}}>
                     <WorkoutItem
+                    onPress={()=>{navigation.navigate('WorkoutInfo', {workoutId: item?._id})}}
                     title={item?.name}
                     muscleGroups={item?.muscleGroups}
                     image={{
                         uri: item?.image,
                     }}
                     rounds={item?.rounds}
-                    onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item})}}
                     />
                 </View>
                 )}
@@ -148,18 +148,18 @@ function FavoriteScreen({navigation})
             keyExtractor={item => item._id}
             renderItem={({item})=>{
                 return(
-                    <View style={{paddingRight: 15}}>
+                    <View style={{paddingLeft: 15}}>
                         <ProgramItem
-                        icon='dumbbell'
-                        tagColor={COLOR.BLUE}
-                        style={{height: 200, width: 160}}
-                        title={item?.name}
-                        image={{
-                            uri: item?.image,
-                        }}
-                        />
+                            onPress={()=>{navigation.navigate('ProgramDetail', {programId: item?._id})}}
+                            icon='dumbbell'
+                            tagColor={COLOR.BLUE}
+                            style={{ height: 200, width: 160 }}
+                            title={item?.name}
+                            image={{
+                                uri: item?.image,
+                            }}/>
                     </View>
-            )}}
+                )}}
             />)
     }
 
@@ -332,7 +332,6 @@ const styles = StyleSheet.create({
     },
     categoryTitle:{
         padding: 10,
-        marginTop: 15,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'center'

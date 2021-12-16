@@ -134,6 +134,29 @@ export const toggleWorkoutLike = async (workoutId)=>{
     ).then(res => console.log(res))
 }
 
+export const toggleProgramLike = async (programId)=>{
+    const token = await getUserToken();
+    try{
+        const response = fetch(HOST + '/api/users/me/favorite/programs' , 
+        {
+            method: "POST",
+            headers:{
+                'Content-type' : 'application/json',
+                'Accept' : 'application/json',
+                'klos-access-token': token
+            },
+            body: JSON.stringify({idProgram: programId})
+        }
+        ).then(res => console.log(res))
+    }
+    catch(e)
+    {
+        console.log("error : ", e)
+    }
+    
+}
+
+
 
 
 export const getVideoById = async (videoId, setDataFunction) =>

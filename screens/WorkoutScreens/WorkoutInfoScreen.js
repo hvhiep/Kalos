@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR } from '../../constant';
 import HeartButton from '../../components/HeartButton';
 import StartButton from '../../components/StartButton';
-import {toggleWorkoutLike, getWorkoutById} from '../../serverAPIs/favoriteAPI'
+import {toggleWorkoutLike} from '../../serverAPIs/favoriteAPI'
 
 import { getWorkoutById } from '../../serverAPIs/workoutAPI';
 import LoadingView from '../../components/LoadingView';
@@ -34,6 +34,7 @@ function WorkoutInfoScreen({navigation, route}) {
       setIsLoading(true)
       const res = await getWorkoutById(workoutId)
       setWorkout(res?.data?.workout)
+      setLiked(res?.data?.workout?.liked)
     } catch (e) {
 
     } finally{

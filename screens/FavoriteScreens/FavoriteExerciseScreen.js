@@ -23,7 +23,12 @@ function FavoriteExerciseScreen({navigation, route})
     const [exercisesData, setExercisesData] = useState(favoriteExercises)
     const [selectedExercise, setSelectedExercise] = useState(null)
     const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => ['50%','90%'], []);
+
+    useEffect(() => {
+        
+        getFavoriteExercises((data)=> setExercisesData(data.map(val => ({...val, liked:true}))))
+
+    }, [])
 
     return (
     <SafeAreaView style={{ flex: 1}}>
