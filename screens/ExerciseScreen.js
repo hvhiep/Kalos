@@ -22,6 +22,8 @@ import { toEquipmentName, toMuscleGroupName, toLevelName } from "../backendRules
 import { toLevelTag, toMuscleGroupTag, toEquipmentTag } from "./Exercise/tagsRule";
 // get Token
 import { getAllExercises } from "../serverAPIs/exercisesAPI";
+import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
+
 
 function ExerciseScreen() {
 
@@ -41,11 +43,14 @@ function ExerciseScreen() {
     const [exerciseDetail, setExerciseDetail] = useState(null);
     const [exercisesData, setExercisesData] = useState([]);
     //list bài tập sau khi search
-    const [exercisesDataSearched, setExercisesDataSearched] = useState([]);
+    const [exercisesDataSearched, setExercisesDataSearched] = useState(exercisesData);
     // list bài tập sau khi filter
-    const [exercisesDataFilter, setExercisesDataFilter] = useState([]);
+    const [exercisesDataFilter, setExercisesDataFilter] = useState(exercisesData);
     // list các tag
     const [filterData, setFilterData] = useState(initFilterData);
+    const [isSearchSuccess, setSearchSuccess] = useState(true);
+    const [searchValue, setSearchValue] = useState('');
+
     //ref để đồng bộ tag với component SheetFilter
     const filterDataRef = useRef();
     useEffect(() => {
@@ -55,13 +60,14 @@ function ExerciseScreen() {
     //filter bài tập thông qua tag nếu tag state được cập nhật
     useEffect(() => {
         let isSubscribed = true;
-        if(isSubscribed)
+        if (isSubscribed)
             filterTag()
         return () => isSubscribed = false;
     }, [filterData])
 
     //hàm để filter qua tag
     const filterTag = () => {
+        console.log('exercisesDataSearchedddddddddddddddddddddd: ', exercisesDataSearched);
         const final = filterData.reduce((filterArray, item) => {
             //item.value !== -1 là tag đó có đc hiển thị
             if (item.value !== -1) {
@@ -94,8 +100,8 @@ function ExerciseScreen() {
             }
             else
                 return filterArray;
-        }, exercisesDataSearched.length > 0 ? exercisesDataSearched : exercisesData)
-        console.log('========final filter======: ',final);
+        }, exercisesDataSearched)
+        console.log('========final filter======: ', final);
         //cập nhật lại bài tập đã filter
         setExercisesDataFilter(final);
     };
@@ -104,6 +110,8 @@ function ExerciseScreen() {
         if (response !== -1) {
             exercisesRef.current = response;
             setExercisesData(response);
+            setExercisesDataFilter(response);
+            setExercisesDataSearched(response);
         }
         else
             console.log('loi get all exercises');
@@ -114,7 +122,10 @@ function ExerciseScreen() {
         return (
             <TouchableOpacity
                 style={styles.exerciseWrapper}
-                onPress={() => handleBottomSheet(item)}>
+                onPress={() => {
+                    console.log("selected ex====", item)
+                    handleBottomSheet(item)
+                }}>
                 <View style={styles.exerciseLeftWrapper}>
                     <Image
                         style={styles.exerciseImage}
@@ -128,6 +139,11 @@ function ExerciseScreen() {
                     >
                         {item?.name}
                     </Text>
+                    {item?.liked && <Icon name="heart"
+                        type="font-awesome-5"
+                        solid
+                        color="#FF0000"
+                        />}
                 </View>
             </TouchableOpacity>
         )
@@ -148,13 +164,27 @@ function ExerciseScreen() {
     }
 
     //handle search
-    const handleSearch = (search) => {
+    const handleSearch = (result) => {
         const filterExercises = exercisesRef.current.filter((item, index) => {
-            return item.name.toLowerCase().includes(search.trim().toLowerCase());
+            return item.name.toLowerCase().includes(result.trim().toLowerCase());
+            
         })
-        setExercisesDataSearched(filterExercises.length > 0 ? filterExercises : exercisesData);
-        //sau khi search, tiếp tục filter với các tag (nếu có)
-        filterTag();
+        if (result === '') {
+            setExercisesDataSearched(exercisesData);
+            setSearchSuccess(true);
+            setSearchValue(result);
+            //sau khi search, tiếp tục filter với các tag (nếu có)
+            filterTag();
+        }
+        else if (filterExercises.length > 0) {
+            setExercisesDataSearched(filterExercises);
+            setSearchSuccess(true);
+            setSearchValue(result);
+            //sau khi search, tiếp tục filter với các tag (nếu có)
+            filterTag();
+        }
+        else
+            setSearchSuccess(false);
     }
 
     //render filter tags
@@ -225,6 +255,7 @@ function ExerciseScreen() {
                         inputContainerStyle={styles.searchInput}
                         platform="android"
                         onChangeText={handleSearch}
+                        value={searchValue}
                     />
                     {/* exercise filter */}
                     <TouchableOpacity
@@ -242,19 +273,33 @@ function ExerciseScreen() {
                     {renderFilterTags()}
                 </View>
                 {/* List Exercise */}
-                <FlatList
+                {isSearchSuccess === true && <FlatList
                     style={styles.ListExercise}
-                    data={exercisesDataFilter.length > 0 ? exercisesDataFilter : exercisesData}
+                    data={exercisesDataFilter}
                     renderItem={renderExerciseItem}
                     keyExtractor={item => `${item._id}`}
                     showsVerticalScrollIndicator={false}>
-                </FlatList>
+                </FlatList>}
+                {isSearchSuccess === false && <View style={styles.ListExerciseError}><Text style={styles.ListExerciseErrorText}>Không có bài tập nào!</Text></View>}
                 {/*Bottom Sheet Exercise Detail */}
                 <SheetExerciseDetail
-                // sheet bi che mat 1 it phia duoi
+                    // sheet bi che mat 1 it phia duoi
                     bottomSheetRef={bottomSheetRef}
                     initialSnap={0}
-                    exerciseDetail={exerciseDetail}>
+                    exerciseDetail={exerciseDetail}
+                    handleLikePress={async ()=>{
+                        // setExercisesData(prev => prev.map(val =>val._id === selectedExercise?._id ? {...val, liked: !val.liked} : val))
+                        let excArr = [...exercisesData]
+                        let index = exercisesData.indexOf(exerciseDetail)
+                        console.log("index is === ", index)
+                        if (index != -1)
+                        {
+                            excArr[index] = {...excArr[index], liked: !excArr[index].liked}
+                            setExercisesData(excArr)
+                        }
+                        
+                        console.log("outsieder exer ===",exerciseDetail)
+                    }}>
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
                 <SheetFilter
@@ -306,6 +351,16 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         height: '100%',
     },
+    ListExerciseError: {
+        marginHorizontal: 20,
+        height: '100%',
+    },
+    ListExerciseErrorText: { 
+        color: 'white',
+        fontSize: 20,
+        alignSelf: "center",
+        marginTop: 20,
+    },
     exerciseWrapper: {
         flexDirection: "row",
         alignItems: "center",
@@ -316,6 +371,8 @@ const styles = StyleSheet.create({
     },
     exerciseRightWrapper: {
         flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     exerciseImage: {
         resizeMode: "center",
@@ -329,7 +386,11 @@ const styles = StyleSheet.create({
         marginRight: 5,
         fontSize: 16,
         fontWeight: "bold",
-        color: 'white'
+        color: 'white',
+        maxWidth: '80%',
+    },
+    heartIcon:{
+        minWidth: 20
     },
     filterTagWrapper: {
         marginRight: 5,

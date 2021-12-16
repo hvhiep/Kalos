@@ -27,11 +27,31 @@ import bmi from '../assets/images/bmi.png';
 import { getMe } from '../serverAPIs/getMeAPI';
 import { toLevelName, toGoals } from '../backendRules';
 import { updateBodyIndex } from '../serverAPIs/bodyIndexUpdateAPI';
+import { getSubmittedWorkout, getProgramProgress } from '../serverAPIs/workoutAPI';
 
 //--------------------------------------------
 const HEADER_HEIGHT = 200;
 
 function ProfileScreen({ navigation }) {
+
+  //init achievements
+  const ACHIEVEMENTS = [
+    {
+      title: 'workout',
+      subTitle: 'Kế Hoạch Tập',
+      total: -1,
+    },
+    {
+      title: 'program',
+      subTitle: 'Lộ Trình Tập',
+      total: -1,
+    },
+    {
+      title: 'trophy',
+      subTitle: 'Danh Hiệu',
+      total: 9,
+    },
+  ]
 
   const [showWeightModal, setShowWeightModal] = useState(false);
   const [showHeightModal, setShowHeightModal] = useState(false);
@@ -40,6 +60,9 @@ function ProfileScreen({ navigation }) {
   const [weightDates, setWeightDates] = useState([1, 2, 3]);
   const [isLoadingMainChart, setLoadingMainChart] = useState(true);
   const [isUpdateBodyIndex, setUpdateBodyIndex] = useState(false);
+  const [achievements, setAchievements] = useState(ACHIEVEMENTS);
+  const [submittedWorkout, setSubmittedWorkout] = useState();
+  const [programProgress, setProgramProgress] = useState();
 
   //BMI
   const BMI = [
@@ -75,11 +98,7 @@ function ProfileScreen({ navigation }) {
     },
   ]
 
-  const ACHIEVEMENTS = [
-    10, //total programs
-    560, // total workouts
-    15 // total trophies
-  ]
+
   //weights data
   const WEIGHT = {
     labels: weightDates,
@@ -108,12 +127,57 @@ function ProfileScreen({ navigation }) {
     getUserInfo();
     if (isUpdateBodyIndex)
       setUpdateBodyIndex(false);
-    
+
     return () => {
       setUpdateBodyIndex(false);
     }
   }, [isUpdateBodyIndex]);
 
+  useEffect(() => {
+    getSubmittedWorkoutAPI();
+    getProgramData();
+  }, [])
+
+  //get submitted workout
+  const getSubmittedWorkoutAPI = async () => {
+    const response = await getSubmittedWorkout();
+    if (response !== -1) {
+      // setAchievements(achievements.map((item) => {
+      //   if (item.title === 'workout') {
+      //     return {
+      //       title: 'workout',
+      //       subTitle: 'Kế Hoạch Tập',
+      //       total: response?.length,
+      //     };
+      //   }
+      //   else
+      //     return item;
+      // }))
+      const workout = {
+        listData: response,
+        title: 'Kế Hoạch Tập',
+        total: response?.length,
+      };
+      setSubmittedWorkout(workout);
+    }
+    else
+      console.log('loi lay workout');
+  }
+
+  //get program progress
+  const getProgramData = async () => {
+    const response = await getProgramProgress();
+    if (response !== -1) {
+      const program = {
+        listData: response,
+        title: 'Lộ Trình Tập',
+        total: response?.length,
+      };
+      setProgramProgress(program);
+    }
+    else
+      console.log('loi lay program');
+  }
 
   //get user info
   const getUserInfo = async () => {
@@ -263,7 +327,7 @@ function ProfileScreen({ navigation }) {
           {/*2. setting button */}
           <TouchableOpacity
             style={styles.setting}
-            onPress={() => navigation.navigate('Setting', {userInfo})}>
+            onPress={() => navigation.navigate('Setting', { userInfo })}>
             <Icon
               style={styles.settingIcon}
               name="settings"
@@ -292,20 +356,55 @@ function ProfileScreen({ navigation }) {
       <View style={styles.bodyWrapper}>
 
         {/* 1. total achievements */}
-        <View style={styles.sectionWrapper}>
+        <View style={[styles.sectionWrapper, { backgroundColor: COLOR.MATTE_BLACK }]}>
           <View style={styles.achievementsTitleWrapper}>
             <Icon name="emoji-events" type="material" size={22} color='yellow'></Icon>
-            <Text style={styles.sectionTitle}>Thành Tích</Text>
+            <Text style={styles.sectionTitle}>Lịch Sử</Text>
           </View>
           <View style={styles.achievementsListItem}>
-            {ACHIEVEMENTS.map((item, index) => {
+            {/* {achievements.map((item, index) => {
+              let screen = '';
+              let data = [];
+              if (index === 0) {
+                data = submittedWorkout;
+                screen = 'History';
+              }
+              if (index === 1) {
+                data = programProgress;
+                screen = 'ProgramHistory';
+              }
               return (
-                <View key={index.toString()} style={styles.achievementsItemWrapper}>
-                  <Text style={styles.achievementsItemNumber}>{item}</Text>
-                  <Text style={styles.achievementsItemTitle}>{(index === 0 && 'Chương Trình') || (index === 1 && 'Kế Hoạch Tập') || (index === 2 && 'Danh Hiệu')}</Text>
-                </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate(screen, { data })}
+                  key={index.toString()}
+                  style={styles.achievementsItemWrapper}
+                >
+                  <Text style={styles.achievementsItemNumber}>{item?.total}</Text>
+                  <Text style={styles.achievementsItemTitle}>{item?.subTitle}</Text>
+                </TouchableOpacity>
               )
-            })}
+            })} */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('History', { listWorkout: submittedWorkout?.listWorkout })}
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>{submittedWorkout?.total}</Text>
+              <Text style={styles.achievementsItemTitle}>{submittedWorkout?.title}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ProgramHistory', { listProgram: programProgress?.listData })}
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>{programProgress?.total}</Text>
+              <Text style={styles.achievementsItemTitle}>{programProgress?.title}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>2</Text>
+              <Text style={styles.achievementsItemTitle}>Danh Hiệu</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
 
@@ -483,7 +582,13 @@ const styles = StyleSheet.create({
   },
   achievementsItemWrapper: {
     alignItems: 'center',
-    color: 'white'
+    color: 'white',
+    borderRadius: 8,
+    width: '30%',
+    height: 70,
+    backgroundColor: COLOR.LIGHT_MATTE_BLACK,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   achievementsItemNumber: {
     color: COLOR.LIGHT_BROWN,

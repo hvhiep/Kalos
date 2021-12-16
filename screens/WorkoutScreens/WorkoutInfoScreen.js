@@ -12,6 +12,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR } from '../../constant';
 import HeartButton from '../../components/HeartButton';
 import StartButton from '../../components/StartButton';
+import {toggleWorkoutLike} from '../../serverAPIs/favoriteAPI'
+
 import { getWorkoutById } from '../../serverAPIs/workoutAPI';
 import LoadingView from '../../components/LoadingView';
 import { toMuscleGroupName } from '../../backendRules';
@@ -32,6 +34,7 @@ function WorkoutInfoScreen({navigation, route}) {
       setIsLoading(true)
       const res = await getWorkoutById(workoutId)
       setWorkout(res?.data?.workout)
+      setLiked(res?.data?.workout?.liked)
     } catch (e) {
 
     } finally{
@@ -50,7 +53,11 @@ function WorkoutInfoScreen({navigation, route}) {
             end={{x:0, y:1}}
             colors={[COLOR.BLACK, COLOR.TRANSPARENT]} 
             style={styles.topLinearGradient}>
-              <HeartButton style={styles.likeBtn} isliked={liked} onButtonPress={()=>{liked?setLiked(false):setLiked(true)}}/>
+              <HeartButton style={styles.likeBtn} isliked={liked} 
+              onButtonPress={()=>{
+                setLiked(like => !like) 
+                toggleWorkoutLike(workout._id)
+              }}/>
             </LinearGradient>
             <LinearGradient 
             start={{x:0, y:0}}

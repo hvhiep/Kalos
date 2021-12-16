@@ -17,6 +17,8 @@ import { getAllProgram, getProgramById } from '../../serverAPIs/programAPI';
 import { toLevelName } from '../../backendRules';
 import LoadingView from '../../components/LoadingView'
 import WeekItem from '../../components/WeekItem';
+import HeartButton from '../../components/HeartButton'
+import {toggleProgramLike} from '../../serverAPIs/favoriteAPI'
 
 const HEADER_HEIGHT = 300; // height of the image
 const SCREEN_HEADER_HEIGHT = 100; // height of the header contain back button
@@ -25,7 +27,7 @@ function ProgramDetailScreen({navigation, route}) {
     const {programId} = route.params || {}
     const [program, setProgram] = useState({})
     const [isLoading, setIsLoading] = useState(false)
-
+    const [liked, setLiked] = useState(false)
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -43,6 +45,7 @@ function ProgramDetailScreen({navigation, route}) {
         const res = await getProgramById(programId);
         if (!res?.data?.program) throw 'FAIL TO GET PROGRAM';
         setProgram(res?.data?.program);
+        setLiked(res?.data?.program?.liked)
       } catch (e) {
         console.log(e);
       }
@@ -77,7 +80,13 @@ function ProgramDetailScreen({navigation, route}) {
           uri: program?.image,
         }}
         resizeMode="cover"></Animated.Image>
-      <Animated.View style={styles.headerContentWrapper}>
+      <Animated.View style={styles.headerContentWrapper}>            
+      <HeartButton style={styles.likeBtn} isliked={liked} 
+              onButtonPress={()=>{
+                setLiked(like => !like) 
+                toggleProgramLike(program?._id)
+              }}/>
+
         <View style={styles.headerTxtWrapper}>
           <Text style={styles.infoTxt}>Level: {toLevelName(program?.level)}</Text>
           <Text style={styles.infoTxt}>Thời gian: {program?.weeks?.length} tuần</Text>
@@ -87,7 +96,8 @@ function ProgramDetailScreen({navigation, route}) {
           style={styles.linearGradient}
           start={{x: 0.0, y: 0.8}}
           end={{x: 0.0, y: 0.0}}
-          colors={[COLOR.LIGHT_MATTE_BLACK, 'transparent']}></LinearGradient>
+          colors={[COLOR.LIGHT_MATTE_BLACK, 'transparent']}>
+          </LinearGradient>
       </Animated.View>
     </View>
   );
@@ -283,6 +293,11 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
+  likeBtn:{
+    position: 'absolute',
+    top: 30,
+    right: 30,
+  }
 });
 
 export default ProgramDetailScreen;
