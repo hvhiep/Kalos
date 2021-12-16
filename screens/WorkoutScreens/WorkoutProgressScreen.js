@@ -31,7 +31,7 @@ import CustomModal from '../../components/CustomModal';
 import ProgressCircle from 'react-native-progress-circle';
 import LoadingView from '../../components/LoadingView';
 import Toast from 'react-native-toast-message';
-import {submitWorkout} from '../../serverAPIs/workoutAPI'
+import {submitWorkout} from '../../serverAPIs/workoutAPI';
 
 const STOP_WATCH_HEIGHT = 100;
 
@@ -98,7 +98,8 @@ function WorkoutProgressScreen({route, navigation}, props) {
   const onHideDoneIcon = () => {
     if (!isRest) {
       //Ghi nhan du lieu:
-      listExcercise[currentIndex].doneTime = currentExcersiseTimerRef?.current?.currentTime;
+      listExcercise[currentIndex].doneTime =
+        currentExcersiseTimerRef?.current?.currentTime;
       listExcercise[currentIndex].isDone = true;
       // setIsRest phai duoc dat sau ghi nhan du lieu
       setIsRest(true);
@@ -126,32 +127,35 @@ function WorkoutProgressScreen({route, navigation}, props) {
         return !item?.isDone;
       })
     ) {
-      setshowModalConfirmFinish(true)
+      setshowModalConfirmFinish(true);
     } else {
       onSubmitWorkout();
     }
   };
 
   const onSubmitWorkout = async () => {
-   try{
-    setIsLoading(true)
-    const res = await submitWorkout(workoutData?._id, mainTimerRef?.current?.currentTime)
-    if (!res) throw 'Đã xảy ra lỗi khi Submit Bài tập'
-    Toast.show({
-      type: 'success',
-      text1: 'Thông báo',
-      text2: 'Chúc mừng bạn đã hoàn thành bài tập 👋'
-    });
-    navigation.navigate('Home')
-   } catch (e){
-    Toast.show({
-      type: 'error',
-      text1: 'Thông báo',
-      text2: e + ' 👋'
-    });
-   } finally{
-     setIsLoading(false)
-   }
+    try {
+      setIsLoading(true);
+      const res = await submitWorkout(
+        workoutData?._id,
+        mainTimerRef?.current?.currentTime,
+      );
+      if (!res) throw 'Đã xảy ra lỗi khi Submit Bài tập';
+      Toast.show({
+        type: 'success',
+        text1: 'Thông báo',
+        text2: 'Chúc mừng bạn đã hoàn thành bài tập 👋',
+      });
+      navigation.navigate('Home');
+    } catch (e) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: e + ' 👋',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const goToExcercise = index => {
@@ -336,12 +340,6 @@ function WorkoutProgressScreen({route, navigation}, props) {
     }
   };
 
-  if (isLoading) return(
-    <View style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
-      <LoadingView/>
-    </View>
-  )
-
   return (
     <View style={{flex: 1, backgroundColor: COLOR.MATTE_BLACK}}>
       <Animated.View
@@ -449,7 +447,7 @@ function WorkoutProgressScreen({route, navigation}, props) {
         title="Bạn chưa hoàn thành bài tập, Nếu xác nhận thì tất cả dữ liệu tập sẽ không được ghi nhận ?"
         onConfirm={() => {
           setshowModalConfirmFinish(false);
-          navigation.pop()
+          navigation.pop();
         }}
         onCancel={() => setshowModalConfirmFinish(false)}
       />
@@ -460,6 +458,17 @@ function WorkoutProgressScreen({route, navigation}, props) {
         size={25}
         onPress={() => setShowModalExit(true)}
       />
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            width: SCREEN_WIDTH,
+            height: SCREEN_HEIGHT,
+            backgroundColor: COLOR.MATTE_BLACK,
+          }}>
+          <LoadingView />
+        </View>
+      )}
     </View>
   );
 }

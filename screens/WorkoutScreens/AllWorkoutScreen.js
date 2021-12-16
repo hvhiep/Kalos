@@ -119,6 +119,7 @@ function AllWorkoutScreen({navigation}) {
               image={{
                 uri: item?.image,
               }}
+              level={item?.level}
             />
     </View>
   );

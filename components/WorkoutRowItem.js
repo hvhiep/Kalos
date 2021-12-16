@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ScrollView
 } from 'react-native';
+import { toLevelName } from '../backendRules';
 import {COLOR} from '../constant';
 import HeartButton from './HeartButton';
 
@@ -22,7 +23,7 @@ function WorkoutRowItem(props) {
           source={props?.image}
           resizeMode="cover">
           {props?.createdTime && <Text style={styles.desTxt}>{props?.createdTime}</Text>}
-          {props?.level && <Text style={styles.desTxt}>Level: {props?.level}</Text>}
+          {props?.level && <Text style={styles.desTxt}>Level: {toLevelName(props?.level)}</Text>}
           <Text style={styles.titleTxt}>{props?.title}</Text>
           <ScrollView horizontal style={styles.tagScroll} showsHorizontalScrollIndicator={false}>
             {props?.muscleGroups &&
@@ -34,7 +35,7 @@ function WorkoutRowItem(props) {
                 </View>
               ))}
           </ScrollView>
-            <HeartButton style={styles.likeBtn} heartStyle={{width:60, height:60}} isliked={props?.isliked} onButtonPress={()=>{}}/>
+            {/* <HeartButton style={styles.likeBtn} heartStyle={{width:60, height:60}} isliked={props?.isliked} onButtonPress={()=>{}}/> */}
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
