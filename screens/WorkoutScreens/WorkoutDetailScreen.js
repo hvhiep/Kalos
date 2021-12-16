@@ -10,6 +10,7 @@ import {
 } from 'react-native-gesture-handler';
 import LoadingView from '../../components/LoadingView';
 import { getExcerciseById } from '../../serverAPIs/exercisesAPI';
+import { toMuscleGroupName } from '../../backendRules';
 
 const HEADER_HEIGHT = 300; // height of the image
 const SCREEN_HEADER_HEIGHT = 90; // height of the header contain back button
@@ -77,7 +78,7 @@ function WorkoutDetailScreen({navigation, route}) {
               <View
                 style={[styles.tag, index == 0 ? {marginLeft: 20} : {}]}
                 key={index}>
-                <Text style={styles.tagTxt}>{item}</Text>
+                <Text style={styles.tagTxt}>{toMuscleGroupName(item)}</Text>
               </View>
             ))}
         </ScrollView>

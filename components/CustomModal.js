@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor:COLOR.BLACK
+    backgroundColor:'#00000070',
   },
   modalView: {
     backgroundColor: COLOR.WHITE,

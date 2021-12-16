@@ -7,15 +7,49 @@ import HeartButton from '../../components/HeartButton';
 import {getVideoById} from '../../serverAPIs/videoAPI';
 import {color} from 'react-native-reanimated';
 import {Icon} from 'react-native-elements';
+import {toWorkoutTypeName} from '../../backendRules';
+import CustomModal from '../../components/CustomModal';
+import {submitWorkout} from '../../serverAPIs/workoutAPI';
+import Toast from 'react-native-toast-message';
 
 function WeekDetailScreen({navigation, route}, props) {
-  const {weekData} = route.params || {};
+  const {weekData, programId} = route.params || {};
+  const [showModalConfirmRest, setShowModalConfirmRest] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState({});
 
   useEffect(() => {}, []);
 
+  const onConfirmRest = async () => {
+    setShowModalConfirmRest(false);
+    selectedWorkout.completed = true; //hien thi thoi
+    try {
+      const res = await submitWorkout(selectedWorkout?._id, 0);
+      if (!res) throw 'Đã xảy ra lỗi';
+      setSelectedWorkout({...selectedWorkout, completed:true})
+      let updateWeekWorkout = weekData?.workouts?.find((item)=>{return item?._id === selectedWorkout?._id})
+      console.log(updateWeekWorkout)
+      updateWeekWorkout.completed = true
+    } catch (e) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông báo',
+        text2: e + ' 👋',
+      });
+    }
+  };
+
   const renderItem = (item, index) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          if (toWorkoutTypeName(item?.type) === 'Tập Luyện')
+            navigation.navigate('WorkoutInfo', {workoutId: item?._id});
+          else
+           {
+            setSelectedWorkout(item);
+            setShowModalConfirmRest(true);
+          }
+        }}>
         <View
           style={{
             backgroundColor: COLOR.WHITE,
@@ -77,6 +111,14 @@ function WeekDetailScreen({navigation, route}, props) {
         style={styles.flatlist}
         data={weekData?.workouts}
         renderItem={({item, index}) => renderItem(item, index)}
+      />
+      <CustomModal
+        visible={showModalConfirmRest}
+        title="Bạn có chắc xác nhận hoàn thành ngày nghỉ ?"
+        onConfirm={() => {
+          onConfirmRest();
+        }}
+        onCancel={() => setShowModalConfirmRest(false)}
       />
     </View>
   );

@@ -81,7 +81,7 @@ function AllProgramScreen({navigation}) {
   const renderItem = item => (
     <View style={styles.itemWrapper}>
       <ProgramItem
-              onPress={()=>{navigation.navigate('ProgramDetail', {programData: item})}}
+              onPress={()=>{navigation.navigate('ProgramDetail', {programId: item?._id})}}
               icon='dumbbell'
               tagColor={COLOR.BLUE}
               style={{height: 160, width: '100%'}}

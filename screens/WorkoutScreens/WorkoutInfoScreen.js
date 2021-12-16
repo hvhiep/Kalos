@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -12,16 +12,37 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR } from '../../constant';
 import HeartButton from '../../components/HeartButton';
 import StartButton from '../../components/StartButton';
+import { getWorkoutById } from '../../serverAPIs/workoutAPI';
+import LoadingView from '../../components/LoadingView';
+import { toMuscleGroupName } from '../../backendRules';
 function WorkoutInfoScreen({navigation, route}) {
 
-  const { workoutData } = route.params;
+  const { workoutId } = route.params || {};
 
-  const [liked, setLiked] = useState(workoutData?.liked)
+  const [liked, setLiked] = useState(workout?.liked)
+  const [isLoading, setIsLoading] = useState(false)
+  const [workout, setWorkout] = useState(false)
+
+  useEffect(()=>{
+    getWorkout()
+  },[])
+
+  const getWorkout = async () => {
+    try{
+      setIsLoading(true)
+      const res = await getWorkoutById(workoutId)
+      setWorkout(res?.data?.workout)
+    } catch (e) {
+
+    } finally{
+      setIsLoading(false)
+    }
+  }
 
   const renderHeader = ()=>(
     <View style= {styles.banner}>
         <ImageBackground
-        source={{uri: workoutData?.image}}
+        source={{uri: workout?.image}}
         resizeMode='cover'
         style={{flex:1, justifyContent:'space-between'}}>
           <LinearGradient 
@@ -36,22 +57,28 @@ function WorkoutInfoScreen({navigation, route}) {
             end={{x:0, y:1}}
             colors={[COLOR.TRANSPARENT, COLOR.BLACK]} 
             style={styles.linearGradient}>
-                {/* <Text style={styles.levelTxt} numberOfLines={1}>Level: {workoutData?.level}</Text> */}
-                <Text style={styles.title} numberOfLines={2}>{workoutData?.name}</Text>
+                {/* <Text style={styles.levelTxt} numberOfLines={1}>Level: {workout?.level}</Text> */}
+                <Text style={styles.title} numberOfLines={2}>{workout?.name}</Text>
                 <ScrollView horizontal style={styles.tagScroll}>
-                  {workoutData?.muscleGroups &&
-                    workoutData?.muscleGroups?.map((item, index)=>(
+                  {workout?.muscleGroups &&
+                    workout?.muscleGroups?.map((item, index)=>(
                       <View style={[styles.tag, index==0?{marginLeft:20}:{}]} key={index}>
-                        <Text style={styles.tagTxt}>{item}</Text>
+                        <Text style={styles.tagTxt}>{toMuscleGroupName(item)}</Text>
                       </View>
                     ))
                   }
                 </ScrollView>
-                <Text style={styles.levelTxt}>Thời gian ước tính : {workoutData?.rounds?.length * 15} phút</Text>
-                <Text style={styles.levelTxt}>Số Round : x{workoutData?.rounds?.length}</Text>
+                <Text style={styles.levelTxt}>Thời gian ước tính : {workout?.rounds?.length * 15} phút</Text>
+                <Text style={styles.levelTxt}>Số Round : x{workout?.rounds?.length}</Text>
             </LinearGradient>
         </ImageBackground>
     </View>
+)
+
+if(isLoading) return (
+  <View style={{ flex: 1, backgroundColor:COLOR.MATTE_BLACK}}>
+    <LoadingView/>
+  </View>
 )
 
   return (
@@ -59,7 +86,7 @@ function WorkoutInfoScreen({navigation, route}) {
         <StatusBar barStyle='light-content' translucent backgroundColor='transparent'></StatusBar>
         {renderHeader()}
         <View style={styles.btnWrapper}>
-          <StartButton title='Bắt Đầu' onButtonPress={()=>navigation.navigate('WorkoutDetail', {workoutData: workoutData}) }></StartButton>
+          <StartButton title='Bắt Đầu' onButtonPress={()=>navigation.navigate('WorkoutDetail', {workoutData: workout}) }></StartButton>
         </View>
     </View>
   );

@@ -15,28 +15,39 @@ import ProgramItem from '../../components/ProgramItem';
 import {getAllVideo} from '../../serverAPIs/videoAPI';
 import { getAllProgram, getProgramById } from '../../serverAPIs/programAPI';
 import { toLevelName } from '../../backendRules';
+import LoadingView from '../../components/LoadingView'
 import WeekItem from '../../components/WeekItem';
 
 const HEADER_HEIGHT = 300; // height of the image
 const SCREEN_HEADER_HEIGHT = 100; // height of the header contain back button
 
 function ProgramDetailScreen({navigation, route}) {
-    const programData = route.params || {}
+    const {programId} = route.params || {}
     const [program, setProgram] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    getData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getData();
+    });
+    
+    return unsubscribe;
+  }, [programId]);
 
   const getData = async () => {
     try {
-        const res = await getProgramById(programData?.programData?._id);
+      setIsLoading(true)
+      console.log(programId)
+        const res = await getProgramById(programId);
         if (!res?.data?.program) throw 'FAIL TO GET PROGRAM';
         setProgram(res?.data?.program);
       } catch (e) {
         console.log(e);
+      }
+      finally{
+        setIsLoading(false)
       }
   };
 
@@ -84,12 +95,15 @@ function ProgramDetailScreen({navigation, route}) {
   const renderItem = item => (
     <View style={styles.itemWrapper}>
       <WeekItem
-              onPress={()=>{navigation.navigate('WeekDetail', {weekData: item})}}
+              onPress={()=>{navigation.navigate('WeekDetail', {weekData: item, programId: programId})}}
               item={item}
             />
     </View>
   );
 
+  if(isLoading) return<View style={{flex:1, backgroundColor:COLOR.MATTE_BLACK}}>
+    <LoadingView/>
+  </View>
   return (
     <View style={{flex: 1}}>
       <StatusBar backgroundColor="transparent" translucent />

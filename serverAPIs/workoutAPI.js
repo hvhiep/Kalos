@@ -16,3 +16,8 @@ export const submitWorkout = async (workoutId, time) => {
   const respone = await postWithCheckingToken(HOST + '/api/workouts/submit', body, {})
   return respone
 }
+
+export async function getWorkoutById(id) {
+  const response = await getWithCheckingToken(HOST + '/api/workouts/' + id);
+  return response
+}
