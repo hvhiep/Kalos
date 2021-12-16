@@ -41,12 +41,13 @@ function ExerciseScreen() {
     const [exerciseDetail, setExerciseDetail] = useState(null);
     const [exercisesData, setExercisesData] = useState([]);
     //list bài tập sau khi search
-    const [exercisesDataSearched, setExercisesDataSearched] = useState([]);
+    const [exercisesDataSearched, setExercisesDataSearched] = useState(exercisesData);
     // list bài tập sau khi filter
-    const [exercisesDataFilter, setExercisesDataFilter] = useState([]);
+    const [exercisesDataFilter, setExercisesDataFilter] = useState(exercisesData);
     // list các tag
     const [filterData, setFilterData] = useState(initFilterData);
     const [isSearchSuccess, setSearchSuccess] = useState(true);
+    const [searchValue, setSearchValue] = useState('');
 
     //ref để đồng bộ tag với component SheetFilter
     const filterDataRef = useRef();
@@ -107,6 +108,8 @@ function ExerciseScreen() {
         if (response !== -1) {
             exercisesRef.current = response;
             setExercisesData(response);
+            setExercisesDataFilter(response);
+            setExercisesDataSearched(response);
         }
         else
             console.log('loi get all exercises');
@@ -154,16 +157,19 @@ function ExerciseScreen() {
     const handleSearch = (result) => {
         const filterExercises = exercisesRef.current.filter((item, index) => {
             return item.name.toLowerCase().includes(result.trim().toLowerCase());
+            
         })
-        if (result === '' || result === undefined || result === null) {
+        if (result === '') {
             setExercisesDataSearched(exercisesData);
             setSearchSuccess(true);
+            setSearchValue(result);
             //sau khi search, tiếp tục filter với các tag (nếu có)
             filterTag();
         }
         else if (filterExercises.length > 0) {
             setExercisesDataSearched(filterExercises);
             setSearchSuccess(true);
+            setSearchValue(result);
             //sau khi search, tiếp tục filter với các tag (nếu có)
             filterTag();
         }
@@ -239,6 +245,7 @@ function ExerciseScreen() {
                         inputContainerStyle={styles.searchInput}
                         platform="android"
                         onChangeText={handleSearch}
+                        value={searchValue}
                     />
                     {/* exercise filter */}
                     <TouchableOpacity
@@ -263,7 +270,7 @@ function ExerciseScreen() {
                     keyExtractor={item => `${item._id}`}
                     showsVerticalScrollIndicator={false}>
                 </FlatList>}
-                {isSearchSuccess === false && <View style={styles.ListExercise}><Text>Không có bài tập nào!</Text></View>}
+                {isSearchSuccess === false && <View style={styles.ListExerciseError}><Text style={styles.ListExerciseErrorText}>Không có bài tập nào!</Text></View>}
                 {/*Bottom Sheet Exercise Detail */}
                 <SheetExerciseDetail
                     // sheet bi che mat 1 it phia duoi
@@ -320,6 +327,16 @@ const styles = StyleSheet.create({
     ListExercise: {
         marginHorizontal: 20,
         height: '100%',
+    },
+    ListExerciseError: {
+        marginHorizontal: 20,
+        height: '100%',
+    },
+    ListExerciseErrorText: { 
+        color: 'white',
+        fontSize: 20,
+        alignSelf: "center",
+        marginTop: 20,
     },
     exerciseWrapper: {
         flexDirection: "row",

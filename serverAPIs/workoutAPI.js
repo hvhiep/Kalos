@@ -1,5 +1,6 @@
 import { HOST } from '../constant';
 import { getWithCheckingToken, postWithCheckingToken } from './manageAPI';
+import { getUserToken } from '../AsyncStorage/userStorage';
 
 const axios = require('axios');
 
@@ -31,7 +32,6 @@ export const getSubmittedWorkout = async () => {
           'klos-access-token': token,
         },
       })
-      console.log('submittedddddddddddd: ', response);
       return response?.data?.submitted;
     }
   } catch (error) {
