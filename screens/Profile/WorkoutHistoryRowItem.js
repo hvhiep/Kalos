@@ -7,11 +7,9 @@ import {
   ImageBackground,
   ScrollView
 } from 'react-native';
-import { toLevelName } from '../backendRules';
-import {COLOR} from '../constant';
-import HeartButton from './HeartButton';
+import {COLOR} from '../../constant';
 
-function WorkoutRowItem(props) {
+function WorkoutHistoryRowItem(props) {
 
   return (
     <TouchableWithoutFeedback
@@ -22,8 +20,8 @@ function WorkoutRowItem(props) {
           imageStyle={[props?.imageStyle, styles.image]}
           source={props?.image}
           resizeMode="cover">
-          {props?.createdTime && <Text style={styles.desTxt}>{props?.createdTime}</Text>}
-          {props?.level && <Text style={styles.desTxt}>Level: {toLevelName(props?.level)}</Text>}
+          {props?.updatedAt && <Text style={styles.desTxt}>{props?.updatedAt}</Text>}
+          {props?.level && <Text style={styles.desTxt}>Level: {props?.level}</Text>}
           <Text style={styles.titleTxt}>{props?.title}</Text>
           <ScrollView horizontal style={styles.tagScroll} showsHorizontalScrollIndicator={false}>
             {props?.muscleGroups &&
@@ -59,13 +57,13 @@ const styles = StyleSheet.create({
   },
   desTxt: {
     color: COLOR.WHITE,
-    fontSize: 13,
-    fontWeight: '400',
+    fontSize: 16,
+    fontWeight: '800',
     marginHorizontal:15
   },
   titleTxt: {
     color: COLOR.WHITE,
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: '800',
     marginHorizontal:15
   },
@@ -95,4 +93,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default WorkoutRowItem;
+export default WorkoutHistoryRowItem;

@@ -42,7 +42,7 @@ function HomeScreen({ navigation }) {
   //user info
   const [userInfo, setUserInfo] = useState({});
   const [isLoadingUserInfo, setLoadingUserInfo] = useState(true);
-  console.log('HOME user info: ', userInfo);
+  // console.log('HOME user info: ', userInfo);
 
   useEffect(() => {
     getUserInfo();

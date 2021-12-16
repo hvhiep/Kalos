@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -7,11 +7,11 @@ import {
   Image,
   Animated,
 } from 'react-native';
-import {COLOR, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../constant';
-import {Icon} from 'react-native-elements';
-import WorkoutRowItem from '../../components/WorkoutRowItem';
-import { getAllWorkout } from '../../serverAPIs/workoutAPI';
-import { toWorkoutTypeName } from '../../backendRules';
+import { COLOR, SCREEN_HEIGHT, SCREEN_WIDTH } from '../../constant';
+import { Icon } from 'react-native-elements';
+// import WorkoutRowItem from '../../components/WorkoutRowItem';
+import WorkoutHistoryRowItem from './WorkoutHistoryRowItem';
+import { getSubmittedWorkout, getWorkoutById as getWorkoutByIdHistory } from '../../serverAPIs/workoutAPI';
 import moment from 'moment';
 
 const HEADER_HEIGHT = 250; // height of the image
@@ -19,25 +19,39 @@ const SCREEN_HEADER_HEIGHT = 90; // height of the header contain back button
 const NOTCH_SIZE = 30;
 const LIST_EXTRA_SIZE = 120;
 
-function AllWorkoutScreen({navigation}) {
-  const [listWorkout, setListWorkout] = useState([])
+function TrainingHistory({ navigation, route }) {
+  const [listWorkout, setListWorkout] = useState()
 
+  // console.log('workoutttttttttttttttttttt', listWorkout);
   useEffect(() => {
     getData();
-  }, []);
+  }, [])
+  //get submitted workout
 
   const getData = async () => {
-    try {
-      const res = await getAllWorkout();
-      if (!res?.data?.workouts) throw 'FAIL TO GET WORKOUT';
-      const list = res?.data?.workouts?.filter((item)=>{
-        return toWorkoutTypeName(item?.type) === 'Tập Luyện'
+    const response = await getSubmittedWorkout();
+    if (response !== -1) {
+      //get submitted workout
+      const workouts = response?.map((item) => {
+        const workoutItem = { updatedAt: item.updatedAt, ...item.workout };
+        return workoutItem;
       })
-      setListWorkout(list);
-    } catch (e) {
-      console.log(e);
+      setListWorkout(workouts);
     }
-  };
+    else
+      console.log('loi lay workout');
+  }
+
+  const handleRowItemClick = async (item) => {
+    const response = await getWorkoutByIdHistory(item?._id);
+    if(response !== -1){
+    // console.log('detail: ', response);
+      navigation.navigate('WorkoutInfo', { workoutData: response });
+    }
+    else{
+      console.log('loi k day dc workout by id');
+    }
+  }
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -74,20 +88,20 @@ function AllWorkoutScreen({navigation}) {
             ],
           },
         ]}
-        source={{uri:'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/muscular-build-athlete-having-cross-training-in-a-royalty-free-image-1618930811.?resize=640:*'}}
+        source={{ uri: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/muscular-build-athlete-having-cross-training-in-a-royalty-free-image-1618930811.?resize=640:*' }}
         resizeMode="cover"></Animated.Image>
-      <Animated.View style={[styles.headerContentWrapper,{
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [0, HEADER_HEIGHT, 99999],
-                outputRange: [0, -HEADER_HEIGHT, HEADER_HEIGHT],
-              }),
-            },
-          ],
+      <Animated.View style={[styles.headerContentWrapper, {
+        transform: [
+          {
+            translateY: scrollY.interpolate({
+              inputRange: [0, HEADER_HEIGHT, 99999],
+              outputRange: [0, -HEADER_HEIGHT, HEADER_HEIGHT],
+            }),
+          },
+        ],
       }]}>
         <View style={styles.headerTxtWrapper}>
-          <Text style={styles.headerTxt}>Thư viện chương trình tập</Text>
+          <Text style={styles.headerTxt}>Lịch Sử Tập</Text>
           <Text style={styles.infoTxt}>Số lượng: {listWorkout?.length}</Text>
         </View>
       </Animated.View>
@@ -95,37 +109,35 @@ function AllWorkoutScreen({navigation}) {
   );
 
   const renderListHeader = () => {
-    return(
-      <View style={{height:30, alignItems:'center', paddingHorizontal:5, flexDirection:'row'}}>
+    return (
+      <View style={{ height: 30, alignItems: 'center', paddingHorizontal: 5, flexDirection: 'row' }}>
         <Icon
-                name="dumbbell"
-                type="font-awesome-5"
-                size={13}
-                color={COLOR.WHITE}
-                style={{marginRight:10}}
-              />
-        <Text style={{color:COLOR.WHITE, fontSize:12}}>Số lượng: {listWorkout?.length}</Text>
+          name="dumbbell"
+          type="font-awesome-5"
+          size={13}
+          color={COLOR.WHITE}
+          style={{ marginRight: 10 }}
+        />
+        <Text style={{ color: COLOR.WHITE, fontSize: 12 }}>Số lượng: {listWorkout?.length}</Text>
       </View>
     )
   }
 
   const renderItem = item => (
     <View style={styles.itemWrapper}>
-      <WorkoutRowItem
-              onPress={() => navigation.navigate('WorkoutInfo', {workoutId: item?._id})}
-              isliked={false}
-              createdTime={moment(item?.updatedAt).format('LL')}
-              title={item?.name}
-              image={{
-                uri: item?.image,
-              }}
-              level={item?.level}
-            />
+      <WorkoutHistoryRowItem
+        onPress={() => handleRowItemClick(item)}
+        updatedAt={moment(item?.updatedAt).format('LL')}
+        title={item?.name}
+        image={{
+          uri: item?.image,
+        }}
+      />
     </View>
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: COLOR.LIGHT_MATTE_BLACK}}>
+    <View style={{ flex: 1, backgroundColor: COLOR.LIGHT_MATTE_BLACK }}>
       <StatusBar backgroundColor="transparent" translucent />
       {renderHeader()}
       <Animated.FlatList
@@ -147,12 +159,12 @@ function AllWorkoutScreen({navigation}) {
         ListHeaderComponent={renderListHeader}
         scrollEventThrottle={16}
         onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: true},
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true },
         )}
-        renderItem={({item}) => renderItem(item)}
-        ListFooterComponent={()=><View style={{height:LIST_EXTRA_SIZE/2}}></View>}
-        ></Animated.FlatList>
+        renderItem={({ item }) => renderItem(item)}
+        ListFooterComponent={() => <View style={{ height: LIST_EXTRA_SIZE / 2 }}></View>}
+      ></Animated.FlatList>
       <Animated.View style={[styles.screenHeader]}>
         <Animated.Text
           numberOfLines={1}
@@ -220,7 +232,7 @@ const styles = StyleSheet.create({
   infoTxt: {
     color: COLOR.WHITE,
     fontSize: 15,
-    fontWeight:'400'
+    fontWeight: '400'
   },
   flatlist: {
     flex: 1,
@@ -234,7 +246,7 @@ const styles = StyleSheet.create({
   itemWrapper: {
     //backgroundColor: COLOR.WHITE,
     paddingVertical: 5,
-    marginBottom:10
+    marginBottom: 10
   },
   excersiseWrapper: {
     height: 70,
@@ -269,4 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AllWorkoutScreen;
+export default TrainingHistory;
