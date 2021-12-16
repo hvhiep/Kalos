@@ -21,3 +21,8 @@ export async function getWorkoutById(id) {
   const response = await getWithCheckingToken(HOST + '/api/workouts/' + id);
   return response
 }
+
+export async function getAllWorkoutByTag(id) {
+  const response = await getWithCheckingToken(HOST + '/api/workouts?free=1&tag=' + id);
+  return response
+}
