@@ -18,6 +18,16 @@ export const submitWorkout = async (workoutId, time) => {
   return respone
 }
 
+// export async function getWorkoutById(id) {
+//   const response = await getWithCheckingToken(HOST + '/api/workouts/' + id);
+//   return response
+// }
+
+export async function getAllWorkoutByTag(id) {
+  const response = await getWithCheckingToken(HOST + '/api/workouts?free=1&tag=' + id);
+  return response
+}
+
 export const getSubmittedWorkout = async () => {
   try {
     const token = await getUserToken();

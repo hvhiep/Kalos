@@ -40,6 +40,13 @@ const goals = [
     'Học Kỹ Năng'
 ]
 
+const tags = [
+    'Giảm mỡ',
+    'Xây dựng sức mạnh',
+    'Xây dựng sức bền',
+    'Tabata'
+]
+
 export const toMuscleGroupName = ( muscleGroupIndex ) => {
     return muscleGroups.find((item, index) => {
         //index + 1 is because muscleGroupIndex starts at 1, index starts at 0
