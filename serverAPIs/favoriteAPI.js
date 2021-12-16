@@ -157,3 +157,24 @@ export const getVideoById = async (videoId, setDataFunction) =>
         setDataFunction(video)
     })
 }
+export const getWorkoutById = async (workoutId, setDataFunction) =>
+{
+    const token = await getUserToken();
+
+    console.log(token);
+    fetch(HOST + '/api/workouts/' + workoutId , 
+        {
+            method: "GET",
+            headers:{
+                'Content-type' : 'application/json',
+                'Accept' : 'application/json',
+                'klos-access-token': token
+        }}
+    )
+    .then(response => response.json())
+    .then(data => data["workout"])
+    .then(workout => {
+        console.log(workout)
+        setDataFunction(workout)
+    })
+}

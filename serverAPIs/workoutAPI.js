@@ -1,4 +1,4 @@
-import { postWithCheckingToken } from './manageAPI';
+import { postWithCheckingToken, getWithCheckingToken} from './manageAPI';
 
 const axios = require('axios');
 
@@ -14,4 +14,9 @@ export const submitWorkout = async (workoutId, time) => {
   }
   const respone = await postWithCheckingToken('https://klos-backend.herokuapp.com/api/workouts/submit', body, {})
   return respone
+}
+
+export async function getWorkoutById(id) {
+  const response = await getWithCheckingToken('https://klos-backend.herokuapp.com/api/workouts/' + id)
+  return response
 }

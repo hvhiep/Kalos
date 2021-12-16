@@ -272,7 +272,9 @@ function HomeScreen({ navigation }) {
         renderItem={({ item }) => (
           <View style={{ width: SCREEN_WIDTH, paddingRight: 30 }}>
             <WorkoutItem
-              onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item})}}
+              onPress={()=>{
+                console.log("selected workout,===", item)
+                navigation.navigate('WorkoutInfo', {workoutData: item})}}
               title={item?.name}
               muscleGroups={item?.muscleGroups}
               image={{

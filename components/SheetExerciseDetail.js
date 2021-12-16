@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import {
     View,
     Text,
@@ -16,9 +16,28 @@ import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 export default function SheetExerciseDetail(props) {
 
-    const { bottomSheetRef, exerciseDetail, initialSnap } = props;
-    const [liked, setLiked] = useState(true);
-
+    const { bottomSheetRef, exerciseDetail, initialSnap, handleLikePress, customizeSnapPoint } = props;
+    const [liked, setLiked] = useState(false);
+    const exerciseId = useRef("")
+    const isLikeClick = useRef(false)
+    if (exerciseDetail != null && exerciseId.current !==  exerciseDetail?._id)
+    {
+        console.log("set LIKE STATE when change the EXERCISE DETAIL ")
+        setLiked(exerciseDetail?.liked)            
+        exerciseId.current = exerciseDetail?._id;   
+    }
+    useEffect(()=>{
+        if (isLikeClick.current)
+        {
+            let timestamp = new Date().getTime()
+            handleLikePress()
+            console.log("handle like press time: ",new Date().getTime() - timestamp)
+            timestamp = new Date().getTime()
+            toggleExerciseLike(exerciseDetail?._id)
+            console.log("api toggle like call: ",new Date().getTime() - timestamp)
+            isLikeClick.current = false;
+        }
+    },[liked])
     //render sheet
     const renderContent = (exerciseDetail) => {
         return (
@@ -34,11 +53,12 @@ export default function SheetExerciseDetail(props) {
                 </Video>
 
                 {/* heart button */}
-                <HeartButton style={styles.likeBtn} isliked={isLiked} onButtonPress={() => { 
-                    // setLiked(prev => !prev)
-                    // console.log("exercis e id====", exerciseDetail)
-                    // toggleExerciseLike(exerciseDetail._id)
-                    onLikePress()
+                <HeartButton style={styles.likeBtn} isliked={liked} onButtonPress={ () => { 
+                    isLikeClick.current = true;                    
+                    console.log("is clicked ,", isLikeClick.current)
+
+                    setLiked(prev => !prev)
+                    console.log("is like click =setliked====", liked)
                 }} />
 
                 {/* exercise name */}
@@ -94,7 +114,7 @@ export default function SheetExerciseDetail(props) {
     return (
         <BottomSheet
             ref={bottomSheetRef}
-            snapPoints={[0, '95%']}
+            snapPoints={customizeSnapPoint? customizeSnapPoint : [0, '95%']}
             borderRadius={10}
             initialSnap={initialSnap}
             renderContent={() => renderContent(exerciseDetail, liked)}

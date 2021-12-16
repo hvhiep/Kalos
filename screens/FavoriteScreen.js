@@ -20,7 +20,6 @@ import ProgramItem from '../components/ProgramItem';
 import ImageOverlayCard from '../components/ImageOverlayCard';
 import VideoScreen from './FavoriteScreens/VideoScreen';
 import VideoItem from '../components/VideoItem'
-import HomeSection from '../components/HomeSection';
 import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import NotFoundItemCard from '../components/NotFoundItemCard'
 
@@ -41,6 +40,7 @@ function FavoriteScreen({navigation})
 
     const [isRefreshing, setRefreshing] = useState(false);
 
+    const mapIsLikedArray= (array)=>array.map(val => ({...val, liked: true}))
     console.log("is refreshing, ", isRefreshing)
     const onRefreshing = useCallback(
         async () => {
@@ -57,7 +57,7 @@ function FavoriteScreen({navigation})
                 setLoadingPrograms(false);
             });
             getFavoriteWorkouts((data)=>{
-                setFavoriteWorkouts(data);
+                setFavoriteWorkouts(mapIsLikedArray(data));
                 setLoadingWorkouts(false);
             });
             getFavoriteVideos((data)=>{
@@ -65,7 +65,7 @@ function FavoriteScreen({navigation})
                 setLoadingVideos(false);
             });
             getFavoriteExercises((data)=>{
-                setFavoriteExercises(data);
+                setFavoriteExercises(mapIsLikedArray(data));
                 setLoadingExercises(false);
             })
 
@@ -112,7 +112,7 @@ function FavoriteScreen({navigation})
                         uri: item?.image,
                     }}
                     rounds={item?.rounds}
-                    onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item, isLiked: true})}}
+                    onPress={()=>{navigation.navigate('WorkoutInfo', {workoutData: item})}}
                     />
                 </View>
                 )}
@@ -147,7 +147,6 @@ function FavoriteScreen({navigation})
             data={favoritePrograms}
             keyExtractor={item => item._id}
             renderItem={({item})=>{
-                console.log("program-item ----", item)
                 return(
                     <View style={{paddingRight: 15}}>
                         <ProgramItem
@@ -232,7 +231,7 @@ function FavoriteScreen({navigation})
                 <ImageOverlayCard 
                 image={{uri:'http://ghemassagetoanthan.org/wp-content/uploads/2021/05/tap-luyen-push-up-truyen-thong-va-bien-the-3.jpg'}}
                 title={favoriteExercises.length + " Bài tập đã lưu"}
-                onPress={()=>{navigation.navigate('FavoriteExercises', {favoriteExercises: favoriteExercises})}}/>
+                onPress={()=>{navigation.navigate('FavoriteExercises', { favoriteExercises: favoriteExercises.map(val => ({...val, liked: true})) })}}/>
             </View>
         )
     }

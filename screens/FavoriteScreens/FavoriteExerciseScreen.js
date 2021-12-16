@@ -14,14 +14,14 @@ import {Button} from 'react-native-elements'
 import ExcerciseInfoScreen from '../Exercise/ExerciseInfoScreen';
 import ExerciseBottomSheetContent from '../Exercise/ExerciseBottomSheetContent';
 import BottomSheet from '@gorhom/bottom-sheet';
-
+import SheetExerciseDetail from '../../components/SheetExerciseDetail';
 import { getFavoriteExercises} from '../../serverAPIs/favoriteAPI'
 
 function FavoriteExerciseScreen({navigation, route})
 {
     const {favoriteExercises} = route.params;
-    const [selectedExercise, setSelectedExercise] = useState(favoriteExercises[0])
-    console.log("exercise =-------------------------------", favoriteExercises)
+    const [exercisesData, setExercisesData] = useState(favoriteExercises)
+    const [selectedExercise, setSelectedExercise] = useState(null)
     const bottomSheetRef = useRef(null);
     const snapPoints = useMemo(() => ['50%','90%'], []);
 
@@ -34,33 +34,39 @@ function FavoriteExerciseScreen({navigation, route})
             <FlatList
             vertical
             showsVerticalScrollIndicator={false}
-            data={favoriteExercises}
+            data={exercisesData}
             renderItem={({item})=>(
             <View style={{width:SCREEN_WIDTH}}>
-                <ExeciseItem image={{uri:item.image}}
-                    isLiked = {true}
-                    title={item.name}
+                <ExeciseItem 
+                    exercise = {item}
                     onPress = {()=>{
-                        console.log("selected ex===",item);
+                        console.log("selected exc===",item);
                         setSelectedExercise(item)
-                        bottomSheetRef.current.expand();
+                        // bottomSheetRef.current.expand();
+                        bottomSheetRef.current.snapTo(1)
                     }}/>
             </View>
             )}
             />
         </View>
-        
-        <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-        >
-            <ExerciseBottomSheetContent 
-            exerciseDetail = {selectedExercise == {} ? null: selectedExercise}
-            liked = {true}/>
-        </BottomSheet>
 
+        <SheetExerciseDetail
+            bottomSheetRef={bottomSheetRef}
+            initialSnap={0}
+            exerciseDetail={selectedExercise}
+            handleLikePress={async ()=>{
+                // setExercisesData(prev => prev.map(val =>val._id === selectedExercise?._id ? {...val, liked: !val.liked} : val))
+                let excArr = [...exercisesData]
+                let index = exercisesData.indexOf(selectedExercise)
+                if (index != -1)
+                {
+                    excArr[index] = {...excArr[index], liked: !excArr[index].liked}
+                    setExercisesData(excArr)
+                }
+                
+            }}
+            customizeSnapPoint = {[0, '90%', '50%']}>
+        </SheetExerciseDetail>
     </SafeAreaView>
     
     )

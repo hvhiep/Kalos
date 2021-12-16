@@ -133,6 +133,11 @@ function ExerciseScreen() {
                     >
                         {item?.name}
                     </Text>
+                    {item?.liked && <Icon name="heart"
+                        type="font-awesome-5"
+                        solid
+                        color="#FF0000"
+                        />}
                 </View>
             </TouchableOpacity>
         )
@@ -259,7 +264,20 @@ function ExerciseScreen() {
                 // sheet bi che mat 1 it phia duoi
                     bottomSheetRef={bottomSheetRef}
                     initialSnap={0}
-                    exerciseDetail={exerciseDetail}>
+                    exerciseDetail={exerciseDetail}
+                    handleLikePress={async ()=>{
+                        // setExercisesData(prev => prev.map(val =>val._id === selectedExercise?._id ? {...val, liked: !val.liked} : val))
+                        let excArr = [...exercisesData]
+                        let index = exercisesData.indexOf(exerciseDetail)
+                        console.log("index is === ", index)
+                        if (index != -1)
+                        {
+                            excArr[index] = {...excArr[index], liked: !excArr[index].liked}
+                            setExercisesData(excArr)
+                        }
+                        
+                        console.log("outsieder exer ===",exerciseDetail)
+                    }}>
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
                 <SheetFilter
@@ -321,6 +339,8 @@ const styles = StyleSheet.create({
     },
     exerciseRightWrapper: {
         flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     exerciseImage: {
         resizeMode: "center",
@@ -334,7 +354,11 @@ const styles = StyleSheet.create({
         marginRight: 5,
         fontSize: 16,
         fontWeight: "bold",
-        color: 'white'
+        color: 'white',
+        maxWidth: '80%',
+    },
+    heartIcon:{
+        minWidth: 20
     },
     filterTagWrapper: {
         marginRight: 5,

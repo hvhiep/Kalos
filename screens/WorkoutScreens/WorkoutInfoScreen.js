@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -12,13 +12,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import { COLOR } from '../../constant';
 import HeartButton from '../../components/HeartButton';
 import StartButton from '../../components/StartButton';
-import {toggleWorkoutLike} from '../../serverAPIs/favoriteAPI'
+import {toggleWorkoutLike, getWorkoutById} from '../../serverAPIs/favoriteAPI'
+// import {getWorkoutById} from '../../serverAPIs/workoutAPI'
 
 function WorkoutInfoScreen({navigation, route}) {
 
-  const { workoutData, isLiked } = route.params;
+  const { workoutData } = route.params;
 
-  const [liked, setLiked] = useState(workoutData?.liked || isLiked)
+  const [liked, setLiked] = useState(workoutData?.liked)
+  useEffect(()=>{
+    getLikedData()
+  },[])
+
+  const getLikedData = async()=>{
+    getWorkoutById(workoutData?._id, (workout)=>{setLiked(workout?.liked)})    
+  };
 
   const renderHeader = ()=>(
     <View style= {styles.banner}>
