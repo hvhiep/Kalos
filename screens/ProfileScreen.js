@@ -27,7 +27,7 @@ import bmi from '../assets/images/bmi.png';
 import { getMe } from '../serverAPIs/getMeAPI';
 import { toLevelName, toGoals } from '../backendRules';
 import { updateBodyIndex } from '../serverAPIs/bodyIndexUpdateAPI';
-import { getSubmittedWorkout } from '../serverAPIs/workoutAPI';
+import { getSubmittedWorkout, getProgramProgress } from '../serverAPIs/workoutAPI';
 
 //--------------------------------------------
 const HEADER_HEIGHT = 200;
@@ -61,8 +61,8 @@ function ProfileScreen({ navigation }) {
   const [isLoadingMainChart, setLoadingMainChart] = useState(true);
   const [isUpdateBodyIndex, setUpdateBodyIndex] = useState(false);
   const [achievements, setAchievements] = useState(ACHIEVEMENTS);
-  const [submittedWorkout, setSubmittedWorkout] = useState([]);
-  const [submittedProgram, setSubmittedProgram] = useState([]);
+  const [submittedWorkout, setSubmittedWorkout] = useState();
+  const [programProgress, setProgramProgress] = useState();
 
   //BMI
   const BMI = [
@@ -135,27 +135,48 @@ function ProfileScreen({ navigation }) {
 
   useEffect(() => {
     getSubmittedWorkoutAPI();
+    getProgramData();
   }, [])
 
   //get submitted workout
   const getSubmittedWorkoutAPI = async () => {
     const response = await getSubmittedWorkout();
     if (response !== -1) {
-      setAchievements(achievements.map((item) => {
-        if (item.title === 'workout') {
-          return {
-            title: 'workout',
-            subTitle: 'Kế Hoạch Tập',
-            total: response?.length,
-          };
-        }
-        else
-          return item;
-      }))
-      setSubmittedWorkout(response);
+      // setAchievements(achievements.map((item) => {
+      //   if (item.title === 'workout') {
+      //     return {
+      //       title: 'workout',
+      //       subTitle: 'Kế Hoạch Tập',
+      //       total: response?.length,
+      //     };
+      //   }
+      //   else
+      //     return item;
+      // }))
+      const workout = {
+        listData: response,
+        title: 'Kế Hoạch Tập',
+        total: response?.length,
+      };
+      setSubmittedWorkout(workout);
     }
     else
       console.log('loi lay workout');
+  }
+
+  //get program progress
+  const getProgramData = async () => {
+    const response = await getProgramProgress();
+    if (response !== -1) {
+      const program = {
+        listData: response,
+        title: 'Lộ Trình Tập',
+        total: response?.length,
+      };
+      setProgramProgress(program);
+    }
+    else
+      console.log('loi lay program');
   }
 
   //get user info
@@ -338,18 +359,23 @@ function ProfileScreen({ navigation }) {
         <View style={[styles.sectionWrapper, { backgroundColor: COLOR.MATTE_BLACK }]}>
           <View style={styles.achievementsTitleWrapper}>
             <Icon name="emoji-events" type="material" size={22} color='yellow'></Icon>
-            <Text style={styles.sectionTitle}>Thành Tích</Text>
+            <Text style={styles.sectionTitle}>Lịch Sử</Text>
           </View>
           <View style={styles.achievementsListItem}>
-            {achievements.map((item, index) => {
+            {/* {achievements.map((item, index) => {
+              let screen = '';
               let data = [];
-              if (index === 0)
+              if (index === 0) {
                 data = submittedWorkout;
-              if (index === 1)
-                data = submittedWorkout;
+                screen = 'History';
+              }
+              if (index === 1) {
+                data = programProgress;
+                screen = 'ProgramHistory';
+              }
               return (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('History', {data})}
+                  onPress={() => navigation.navigate(screen, { data })}
                   key={index.toString()}
                   style={styles.achievementsItemWrapper}
                 >
@@ -357,7 +383,28 @@ function ProfileScreen({ navigation }) {
                   <Text style={styles.achievementsItemTitle}>{item?.subTitle}</Text>
                 </TouchableOpacity>
               )
-            })}
+            })} */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('History', { listWorkout: submittedWorkout?.listWorkout })}
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>{submittedWorkout?.total}</Text>
+              <Text style={styles.achievementsItemTitle}>{submittedWorkout?.title}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ProgramHistory', { listProgram: programProgress?.listData })}
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>{programProgress?.total}</Text>
+              <Text style={styles.achievementsItemTitle}>{programProgress?.title}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.achievementsItemWrapper}
+            >
+              <Text style={styles.achievementsItemNumber}>2</Text>
+              <Text style={styles.achievementsItemTitle}>Danh Hiệu</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
 

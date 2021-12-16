@@ -67,3 +67,24 @@ export const getWorkoutById = async (id) => {
     return -1;
   }
 }
+
+export const getProgramProgress = async () => {
+  try {
+    const token = await getUserToken();
+    if (token !== -1) {
+      const response = await axios({
+        method: 'get',
+        baseURL: HOST,
+        url: '/api/programs/progress',
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'klos-access-token': token,
+        },
+      })
+      return response?.data?.progresses;
+    }
+  } catch (error) {
+    return -1;
+  }
+}

@@ -42,15 +42,19 @@ function TrainingHistory({ navigation, route }) {
       console.log('loi lay workout');
   }
 
+  // const handleRowItemClick = async (item) => {
+  //   const response = await getWorkoutByIdHistory(item?._id);
+  //   if(response !== -1){
+  //   // console.log('detail: ', response);
+  //     navigation.navigate('WorkoutInfo', { workoutData: response });
+  //   }
+  //   else{
+  //     console.log('loi k day dc workout by id');
+  //   }
+  // }
   const handleRowItemClick = async (item) => {
-    const response = await getWorkoutByIdHistory(item?._id);
-    if(response !== -1){
-    // console.log('detail: ', response);
-      navigation.navigate('WorkoutInfo', { workoutData: response });
-    }
-    else{
-      console.log('loi k day dc workout by id');
-    }
+    
+      navigation.navigate('WorkoutInfo', { workoutId: item._id });
   }
 
   const scrollY = useRef(new Animated.Value(0)).current;

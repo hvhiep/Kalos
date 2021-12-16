@@ -36,6 +36,7 @@ import ExerciseScreen from '../screens/ExerciseScreen'
 import TrainingHistory from '../screens/Profile/TrainingHistory';
 import ProgramDetailScreen from '../screens/Program/ProgramDetailScreen';
 import WeekDetailScreen from '../screens/Program/WeekDetailScreen';
+import ProgramHistory from '../screens/Profile/ProgramHistory';
 
 const MainStack = createStackNavigator();
 
@@ -101,6 +102,8 @@ function MainStackNavigator () {
             headerTitleAlign: 'center', }}
           />
           <MainStack.Screen name="History" component={TrainingHistory} 
+          options={{ headerTintColor:'#fff' }}/>
+          <MainStack.Screen name="ProgramHistory" component={ProgramHistory} 
           options={{ headerTintColor:'#fff' }}/>
           <MainStack.Screen name="AllWorkout" component={AllWorkoutScreen} 
           options={{ headerTintColor:'#fff' }}/>
