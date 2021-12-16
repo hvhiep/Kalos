@@ -159,7 +159,7 @@ function HomeScreen({ navigation }) {
         <View style={styles.bannerBtnWrapper}>
           <TouchableOpacity
             style={styles.bannerBtn}
-            onPress={() => navigation.navigate('WorkoutInfo', {workoutData: workoutOfTheDay})}>
+            onPress={() => navigation.navigate('WorkoutInfo', {workoutId: workoutOfTheDay?._id})}>
             <Icon
               name="dumbbell"
               type="font-awesome-5"
@@ -272,9 +272,7 @@ function HomeScreen({ navigation }) {
         renderItem={({ item }) => (
           <View style={{ width: SCREEN_WIDTH, paddingRight: 30 }}>
             <WorkoutItem
-              onPress={()=>{
-                console.log("selected workout,===", item)
-                navigation.navigate('WorkoutInfo', {workoutData: item})}}
+              onPress={()=>{navigation.navigate('WorkoutInfo', {workoutId: item?._id})}}
               title={item?.name}
               muscleGroups={item?.muscleGroups}
               image={{
@@ -313,6 +311,7 @@ function HomeScreen({ navigation }) {
         renderItem={({ item, index }) => (
           <View style={{ paddingRight: 15 }} key={index}>
             <ProgramItem
+              onPress={()=>{navigation.navigate('ProgramDetail', {programId: item?._id})}}
               icon='dumbbell'
               tagColor={COLOR.BLUE}
               style={{ height: 200, width: 160 }}
@@ -351,7 +350,6 @@ function HomeScreen({ navigation }) {
           onPress={async () => { }}
         />
       </View>
-      {/* <TouchableOpacity style={{height:50, backgroundColor:'#123123'}} onPress={()=>navigation.navigate('WorkoutInfo')}/> */}
     </ScrollView>
   );
 }
