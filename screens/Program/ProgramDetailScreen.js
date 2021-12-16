@@ -13,28 +13,41 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Searchbar} from 'react-native-paper';
 import ProgramItem from '../../components/ProgramItem';
 import {getAllVideo} from '../../serverAPIs/videoAPI';
-import { getAllProgram } from '../../serverAPIs/programAPI';
+import { getAllProgram, getProgramById } from '../../serverAPIs/programAPI';
+import { toLevelName } from '../../backendRules';
+import LoadingView from '../../components/LoadingView'
+import WeekItem from '../../components/WeekItem';
 
-const HEADER_HEIGHT = 170; // height of the image
-const SCREEN_HEADER_HEIGHT = 140; // height of the header contain back button
+const HEADER_HEIGHT = 300; // height of the image
+const SCREEN_HEADER_HEIGHT = 100; // height of the header contain back button
 
-function AllProgramScreen({navigation}) {
-  const [listProgram, setListProgram] = useState([]);
-  const [textInput, setTextInput] = useState('');
+function ProgramDetailScreen({navigation, route}) {
+    const {programId} = route.params || {}
+    const [program, setProgram] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    getData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getData();
+    });
+    
+    return unsubscribe;
+  }, [programId]);
 
   const getData = async () => {
     try {
-        const res = await getAllProgram();
-        if (!res?.data?.programs) throw 'FAIL TO GET PROGRAM';
-        setListProgram(res?.data?.programs);
+      setIsLoading(true)
+      console.log(programId)
+        const res = await getProgramById(programId);
+        if (!res?.data?.program) throw 'FAIL TO GET PROGRAM';
+        setProgram(res?.data?.program);
       } catch (e) {
         console.log(e);
+      }
+      finally{
+        setIsLoading(false)
       }
   };
 
@@ -61,13 +74,14 @@ function AllProgramScreen({navigation}) {
           },
         ]}
         source={{
-          uri: 'https://thumbor.forbes.com/thumbor/fit-in/1200x0/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fdam%2Fimageserve%2F1130300334%2F0x0.jpg%3Ffit%3Dscale',
+          uri: program?.image,
         }}
         resizeMode="cover"></Animated.Image>
       <Animated.View style={styles.headerContentWrapper}>
         <View style={styles.headerTxtWrapper}>
-          <Text style={styles.infoTxt}>Số lượng: {listProgram?.length}</Text>
-          <Text style={styles.headerTxt}>Lộ trình tập luyện</Text>
+          <Text style={styles.infoTxt}>Level: {toLevelName(program?.level)}</Text>
+          <Text style={styles.infoTxt}>Thời gian: {program?.weeks?.length} tuần</Text>
+          <Text style={styles.headerTxt}>{program?.name}</Text>
         </View>
         <LinearGradient
           style={styles.linearGradient}
@@ -80,25 +94,22 @@ function AllProgramScreen({navigation}) {
 
   const renderItem = item => (
     <View style={styles.itemWrapper}>
-      <ProgramItem
-              onPress={()=>{navigation.navigate('ProgramDetail', {programId: item?._id})}}
-              icon='dumbbell'
-              tagColor={COLOR.BLUE}
-              style={{height: 160, width: '100%'}}
-              title={item?.name}
-              image={{
-                uri: item?.image,
-              }}
+      <WeekItem
+              onPress={()=>{navigation.navigate('WeekDetail', {weekData: item, programId: programId})}}
+              item={item}
             />
     </View>
   );
 
+  if(isLoading) return<View style={{flex:1, backgroundColor:COLOR.MATTE_BLACK}}>
+    <LoadingView/>
+  </View>
   return (
     <View style={{flex: 1}}>
       <StatusBar backgroundColor="transparent" translucent />
       <Animated.FlatList
         style={styles.flatlist}
-        data={listProgram}
+        data={program?.weeks}
         keyExtractor={({item, index}) => index}
         scrollEventThrottle={16}
         onScroll={Animated.event(
@@ -135,7 +146,7 @@ function AllProgramScreen({navigation}) {
               ],
             },
           ]}>
-          Lộ trình tập luyện
+          Chương trình tập
         </Animated.Text>
       </Animated.View>
       <Animated.View
@@ -156,12 +167,14 @@ function AllProgramScreen({navigation}) {
             ],
           },
         ]}>
-        <Searchbar
-          style={{height: 40}}
-          placeholder="Tìm kiếm Video"
-          value={textInput}
-          onChangeText={setTextInput}
-        />
+        <Animated.Text style={[styles.infoTxt, {opacity:scrollY.interpolate({
+                  inputRange: [0, 40, 99999],
+                  outputRange: [
+                    1,
+                    0,
+                    0,
+                  ],
+                })}]}>Bạn đã hoàn thành được: {parseInt(program?.progress * 100)}% chương trình</Animated.Text>
       </Animated.View>
     </View>
   );
@@ -203,6 +216,7 @@ const styles = StyleSheet.create({
   infoTxt: {
     color: COLOR.WHITE,
     fontSize: 15,
+    fontWeight:'bold'
   },
   flatlist: {
     flex: 1,
@@ -210,7 +224,7 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     backgroundColor: COLOR.LIGHT_MATTE_BLACK,
-    paddingVertical: 5,
+    paddingVertical: 10,
     paddingHorizontal:10
   },
   excersiseWrapper: {
@@ -271,4 +285,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AllProgramScreen;
+export default ProgramDetailScreen;
