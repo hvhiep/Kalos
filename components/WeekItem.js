@@ -29,10 +29,10 @@ function WeekItem(props) {
         <Text style={styles.title}>{props?.item?.name}</Text>
         <View>
           <Text style={styles.tagTxt}>
-            Đã hoàn thành: {parseInt(props?.item?.progress * 100)}%
+            Đã hoàn thành: {parseInt(props?.item?.progress * 100) || 0}%
           </Text>
           <Progress.Bar
-            progress={props?.item?.progress}
+            progress={props?.item?.progress || 0}
             height={3}
             color={COLOR.MATTE_BLACK}
             unfilledColor={COLOR.LIGHT_GREY}
