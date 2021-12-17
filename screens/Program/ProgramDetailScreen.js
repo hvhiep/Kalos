@@ -184,7 +184,7 @@ function ProgramDetailScreen({navigation, route}) {
                     0,
                     0,
                   ],
-                })}]}>Bạn đã hoàn thành được: {parseInt(program?.progress * 100)}% chương trình</Animated.Text>
+                })}]}>Bạn đã hoàn thành được: {parseInt(program?.progress * 100) || 0}% chương trình</Animated.Text>
       </Animated.View>
     </View>
   );
