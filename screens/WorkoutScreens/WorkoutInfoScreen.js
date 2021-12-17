@@ -16,7 +16,7 @@ import {toggleWorkoutLike} from '../../serverAPIs/favoriteAPI'
 
 import { getWorkoutById } from '../../serverAPIs/workoutAPI';
 import LoadingView from '../../components/LoadingView';
-import { toMuscleGroupName } from '../../backendRules';
+import { toLevelName, toMuscleGroupName } from '../../backendRules';
 function WorkoutInfoScreen({navigation, route}) {
 
   const { workoutId } = route.params || {};
@@ -64,7 +64,7 @@ function WorkoutInfoScreen({navigation, route}) {
             end={{x:0, y:1}}
             colors={[COLOR.TRANSPARENT, COLOR.BLACK]} 
             style={styles.linearGradient}>
-                {/* <Text style={styles.levelTxt} numberOfLines={1}>Level: {workout?.level}</Text> */}
+                <Text style={styles.levelTxt} numberOfLines={1}>Level: {toLevelName(workout?.level)}</Text>
                 <Text style={styles.title} numberOfLines={2}>{workout?.name}</Text>
                 <ScrollView horizontal style={styles.tagScroll}>
                   {workout?.muscleGroups &&
