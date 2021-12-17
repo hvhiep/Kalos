@@ -177,7 +177,7 @@ function HomeScreen({ navigation }) {
           <Text style={styles.bannerRightSmallTxt}>Số round</Text>
           <Text style={styles.bannerRightTxt}>{workoutOfTheDay?.rounds?.length * 15}m</Text>
           <Text style={styles.bannerRightSmallTxt}>Thời gian</Text>
-          <Text style={[styles.bannerRightTxt, { fontSize: 15 }]}>Medium</Text>
+          <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bannerRightTxt, { fontSize: 15 }]}>{toLevelName(workoutOfTheDay?.level)}</Text>
           <Text style={styles.bannerRightSmallTxt}>Level</Text>
         </View>
       </View>
