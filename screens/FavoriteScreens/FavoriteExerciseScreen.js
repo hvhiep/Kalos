@@ -70,7 +70,7 @@ function FavoriteExerciseScreen({navigation, route})
                 }
                 
             }}
-            customizeSnapPoint = {[0, '90%', '50%']}>
+            customizeSnapPoint = {[0,'85%', '50%']}>
         </SheetExerciseDetail>
     </SafeAreaView>
     

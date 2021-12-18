@@ -25,7 +25,7 @@ import { getAllExercises } from "../serverAPIs/exercisesAPI";
 import {toggleExerciseLike} from '../serverAPIs/favoriteAPI'
 
 
-function ExerciseScreen() {
+function ExerciseScreen({navigation}) {
 
     const initFilterData = [
         { title: 'level', value: -1, },
@@ -55,7 +55,18 @@ function ExerciseScreen() {
     const filterDataRef = useRef();
     useEffect(() => {
         getExercises();
+
+        const willFocusSubscription = navigation.addListener('focus', () => {
+            getExercises();
+        });
+    
+        return willFocusSubscription;
+        
     }, [])
+    
+    useEffect(()=>{
+        handleSearch(searchValue)
+    },[searchValue])
 
     //filter bài tập thông qua tag nếu tag state được cập nhật
     useEffect(() => {
@@ -163,14 +174,14 @@ function ExerciseScreen() {
         setFilterData([...data]);
     }
 
-    //handle search
+    //handle searchx
     const handleSearch = (result) => {
         const filterExercises = exercisesRef.current.filter((item, index) => {
             return item.name.toLowerCase().includes(result.trim().toLowerCase());
             
         })
         if (result === '') {
-            setExercisesDataSearched(exercisesData);
+            setExercisesDataSearched(exercisesRef.current);
             setSearchSuccess(true);
             setSearchValue(result);
             //sau khi search, tiếp tục filter với các tag (nếu có)
@@ -288,17 +299,9 @@ function ExerciseScreen() {
                     initialSnap={0}
                     exerciseDetail={exerciseDetail}
                     handleLikePress={async ()=>{
-                        // setExercisesData(prev => prev.map(val =>val._id === selectedExercise?._id ? {...val, liked: !val.liked} : val))
-                        let excArr = [...exercisesData]
-                        let index = exercisesData.indexOf(exerciseDetail)
-                        console.log("index is === ", index)
-                        if (index != -1)
-                        {
-                            excArr[index] = {...excArr[index], liked: !excArr[index].liked}
-                            setExercisesData(excArr)
-                        }
-                        
-                        console.log("outsieder exer ===",exerciseDetail)
+                        setExercisesDataFilter(prev => prev.map(val =>val._id === exerciseDetail?._id ? {...val, liked: !val.liked} : val))
+                        setExercisesDataSearched(prev => prev.map(val =>val._id === exerciseDetail?._id ? {...val, liked: !val.liked} : val))
+                        exercisesRef.current = exercisesRef.current.map(val =>val._id === exerciseDetail?._id ? {...val, liked: !val.liked} : val)
                     }}>
                 </SheetExerciseDetail>
                 {/* Exercise Filter */}
@@ -321,6 +324,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLOR.MATTE_BLACK,
     },
     title: {
+        marginTop: 30,
         marginLeft: 20,
         fontSize: 20,
         fontWeight: "bold",

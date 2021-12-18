@@ -33,10 +33,11 @@ function FavoriteScreen({navigation})
     const [favoriteVideos, setFavoriteVideos] = useState([])
     const [favoriteExercises, setFavoriteExercises] = useState([])
 
-    const [isLoadingWorkouts, setLoadingWorkouts] = useState(true)
-    const [isLoadingPrograms, setLoadingPrograms] = useState(true)
-    const [isLoadingVideos, setLoadingVideos] = useState(true)
-    const [isLoadingExercises, setLoadingExercises] = useState(true)
+    const [isLoadingWorkouts, setLoadingWorkouts] = useState(false)
+    const [isLoadingPrograms, setLoadingPrograms] = useState(false)
+    const [isLoadingVideos, setLoadingVideos] = useState(false)
+    const [isLoadingExercises, setLoadingExercises] = useState(false)
+    const isFirstTimeLoading = useRef(true)
 
     const [isRefreshing, setRefreshing] = useState(false);
 
@@ -44,13 +45,13 @@ function FavoriteScreen({navigation})
     console.log("is refreshing, ", isRefreshing)
     const onRefreshing = useCallback(
         async () => {
-            console.log("run on refreshing ", isRefreshing)
-            // set Loading effect run
-            setRefreshing(true);
-            setLoadingPrograms(true);
-            setLoadingVideos(true);
-            setLoadingWorkouts(true);
-            setLoadingExercises(true);
+            if (isFirstTimeLoading.current)
+            {
+                setLoadingPrograms(true);
+                setLoadingVideos(true);
+                setLoadingWorkouts(true);
+                setLoadingExercises(true);
+            }
             // fetch data
             getFavoritePrograms(data =>{
                 setFavoritePrograms(data)
@@ -69,11 +70,18 @@ function FavoriteScreen({navigation})
                 setLoadingExercises(false);
             })
 
-            setRefreshing(false);
         },[isRefreshing]);
 
     useEffect(()=>{
+        console.log("run on refreshing ", isRefreshing)
+        // set Loading effect run
+        setRefreshing(true);
+
         onRefreshing()
+
+        setRefreshing(false);
+        isFirstTimeLoading.current = false;
+
         const willFocusSubscription = navigation.addListener('focus', () => {
             onRefreshing();
         });
@@ -190,7 +198,6 @@ function FavoriteScreen({navigation})
 
         return (
             <FlatList
-                pagingEnabled
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.horizontalList}
