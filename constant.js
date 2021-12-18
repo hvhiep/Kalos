@@ -60,7 +60,7 @@ export const WORKOUT_TAG_COLLECTION = [
   {
     name: 'Tabata',
     image:
-      'https://30dayfitness.app/static/d1721fef7d0c45531411fb6c0cc7622c/a1eb1/cardio-workouts-for-men-at-home.jpg',
+      'https://cdn.centr.com/content/17000/16775/images/landscapewidemobile3x-bobby-push-up-16-9.jpg',
     tag: 'Tabata',
     description: 'Tập luyện cường độ cao',
     type : 4
