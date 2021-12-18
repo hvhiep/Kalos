@@ -74,6 +74,12 @@ function FavoriteScreen({navigation})
 
     useEffect(()=>{
         onRefreshing()
+        const willFocusSubscription = navigation.addListener('focus', () => {
+            onRefreshing();
+        });
+    
+        return willFocusSubscription;
+    
     },[])
 
     const RenderWorkouts = () =>
